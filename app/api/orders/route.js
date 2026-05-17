@@ -24,8 +24,9 @@ export async function POST(req) {
   const wilaya = await prisma.wilaya.findUnique({ where: { id: data.wilayaId } });
   if (!wilaya) return Response.json({ error: 'Wilaya invalide' }, { status: 400 });
 
+  const unitPrice = (product.tierEnabled && product.tierQty && product.tierPrice && data.qty >= product.tierQty) ? product.tierPrice : product.price;
   const deliveryPrice = data.deliveryType === 'office' ? wilaya.priceOffice : wilaya.price;
-  const total = product.price * data.qty + deliveryPrice;
+  const total = unitPrice * data.qty + deliveryPrice;
 
   const order = await prisma.order.create({
     data: {
@@ -40,7 +41,7 @@ export async function POST(req) {
       deliveryType: data.deliveryType || 'home',
       status: 'pending',
       items: {
-        create: { productId: product.id, name: product.name, price: product.price, quantity: data.qty },
+        create: { productId: product.id, name: product.name, price: unitPrice, quantity: data.qty },
       },
     },
   });
@@ -50,7 +51,7 @@ export async function POST(req) {
   // Telegram notification (waitUntil = s'exécute après la réponse, Vercel ne coupe pas)
   const commune = await prisma.commune.findUnique({ where: { id: data.communeId } });
   waitUntil(sendAdminNotification({
-    product: product.name, qty: data.qty, price: product.price,
+    product: product.name, qty: data.qty, price: unitPrice,
     customer: data.customer, phone: data.phone,
     wilaya: wilaya.name, commune: commune?.name || '',
     address: data.address,

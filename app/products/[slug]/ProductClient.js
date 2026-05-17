@@ -326,7 +326,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>السعر الإجمالي</span>
-                    <span style={{ fontSize: 16, fontWeight: 900, color: '#ffd700' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
+                    <span style={{ fontSize: 24, fontWeight: 900, color: '#1a237e' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
                   </div>
                 </div>
               </div>
