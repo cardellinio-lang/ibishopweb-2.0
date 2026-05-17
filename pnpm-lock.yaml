@@ -14,9 +14,6 @@ importers:
       '@vercel/functions':
         specifier: ^3.5.1
         version: 3.6.0
-      bcryptjs:
-        specifier: ^2.4.3
-        version: 2.4.3
       next:
         specifier: ^14.2.0
         version: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -145,9 +142,6 @@ packages:
   '@vercel/oidc@3.4.1':
     resolution: {integrity: sha512-H6B+/ig/GoahccL3WZjiHayHw1H5KhvTJNceqYulwfK9kkz5iul2hTmYzcJ7tTCQzyd0dutuL9xYFZCyLUqsog==}
     engines: {node: '>= 20'}
-
-  bcryptjs@2.4.3:
-    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
 
   busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
@@ -419,8 +413,6 @@ snapshots:
       '@vercel/oidc': 3.4.1
 
   '@vercel/oidc@3.4.1': {}
-
-  bcryptjs@2.4.3: {}
 
   busboy@1.6.0:
     dependencies:
