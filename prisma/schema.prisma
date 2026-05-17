@@ -39,6 +39,7 @@ model Product {
 model Wilaya {
   id          Int       @id
   name        String
+  name_ar     String    @default("")
   price       Int
   priceOffice Int       @default(0)
   communes    Commune[]
@@ -47,6 +48,7 @@ model Wilaya {
 model Commune {
   id       Int    @id @default(autoincrement())
   name     String
+  name_ar  String @default("")
   wilayaId Int
   wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
 }
