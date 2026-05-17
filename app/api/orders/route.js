@@ -16,6 +16,8 @@ export async function GET() {
 
 export async function POST(req) {
   const data = await req.json();
+  // Backup log dans Vercel (visible dans les logs functions)
+  console.log('[ORDER-BACKUP]', JSON.stringify({ ...data, _time: new Date().toISOString() }));
   const product = await prisma.product.findUnique({ where: { id: data.productId } });
   if (!product || product.stock < data.qty) return Response.json({ error: 'Stock insuffisant' }, { status: 400 });
 
