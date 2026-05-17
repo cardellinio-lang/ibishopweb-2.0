@@ -86,12 +86,14 @@ export default function Admin() {
 
   const remove = async (id) => {
     if (!confirm('Supprimer ce produit ?')) return;
-    await fetch(`/api/products/${id}`, { method: 'DELETE', headers: authHeaders() });
+    const r = await fetch(`/api/products/${id}`, { method: 'DELETE', headers: authHeaders() });
+    if (!r.ok) return alert('Erreur : ' + (await r.json()).error);
     load();
   };
 
   const toggleStatus = async (id, active) => {
-    await fetch(`/api/products/${id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ active: !active }) });
+    const r = await fetch(`/api/products/${id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ active: !active }) });
+    if (!r.ok) return alert('Erreur');
     load();
   };
 
@@ -107,14 +109,18 @@ export default function Admin() {
   const bulkDelete = async () => {
     if (!selected.length) return;
     if (!confirm(`Supprimer ${selected.length} produit(s) ?`)) return;
-    await Promise.all(selected.map(id => fetch(`/api/products/${id}`, { method: 'DELETE', headers: authHeaders() })));
+    const results = await Promise.all(selected.map(id => fetch(`/api/products/${id}`, { method: 'DELETE', headers: authHeaders() })));
+    const errors = results.filter(r => !r.ok);
+    if (errors.length) return alert(`${errors.length} erreur(s) lors de la suppression`);
     setSelected([]);
     load();
   };
 
   const bulkToggleStatus = async (active) => {
     if (!selected.length) return;
-    await Promise.all(selected.map(id => fetch(`/api/products/${id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ active }) })));
+    const results = await Promise.all(selected.map(id => fetch(`/api/products/${id}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ active }) })));
+    const errors = results.filter(r => !r.ok);
+    if (errors.length) return alert(`${errors.length} erreur(s)`);
     setSelected([]);
     load();
   };
