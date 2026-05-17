@@ -59,41 +59,20 @@ export default async function Home() {
   const now = Date.now();
   const weekMs = 7 * 24 * 60 * 60 * 1000;
 
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
-  const grouped = categories.map(cat => ({ name: cat, products: products.filter(p => p.category === cat) }));
-  const uncategorized = products.filter(p => !p.category);
-
   return (
     <div>
-      {/* Hero section */}
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <h1 style={{ fontSize: 26, fontWeight: 900, marginBottom: 6 }}>تسوق الآن</h1>
         <p style={{ color: '#8e8e93', fontSize: 14 }}>الدفع عند الاستلام • التوصيل إلى 58 ولاية</p>
       </div>
 
-      {/* Products by category */}
-      {grouped.map(cat => (
-        <div key={cat.name} style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 900, marginBottom: 14, paddingRight: 4 }}>{cat.name}</h2>
-          <div className="grid">
-            {cat.products.map(p => <ProductCard key={p.id} p={p} now={now} weekMs={weekMs} />)}
-          </div>
-        </div>
-      ))}
-
-      {/* Uncategorized */}
-      {uncategorized.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          {grouped.length > 0 && <h2 style={{ fontSize: 22, fontWeight: 900, marginBottom: 14, paddingRight: 4 }}>Tous les produits</h2>}
-          <div className="grid">
-            {uncategorized.map(p => <ProductCard key={p.id} p={p} now={now} weekMs={weekMs} />)}
-          </div>
-        </div>
-      )}
-
-      {products.length === 0 && (
+      {products.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#8e8e93' }}>
           لا توجد منتجات حالياً
+        </div>
+      ) : (
+        <div className="grid">
+          {products.map(p => <ProductCard key={p.id} p={p} now={now} weekMs={weekMs} />)}
         </div>
       )}
     </div>

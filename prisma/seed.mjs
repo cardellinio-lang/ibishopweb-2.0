@@ -669,7 +669,7 @@ const PRODUCTS = [
   },
   {
     name: 'مصحح وضع الجسم للنساء والرجال', price: 2900, oldPrice: null,
-    category: 'رياضة', slug: 'musahhih-wad-aljism',
+    slug: 'musahhih-wad-aljism',
     images: [
       'https://ae01.alicdn.com/kf/Sc8bc03ed9c1b452c9eb26497df6017edS.jpg',
       'https://ae01.alicdn.com/kf/S74b3cd0c723044fb9d940f079c69c33bq.jpg',
