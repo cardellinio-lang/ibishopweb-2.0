@@ -164,7 +164,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           {imgs.length > 1 && (
             <div style={{ width: '100%', overflow: 'hidden' }}>
               <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, scrollBehavior: 'smooth' }}>
-                {imgs.map((img, i) => (
+                {imgs.slice(0, 10).map((img, i) => (
                   <button key={i} onClick={() => setImgIdx(i)}
                           style={{ minWidth: 80, width: 80, height: 80, borderRadius: 10, overflow: 'hidden', border: i === imgIdx ? '2px solid ' + c : '2px solid #e8e8ed', padding: 0, background: '#f5f5f7', cursor: 'pointer', flexShrink: 0 }}>
                     <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -339,9 +339,13 @@ export default function ProductClient({ product, wilayas, communes}) {
       {/* Landing page gallery - product images */}
       {imgs.length > 0 && (
         <div style={{ marginTop: 24, background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            {imgs.map((img, i) => (
-              <div key={i} style={{ borderBottom: i < imgs.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: imgs.length === 1 ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 0,
+          }}>
+            {imgs.slice(0, 10).map((img, i) => (
+              <div key={i}>
                 <img src={img} alt={`${product.name} ${i + 1}`}
                      style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
