@@ -676,37 +676,24 @@ async function main() {
     await prisma.$disconnect();
     process.exit(0);
   }
+  await prisma.wilaya.createMany({ data: WILAYAS });
+  await prisma.commune.createMany({ data: COMMUNES });
 
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.commune.deleteMany();
-  await prisma.wilaya.deleteMany();
-
-  for (const w of WILAYAS) await prisma.wilaya.create({ data: w });
-  for (const c of COMMUNES) await prisma.commune.create({ data: c });
-
-  for (let i = 0; i < PRODUCTS.length; i++) {
-    const p = PRODUCTS[i];
-    await prisma.product.create({
-      data: {
-        slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i,
-        name: p.name,
-        price: p.price,
-        oldPrice: p.oldPrice,
-        color: p.color || '#000000',
-        sku: p.sku,
-        images: JSON.stringify(p.images),
-        description: p.description,
-        stock: Math.floor(Math.random() * 20) + 2,
-        tierEnabled: p.tierEnabled || false,
-        tierQty: p.tierQty || null,
-        tierPrice: p.tierPrice || null,
-        tierMessage: p.tierMessage || null,
-        tierGift: p.tierGift || null,
-      },
-    });
-  }
+  const products = PRODUCTS.map((p, i) => ({
+    slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i,
+    name: p.name, price: p.price, oldPrice: p.oldPrice,
+    color: p.color || '#000000', sku: p.sku,
+    images: JSON.stringify(p.images),
+    description: p.description,
+    stock: Math.floor(Math.random() * 20) + 2,
+    category: p.category || '',
+    tierEnabled: p.tierEnabled || false,
+    tierQty: p.tierQty || null,
+    tierPrice: p.tierPrice || null,
+    tierMessage: p.tierMessage || null,
+    tierGift: p.tierGift || null,
+  }));
+  await prisma.product.createMany({ data: products });
 
   console.log(`✅ ${PRODUCTS.length} produits | ${WILAYAS.length} wilayas | ${COMMUNES.length} communes`);
 }
