@@ -36,14 +36,14 @@ export default function RootLayout({ children }) {
         <div style={{ background: '#f5f5f7', color: '#1d1d1f', padding: '14px 16px', textAlign: 'center', fontWeight: 800, fontSize: 17, marginBottom: 16, borderBottom: '1px solid #e8e8ed' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <a href="/" style={{ fontWeight: 800, fontSize: 20 }}>المنتجات</a>
-            <a href="/"><img src="/logo-ibikids.png" alt="ibikids" style={{ height: 28 }} /></a>
+            <a href="/"><img src="/logo-ibikids.png" alt="ibishop" style={{ height: 28 }} /></a>
           </div>
         </div>
         <main className="container" style={{ paddingBottom: 60 }}>
           {children}
         </main>
         <footer style={{ textAlign: 'center', padding: 20, color: '#8e8e93', fontSize: 13, borderTop: '1px solid #e8e8ed' }}>
-          ibishop-2026
+          ibishop-{new Date().getFullYear()}
         </footer>
         <script dangerouslySetInnerHTML={{ __html: `fetch('/api/pageview',{method:'POST'}).catch(()=>{})` }} />
       </body>

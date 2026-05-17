@@ -45,7 +45,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
       window.fbq('track', 'ViewContent', {
         content_name: product.name, content_ids: [product.id],
-        content_type: 'product', value: product.price / 100, currency: 'DZD',
+        content_type: 'product', value: product.price, currency: 'DZD',
       });
     }
   }, []);
@@ -100,7 +100,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
       if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
         window.fbq('track', 'Purchase', {
-          value: total / 100, currency: 'DZD',
+          value: total, currency: 'DZD',
           content_name: product.name, content_ids: [product.id],
         });
       }

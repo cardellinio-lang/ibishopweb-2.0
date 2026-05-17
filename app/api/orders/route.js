@@ -24,29 +24,34 @@ export async function POST(req) {
   const wilaya = await prisma.wilaya.findUnique({ where: { id: data.wilayaId } });
   if (!wilaya) return Response.json({ error: 'Wilaya invalide' }, { status: 400 });
 
+  if (!data.customer || !data.phone || !data.wilayaId || !data.communeId) {
+    return Response.json({ error: 'Champs obligatoires manquants' }, { status: 400 });
+  }
+
   const unitPrice = (product.tierEnabled && product.tierQty && product.tierPrice && data.qty >= product.tierQty) ? product.tierPrice : product.price;
   const deliveryPrice = data.deliveryType === 'office' ? wilaya.priceOffice : wilaya.price;
   const total = unitPrice * data.qty + deliveryPrice;
 
-  const order = await prisma.order.create({
-    data: {
-      number: 'CMD-' + Date.now().toString(36).toUpperCase(),
-      customer: data.customer,
-      phone: data.phone,
-      wilayaId: data.wilayaId,
-      communeId: data.communeId,
-      address: data.address,
-      total,
-      delivery: deliveryPrice,
-      deliveryType: data.deliveryType || 'home',
-      status: 'pending',
-      items: {
-        create: { productId: product.id, name: product.name, price: unitPrice, quantity: data.qty },
+  const [order] = await prisma.$transaction([
+    prisma.order.create({
+      data: {
+        number: 'CMD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase(),
+        customer: data.customer,
+        phone: data.phone,
+        wilayaId: data.wilayaId,
+        communeId: data.communeId,
+        address: data.address || '',
+        total,
+        delivery: deliveryPrice,
+        deliveryType: data.deliveryType || 'home',
+        status: 'pending',
+        items: {
+          create: { productId: product.id, name: product.name, price: unitPrice, quantity: data.qty },
+        },
       },
-    },
-  });
-
-  await prisma.product.update({ where: { id: product.id }, data: { stock: product.stock - data.qty } });
+    }),
+    prisma.product.update({ where: { id: product.id }, data: { stock: { decrement: data.qty } } }),
+  ]);
 
   // Telegram notification (waitUntil = s'exécute après la réponse, Vercel ne coupe pas)
   const commune = await prisma.commune.findUnique({ where: { id: data.communeId } });
