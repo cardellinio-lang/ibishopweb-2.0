@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String      @unique
+  price       Int
+  oldPrice    Int?
+  images      String      @default("[]")
+  description String      @default("")
+  color       String      @default("#000000")
+  sku         String?
+  stock       Int         @default(1)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  orders      OrderItem[]
+}
+
+model Wilaya {
+  id          Int       @id
+  name        String
+  price       Int
+  priceOffice Int       @default(0)
+  communes    Commune[]
+}
+
+model Commune {
+  id       Int    @id @default(autoincrement())
+  name     String
+  wilayaId Int
+  wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  number    String      @unique
+  customer  String
+  phone     String
+  wilayaId  Int
+  communeId Int
+  address   String
+  total     Int
+  delivery  Int
+  deliveryType String      @default("home")
+  status    String      @default("pending")
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String
+  price     Int
+  quantity  Int
+}
