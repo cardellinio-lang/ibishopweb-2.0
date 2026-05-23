@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         </main>
         <footer style={{ textAlign: 'center', padding: 20, color: '#8e8e93', fontSize: 13, borderTop: '1px solid #e8e8ed' }}>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 10 }}>
-            <a href="https://facebook.com/ibishop.dz" target="_blank" rel="noopener" style={{ color: '#8e8e93', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>Facebook</a>
+            <a href="https://www.facebook.com/ibishop.boutique" target="_blank" rel="noopener" style={{ color: '#8e8e93', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>Facebook</a>
             <a href="https://instagram.com/ibishop.dz" target="_blank" rel="noopener" style={{ color: '#8e8e93', textDecoration: 'none', fontSize: 14, fontWeight: 700 }}>Instagram</a>
           </div>
           ibishop-2026
