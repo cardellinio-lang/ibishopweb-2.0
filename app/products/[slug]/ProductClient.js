@@ -159,7 +159,6 @@ export default function ProductClient({ product, wilayas, communes}) {
       `}} />
       {/* COD Banner */}
         <div style={{ background: c, color: '#fff', borderRadius: 0, padding: '14px 20px', textAlign: 'center', fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 16 }}>
-          <img src="/moto-icon.png" alt="" style={{ width: 30, height: 30, objectFit: 'contain' }} />
           الدفع عند الاستلام
           <img src="/favicon4.png" alt="" style={{ width: 24, height: 24, filter: 'brightness(0) invert(1)' }} />
         </div>
