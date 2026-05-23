@@ -2,4 +2,6 @@ node_modules
 .next
 *.db
 .env
+.env.local
+.vercel/
 .DS_Store
