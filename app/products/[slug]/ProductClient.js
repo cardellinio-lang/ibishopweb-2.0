@@ -35,6 +35,12 @@ export default function ProductClient({ product, wilayas, communes}) {
   const prevTierRef = useRef(false);
   const audioCtxRef = useRef(null);
 
+  const variants = product.slug === 'cahier-magique' ? [
+    { label: 'A5', price: 1700, desc: 'صغير' },
+    { label: 'A4', price: 2400, desc: 'كبير' },
+  ] : null;
+  const [variant, setVariant] = useState(variants ? variants[0].label : null);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
     window.addEventListener('scroll', onScroll);
@@ -50,8 +56,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
+  const basePrice = variants ? variants.find(v => v.label === variant).price : product.price;
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
-  const effectivePrice = tierActive ? product.tierPrice : product.price;
+  const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
   const delivery = selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0;
   const subtotal = effectivePrice * qty;
@@ -87,6 +94,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     setLoading(true);
     setError('');
     try {
+      const variantLabel = variant && variant !== (variants?.[0]?.label || '') ? ` (${variant})` : '';
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,6 +102,8 @@ export default function ProductClient({ product, wilayas, communes}) {
           productId: product.id, qty, customer, phone,
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType,
+          variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
+          variantPrice: variants ? basePrice : undefined,
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
@@ -181,7 +191,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           <div style={{ position: 'sticky', top: 80, background: '#fff', border: '1px solid #e5e5ea', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
             <div style={{ height: 4, background: '#e5e5ea' }} />
             <div style={{ textAlign: 'center', padding: '16px 20px 0' }}>
-              <img src="/logo-ibikids.png" alt="ibikids" style={{ height: 28, display: 'block', margin: '0 auto 12px' }} />
+              <img src="/logo-ibi2.png" alt="ibishop" style={{ height: 32, display: 'block', margin: '0 auto 12px' }} />
             {/* Product title & price */}
             <div style={{ textAlign: 'center', position: 'relative' }}>
               <h1 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, color: '#1d1d1f' }}>{product.name}</h1>
@@ -247,6 +257,29 @@ export default function ProductClient({ product, wilayas, communes}) {
                   {filteredCommunes.map((c, i) => <option key={c.id || i} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
+
+              {/* Variant selector */}
+              {variants && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار القياس</label>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    {variants.map(v => (
+                      <button key={v.label} type="button" onClick={() => setVariant(v.label)}
+                              style={{
+                                flex: 1, padding: '12px 16px', borderRadius: 12,
+                                border: variant === v.label ? '2px solid ' + c : '1.5px solid #d2d2d7',
+                                background: variant === v.label ? c : '#fff',
+                                color: variant === v.label ? '#fff' : '#1d1d1f',
+                                cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
+                              }}>
+                        <div style={{ fontSize: 18, fontWeight: 900 }}>{v.label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, opacity: 0.85 }}>{v.desc}</div>
+                        <div style={{ fontSize: 15, fontWeight: 800, marginTop: 4 }}>{v.price.toLocaleString()} د.ج</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Quantity - + */}
               <div style={{ marginBottom: 16 }}>
@@ -353,6 +386,45 @@ export default function ProductClient({ product, wilayas, communes}) {
           </div>
         </div>
       )}
+
+      {/* Reviews / Avis */}
+      <div style={{ marginTop: 24, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+        <h3 style={{ fontSize: 20, fontWeight: 900, textAlign: 'center', marginBottom: 20, color: '#1d1d1f' }}>⭐ آراء العملاء</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {[
+            { name: 'أمينة بن علي', city: 'الجزائر', rating: 5, text: 'منتج رائع ابني صار يحب يتعلم الحروف بفضله. جودة ممتازة والتوصيل كان سريع 👌', date: 'منذ 3 أيام' },
+            { name: 'كريم بن سالم', city: 'وهران', rating: 5, text: 'الأسعار معقولة والجودة أكثر من ممتازة. الطلب وصل في الوقت المحدد. أنصح الجميع', date: 'منذ أسبوع' },
+            { name: 'سارة بنت أحمد', city: 'قسنطينة', rating: 4, text: 'بنتي فرحت بيه بزاف. مفيد للتعليم واللعب في نفس الوقت. شكراً ibishop', date: 'منذ أسبوعين' },
+            { name: 'محمد بن عمر', city: 'سيدي بلعباس', rating: 5, text: 'طلبت لولادي والمنتج فاق توقعاتي. توصيل لجميع الولايات والدفع عند الاستلام مريح', date: 'منذ شهر' },
+          ].map((review, i) => (
+            <div key={i} style={{
+              display: 'flex', gap: 14, padding: 16, borderRadius: 14,
+              background: '#f8f9fa', border: '1px solid #f0f0f0',
+            }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%', background: c,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontWeight: 900, fontSize: 18, flexShrink: 0,
+              }}>
+                {review.name[0]}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <div>
+                    <span style={{ fontWeight: 800, fontSize: 15, color: '#1d1d1f' }}>{review.name}</span>
+                    <span style={{ fontSize: 12, color: '#8e8e93', marginLeft: 8 }}>📍 {review.city}</span>
+                  </div>
+                  <span style={{ fontSize: 12, color: '#8e8e93' }}>{review.date}</span>
+                </div>
+                <div style={{ color: '#f59e0b', fontSize: 14, marginBottom: 4 }}>
+                  {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                </div>
+                <p style={{ fontSize: 14, color: '#444', lineHeight: 1.6, margin: 0 }}>{review.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Sticky bottom button — scrolls to form */}
       {scrolled && (

@@ -206,7 +206,6 @@ export default function Admin() {
                 <th><input type="checkbox" checked={selected.length === products.length && products.length > 0} onChange={e => selectAll(e.target.checked)} style={{ width: 18, height: 18, cursor: 'pointer' }} /></th>
                 <th>Image</th>
                 <th>Nom</th>
-                <th>Catégorie</th>
                 <th>Prix</th>
                 <th>SKU</th>
                 <th>Couleur</th>
@@ -223,7 +222,6 @@ export default function Admin() {
                     <td><input type="checkbox" checked={selected.includes(p.id)} onChange={() => toggleSelect(p.id)} style={{ width: 18, height: 18, cursor: 'pointer' }} /></td>
                     <td><img src={imgs[0] || 'https://placehold.co/40x40/eee/999?text=N'} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} /></td>
                     <td style={{ fontWeight: 600 }}>{p.name}</td>
-                    <td>{p.category || '-'}</td>
                     <td>{p.price.toLocaleString()} DA</td>
                     <td style={{ fontSize: 15, color: '#666' }}>{p.sku || '-'}</td>
                     <td><span style={{ display: 'inline-block', width: 20, height: 20, borderRadius: 6, background: p.color || '#000', verticalAlign: 'middle' }}></span></td>
@@ -590,7 +588,6 @@ export default function Admin() {
                 + Ajouter une image
               </button>
             )}
-            <div><label style={{ fontWeight: 700 }}>Catégorie</label><input value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} placeholder="ex: Électronique, Mode, Sport..." /></div>
             <div><label style={{ fontWeight: 700 }}>Description</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             <div>
               <label style={{ fontWeight: 700 }}>Couleur du thème</label>

@@ -3,7 +3,7 @@ import './globals.css';
 export const metadata = {
   title: 'ibishop',
   description: 'Achetez vos produits préférés, livraison partout en Algérie',
-  icons: { icon: '/favicon.png', shortcut: '/favicon.png' },
+  icons: { icon: '/favicon4.png', shortcut: '/favicon4.png' },
 };
 
 export default function RootLayout({ children }) {
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
         <div style={{ background: '#f5f5f7', color: '#1d1d1f', padding: '14px 16px', textAlign: 'center', fontWeight: 800, fontSize: 17, marginBottom: 16, borderBottom: '1px solid #e8e8ed' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <a href="/" style={{ fontWeight: 800, fontSize: 20 }}>المنتجات</a>
-            <a href="/"><img src="/logo-ibikids.png" alt="ibikids" style={{ height: 28 }} /></a>
+            <a href="/"><img src="/logo-ibi2.png" alt="ibishop" style={{ height: 32 }} /></a>
           </div>
         </div>
         <main className="container" style={{ paddingBottom: 60 }}>

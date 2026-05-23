@@ -27,6 +27,10 @@ export async function POST(req) {
   const deliveryPrice = data.deliveryType === 'office' ? wilaya.priceOffice : wilaya.price;
   const total = product.price * data.qty + deliveryPrice;
 
+  const itemName = data.variantName || product.name;
+  const itemPrice = data.variantPrice || product.price;
+  const orderTotal = itemPrice * data.qty + deliveryPrice;
+
   const order = await prisma.order.create({
     data: {
       number: 'CMD-' + Date.now().toString(36).toUpperCase(),
@@ -35,12 +39,12 @@ export async function POST(req) {
       wilayaId: data.wilayaId,
       communeId: data.communeId,
       address: data.address,
-      total,
+      total: orderTotal,
       delivery: deliveryPrice,
       deliveryType: data.deliveryType || 'home',
       status: 'pending',
       items: {
-        create: { productId: product.id, name: product.name, price: product.price, quantity: data.qty },
+        create: { productId: product.id, name: itemName, price: itemPrice, quantity: data.qty },
       },
     },
   });
@@ -50,13 +54,13 @@ export async function POST(req) {
   // Telegram notification (waitUntil = s'exécute après la réponse, Vercel ne coupe pas)
   const commune = await prisma.commune.findUnique({ where: { id: data.communeId } });
   waitUntil(sendAdminNotification({
-    product: product.name, qty: data.qty, price: product.price,
+    product: itemName, qty: data.qty, price: itemPrice,
     customer: data.customer, phone: data.phone,
     wilaya: wilaya.name, commune: commune?.name || '',
     address: data.address,
     deliveryType: data.deliveryType || 'home',
     deliveryPrice,
-    total,
+    total: orderTotal,
   }));
 
   const sheetUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
