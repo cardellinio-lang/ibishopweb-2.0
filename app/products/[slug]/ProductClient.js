@@ -399,12 +399,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       <div style={{ marginTop: 24, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
         <h3 style={{ fontSize: 20, fontWeight: 900, textAlign: 'center', marginBottom: 20, color: '#1d1d1f' }}>⭐ آراء العملاء</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {(product.slug === 'sijada-salat' ? [
-            { name: 'أحمد م.', city: 'الجزائر', rating: 5, text: 'سجادة صلاة رائعة الجودة. الخامة ناعمة ومريحة ولونها جميل. أنصح بها', date: 'منذ 3 أيام' },
-            { name: 'فاطمة ب.', city: 'وهران', rating: 5, text: 'ابنتي فرحت بزاف بهديّة العيد. جودة ممتازة والتطريز رائع. شكراً ibishop', date: 'منذ أسبوع' },
-            { name: 'مريم ج.', city: 'قسنطينة', rating: 5, text: 'اشتريت لواحدة لابنتي وواحدة لابني. الحمد لله صارو يحبون الصلاة بفضلها. جميلة ومريحة', date: 'منذ أسبوعين' },
-            { name: 'خالد ن.', city: 'سطيف', rating: 5, text: 'منتج فاخر بأسعار معقولة. التوصيل سريع والدفع عند الاستلام مريح جداً', date: 'منذ شهر' },
-          ] : [
+          {(product.slug === 'sijada-salat' ? [] : [
             { name: 'أمينة ب.', city: 'الجزائر', rating: 5, text: 'منتج رائع ابني صار يحب يتعلم الحروف بفضله. جودة ممتازة والتوصيل كان سريع 👌', date: 'منذ 3 أيام' },
             { name: 'كريم ب.', city: 'وهران', rating: 5, text: 'الأسعار معقولة والجودة أكثر من ممتازة. الطلب وصل في الوقت المحدد. أنصح الجميع', date: 'منذ أسبوع' },
             { name: 'سارة ب.', city: 'قسنطينة', rating: 4, text: 'بنتي فرحت بيه بزاف. مفيد للتعليم واللعب في نفس الوقت. شكراً ibishop', date: 'منذ أسبوعين' },
