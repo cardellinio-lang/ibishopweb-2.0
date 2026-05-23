@@ -240,7 +240,6 @@ export default function Admin() {
             </tbody>
           </table>
         </div>
-      )}
 
       {tab === 'orders' && (
         <div>
