@@ -31,6 +31,7 @@ const TAGS = {
   'cadre': [],
   'wiklo': [],
   'sijada-salat': ['عربية'],
+  'tableau-pliable-reglable-hauteur-oxybul': [],
 };
 
 const FILTERS = [
