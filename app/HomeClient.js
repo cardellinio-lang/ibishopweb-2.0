@@ -32,6 +32,7 @@ const TAGS = {
   'wiklo': [],
   'sijada-salat': ['عربية'],
   'tableau-pliable-reglable-hauteur-oxybul': [],
+  'coffret-perles-fleuries-oxybul': [],
 };
 
 const FILTERS = [
