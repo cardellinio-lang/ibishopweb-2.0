@@ -194,7 +194,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           <div style={{ position: 'sticky', top: 80, background: '#fff', border: '1px solid #e5e5ea', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
             <div style={{ height: 4, background: '#e5e5ea' }} />
             <div style={{ textAlign: 'center', padding: '16px 20px 0' }}>
-              <img src="/logo-ibi2.png" alt="ibishop" style={{ height: 90, display: 'block', margin: '0 auto 12px' }} />
+              <img src="/logo-ibi5.png" alt="ibishop" style={{ height: 90, display: 'block', margin: '0 auto 12px' }} />
             {/* Product title & price */}
             <div style={{ textAlign: 'center', position: 'relative' }}>
               <h1 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, color: '#1d1d1f' }}>{product.name}</h1>
