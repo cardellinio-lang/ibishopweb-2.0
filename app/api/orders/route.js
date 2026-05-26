@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import prisma from '@/lib/db';
 import { sendAdminNotification } from '@/lib/telegram';
 import { waitUntil } from '@vercel/functions';
@@ -36,6 +37,7 @@ export async function POST(req) {
       number: 'CMD-' + Date.now().toString(36).toUpperCase(),
       customer: data.customer,
       phone: data.phone,
+      token: randomBytes(12).toString('hex'),
       wilayaId: data.wilayaId,
       communeId: data.communeId,
       address: data.address,

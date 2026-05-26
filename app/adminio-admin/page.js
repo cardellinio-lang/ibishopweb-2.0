@@ -441,6 +441,74 @@ export default function Admin() {
                           {(statusConfig[o.status] || statusConfig.pending).label}
                         </span>
 
+                        {/* WhatsApp confirmation badge */}
+                        {o.token && o.confirmed !== 'pending' && (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                            padding: '4px 12px', borderRadius: 100,
+                            fontSize: 12, fontWeight: 700,
+                            background: o.confirmed === 'yes' ? '#f0fdf4' : '#fef2f2',
+                            color: o.confirmed === 'yes' ? '#16a34a' : '#dc2626',
+                          }}>
+                            {o.confirmed === 'yes' ? '✅ WhatsApp Confirmé' : '❌ WhatsApp Annulé'}
+                          </span>
+                        )}
+
+                        {/* À appeler badge for pending > 24h */}
+                        {o.status === 'pending' && o.confirmed === 'pending' &&
+                          (Date.now() - new Date(o.createdAt).getTime()) / 3600000 >= 24 && (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                            padding: '4px 12px', borderRadius: 100,
+                            fontSize: 12, fontWeight: 700,
+                            background: '#fef2f2', color: '#dc2626',
+                            border: '1px solid #fecaca',
+                          }}>
+                            📞 À appeler
+                          </span>
+                        )}
+
+                        {/* WhatsApp button */}
+                        {o.status !== 'delivered' && o.status !== 'cancelled' && (
+                          o.token ? (
+                            <button style={{
+                              padding: '8px 12px', borderRadius: 10, border: 'none',
+                              background: '#25D366', color: '#fff',
+                              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                              width: '100%',
+                            }} onClick={() => {
+                              const phone = '213' + o.phone.replace(/^(\+?213|0)/, '').replace(/[\s\-]/g, '');
+                              const origin = window.location.origin;
+                              const confirmLink = origin + '/confirm?token=' + o.token + '&action=yes';
+                              const cancelLink = origin + '/confirm?token=' + o.token + '&action=no';
+                              const msg = 'مرحبا ' + o.customer + ' 👋\n'
+                                + 'تم استلام طلبك ' + o.number + '\n'
+                                + 'المنتج: ' + (item(o).name || '') + '\n'
+                                + 'المبلغ: ' + (o.total?.toLocaleString() || '') + ' دج\n\n'
+                                + 'اضغط ✅ للتأكيد:\n' + confirmLink + '\n\n'
+                                + 'أو ❌ للإلغاء:\n' + cancelLink;
+                              window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
+                            }}>
+                              💬 WhatsApp
+                            </button>
+                          ) : (
+                            <button style={{
+                              padding: '8px 12px', borderRadius: 10, border: '1px dashed #d2d2d7',
+                              background: '#fff', color: '#6e6e73',
+                              fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                              width: '100%',
+                            }} onClick={async () => {
+                              await fetch('/api/orders/' + o.id, {
+                                method: 'PATCH', headers: authHeaders(),
+                                body: JSON.stringify({ generateToken: true }),
+                              });
+                              load();
+                            }}>
+                              🔗 Générer le lien WhatsApp
+                            </button>
+                          )
+                        )}
+
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%', marginTop: 4 }}>
                           {o.status === 'pending' && (
                             <>

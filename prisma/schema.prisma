@@ -84,6 +84,8 @@ model Order {
   delivery  Int
   deliveryType String      @default("home")
   status    String      @default("pending")
+  token     String?     @unique
+  confirmed String      @default("pending")
   items     OrderItem[]
   createdAt DateTime    @default(now())
 }
