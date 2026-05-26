@@ -480,12 +480,13 @@ export default function Admin() {
                             }} onClick={() => {
                               const phone = '213' + o.phone.replace(/^(\+?213|0)/, '').replace(/[\s\-]/g, '');
                               const origin = window.location.origin;
-                              const confirmLink = origin + '/api/confirm?token=' + o.token + '&action=yes';
+                              const link = origin + '/c/' + o.token;
                               const msg = 'مرحبا ' + o.customer + ' 👋\n'
                                 + 'تم استلام طلبك ' + o.number + '\n'
                                 + 'المنتج: ' + (item(o).name || '') + '\n'
                                 + 'المبلغ: ' + (o.total?.toLocaleString() || '') + ' دج\n\n'
-                                + 'اضغط ✅ لتأكيد طلبك:\n' + confirmLink;
+                                + 'لتأكيد طلبك، اضغط على الرابط أدناه 👇\n'
+                                + link;
                               window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
                             }}>
                               💬 WhatsApp
