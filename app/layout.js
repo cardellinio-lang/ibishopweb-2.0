@@ -1,4 +1,5 @@
 import './globals.css';
+import prisma from '@/lib/db';
 
 export const metadata = {
   title: 'ibishop',
@@ -6,8 +7,10 @@ export const metadata = {
   icons: { icon: '/favicon5.png' },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  const setting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
+  const aboutVisible = setting ? setting.value !== 'false' : true;
 
   return (
     <html lang="ar" dir="rtl">
@@ -39,7 +42,7 @@ export default function RootLayout({ children }) {
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 20 }}>المنتجات</a>
-              <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>
+              {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>}
             </div>
             <a href="/"><img src="/logo-ibi5.png" alt="ibishop" style={{ height: 90 }} /></a>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 const COLORS = {
   orange: '#E54E19',
@@ -13,8 +14,7 @@ const COLORS = {
 };
 
 const animals = ['🐱', '🐶', '🐰', '🦊', '🐼', '🐨', '🦁', '🐸', '🐟', '🦋', '🐝', '🐌', '🦄', '🐥', '🦉', '🦜', '🐬', '🐳'];
-const nature = ['🌈', '🌻', '🌸', '🌺', '⭐', '🎈', '🎉', '🌿', '🍀', '🌴', '☀️', '🍭', '🧸', '🎠', '🎪', '🎨'];
-const allFloating = [...animals, ...nature];
+const nature = ['🌻', '🌸', '🌺', '⭐', '🎈', '🎉', '🌿', '🍀', '🌴', '☀️', '🍭', '🧸', '🎠', '🎪', '🎨'];
 
 const sections = [
   {
@@ -84,36 +84,6 @@ function playBird(ctx) {
   });
 }
 
-
-
-function FloatingElement({ children, index }) {
-  const elRef = useRef(null);
-  const startX = useRef(Math.random() * 100);
-  const startY = useRef(Math.random() * 100);
-  const speed = useRef(0.3 + Math.random() * 0.5);
-
-  useEffect(() => {
-    let raf;
-    let startTime = Date.now();
-    const animate = () => {
-      if (!elRef.current) return;
-      const t = (Date.now() - startTime) * 0.001;
-      const x = startX.current + Math.sin(t * speed.current + index) * 8;
-      const y = startY.current + Math.cos(t * speed.current * 0.7 + index * 1.5) * 6;
-      elRef.current.style.transform = `translate(${x}px, ${y}px) rotate(${Math.sin(t * 0.5 + index) * 10}deg)`;
-      raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [index]);
-
-  return (
-    <span ref={elRef} style={{ display: 'inline-block', fontSize: 24, transition: 'none' }}>
-      {children}
-    </span>
-  );
-}
-
 function ParallaxImage({ src, index }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -140,7 +110,6 @@ function ParallaxImage({ src, index }) {
       opacity: 0.35,
       pointerEvents: 'none',
       borderRadius: 20,
-      transition: 'transform 0.1s ease-out',
     }} />
   );
 }
@@ -180,7 +149,6 @@ function ParallaxAnimal({ emoji, index }) {
       zIndex: 0,
       opacity: 0.25,
       pointerEvents: 'none',
-      transition: 'transform 0.1s ease-out',
       display: index % 2 === 0 ? undefined : 'none',
     }}>
       {emoji}
@@ -267,7 +235,6 @@ function SectionCard({ section, index }) {
 }
 
 function FloatingMarquee() {
-  const items = [...animals, ...nature];
   return (
     <div style={{ overflow: 'hidden', padding: '12px 0', position: 'relative' }}>
       <div style={{
@@ -275,8 +242,8 @@ function FloatingMarquee() {
         animation: 'marquee 25s linear infinite',
         fontSize: 28,
       }}>
-        {[...items, ...items, ...items].map((item, i) => (
-          <FloatingElement key={i} index={i}>{item}</FloatingElement>
+        {[...animals, ...nature, ...animals, ...nature].map((item, i) => (
+          <span key={i} style={{ display: 'inline-block' }}>{item}</span>
         ))}
       </div>
       <style>{`
@@ -290,142 +257,54 @@ function FloatingMarquee() {
 }
 
 export default function APropos() {
-  const [entered, setEntered] = useState(false);
-  const [audioCtx, setAudioCtx] = useState(null);
+  const router = useRouter();
   const [soundOn, setSoundOn] = useState(true);
-  const splashRef = useRef(null);
-
-  const initAudio = useCallback(() => {
-    if (!audioCtx) {
-      const ctx = createAudioContext();
-      setAudioCtx(ctx);
-      return ctx;
-    }
-    return audioCtx;
-  }, [audioCtx]);
-
-  const handleEnter = useCallback(() => {
-    const ctx = initAudio();
-    if (ctx && soundOn) {
-      setTimeout(() => playBird(ctx), 200);
-      setTimeout(() => playBird(ctx), 800);
-    }
-    setEntered(true);
-  }, [initAudio, soundOn]);
+  const [visible, setVisible] = useState(true);
+  const audioCtxRef = useRef(null);
 
   useEffect(() => {
-    if (entered && audioCtx && soundOn) {
-      const interval = setInterval(() => {
-        if (Math.random() < 0.35) playBird(audioCtx);
-      }, 6000 + Math.random() * 4000);
-      return () => clearInterval(interval);
-    }
-  }, [entered, audioCtx, soundOn]);
+    fetch('/api/settings').then(r => r.json()).then(s => {
+      if (s.about_visible === 'false') router.replace('/');
+      else setVisible(true);
+    }).catch(() => {});
+  }, [router]);
 
   useEffect(() => {
+    if (!visible) return;
     document.documentElement.style.scrollBehavior = 'smooth';
     return () => { document.documentElement.style.scrollBehavior = ''; };
-  }, []);
+  }, [visible]);
 
-  const toggleSound = () => {
-    setSoundOn(prev => !prev);
-  };
+  useEffect(() => {
+    if (!visible) return;
+    const ctx = createAudioContext();
+    if (!ctx) return;
+    audioCtxRef.current = ctx;
+    const t1 = setTimeout(() => playBird(ctx), 500);
+    const t2 = setTimeout(() => playBird(ctx), 1200);
+    const interval = setInterval(() => {
+      if (Math.random() < 0.35) playBird(ctx);
+    }, 6000 + Math.random() * 4000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearInterval(interval);
+      ctx.close();
+    };
+  }, [visible]);
 
-  if (!entered) {
-    return (
-      <div ref={splashRef} style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        background: 'linear-gradient(135deg, #fff7e6 0%, #fce4ec 30%, #e8f5e9 60%, #e3f2fd 100%)',
-        overflow: 'hidden',
-      }}>
-        {animals.slice(0, 8).map((a, i) => (
-          <span key={i} style={{
-            position: 'absolute',
-            top: `${10 + Math.random() * 80}%`,
-            left: `${5 + Math.random() * 90}%`,
-            fontSize: 24 + Math.random() * 20,
-            opacity: 0.3,
-            animation: `floatUp ${3 + Math.random() * 4}s ease-in-out ${Math.random() * 2}s infinite`,
-          }}>
-            {a}
-          </span>
-        ))}
-        <style>{`
-          @keyframes floatUp {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-          }
-        `}</style>
+  const toggleSound = () => setSoundOn(prev => !prev);
 
-        <div style={{
-          textAlign: 'center', zIndex: 1,
-          animation: 'fadeSlideUp 0.8s ease-out',
-        }}>
-          <div style={{ fontSize: 64, marginBottom: 8 }}>
-            <span style={{ animation: 'bounceSlow 2s ease-in-out infinite', display: 'inline-block' }}>🧸</span>
-          </div>
-          <h1 style={{
-            fontSize: 32, fontWeight: 900, marginBottom: 8,
-            fontFamily: "'Tajawal', sans-serif",
-            background: 'linear-gradient(135deg, #E54E19, #d4a5e8, #a8d8ea, #b5e5cf)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>
-            مرحباً بك في عالم ibishop
-          </h1>
-          <p style={{
-            fontSize: 16, color: '#6e6e73', marginBottom: 32,
-            fontFamily: "'Tajawal', sans-serif",
-          }}>
-            عالم مليء بالضحك والألوان والأحلام الجميلة ✨
-          </p>
-          <button onClick={handleEnter}
-                  style={{
-                    padding: '18px 52px', fontSize: 20, fontWeight: 900,
-                    background: 'linear-gradient(135deg, #E54E19, #d4a5e8)',
-                    color: '#fff', border: 'none', borderRadius: 60,
-                    cursor: 'pointer', boxShadow: '0 8px 32px rgba(229,78,25,0.3)',
-                    fontFamily: "'Tajawal', sans-serif",
-                    transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                  onMouseEnter={e => {
-                    e.target.style.transform = 'scale(1.06)';
-                    e.target.style.boxShadow = '0 12px 40px rgba(229,78,25,0.4)';
-                  }}
-                  onMouseLeave={e => {
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.boxShadow = '0 8px 32px rgba(229,78,25,0.3)';
-                  }}>
-            <span style={{ position: 'relative', zIndex: 1 }}>🎉 اضغط لتدخل عالم المرح 🎉</span>
-          </button>
-        </div>
-        <style>{`
-          @keyframes bounceSlow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-          }
-          @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
-      </div>
-    );
-  }
+  if (!visible) return null;
 
   return (
     <>
-      {/* Parallax floating animals in background */}
       {animals.slice(0, 8).map((a, i) => (
         <ParallaxAnimal key={i} emoji={a} index={i} />
       ))}
       <ParallaxImage src="https://i.ibb.co/bjg5Lr0Q/ee8540708d94e854f5d52bf6082bf359.jpg" index={0} />
 
       <div style={{ position: 'relative', minHeight: '100vh', zIndex: 1 }}>
-
-        {/* Sound toggle */}
         <button onClick={toggleSound} style={{
           position: 'fixed', top: 80, left: 12, zIndex: 100,
           width: 40, height: 40, borderRadius: 20,
@@ -439,7 +318,6 @@ export default function APropos() {
           {soundOn ? '🔊' : '🔇'}
         </button>
 
-        {/* Hero section */}
         <div style={{
           textAlign: 'center', padding: '40px 16px 20px',
           position: 'relative',
@@ -449,10 +327,9 @@ export default function APropos() {
             background: 'radial-gradient(ellipse at 50% 0%, rgba(229,78,25,0.06) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
-
           <ScrollReveal>
             <div style={{ fontSize: 48, marginBottom: 8 }}>
-              <span style={{ animation: 'bounceSlow 2s ease-in-out infinite', display: 'inline-block' }}>🌈</span>
+              <span style={{ animation: 'bounceSlow 2s ease-in-out infinite', display: 'inline-block' }}>✨</span>
             </div>
             <p style={{
               fontSize: 13, color: '#8e8e93', letterSpacing: 3, fontWeight: 700,
@@ -477,24 +354,20 @@ export default function APropos() {
           </ScrollReveal>
         </div>
 
-        {/* Floating emoji marquee */}
         <FloatingMarquee />
 
-        {/* Divider */}
         <div style={{
           height: 4,
           background: 'linear-gradient(90deg, #E54E19, #d4a5e8, #a8d8ea, #b5e5cf, #f7e7a0, #E54E19)',
           width: '60%', margin: '20px auto', borderRadius: 2,
         }} />
 
-        {/* Content cards */}
         <div style={{ maxWidth: 520, margin: '0 auto', padding: '12px 16px 40px' }}>
           {sections.map((section, i) => (
             <SectionCard key={section.id} section={section} index={i} />
           ))}
         </div>
 
-        {/* Footer */}
         <ScrollReveal>
           <div style={{
             textAlign: 'center', padding: '24px 16px',

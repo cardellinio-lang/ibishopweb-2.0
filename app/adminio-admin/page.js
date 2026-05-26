@@ -26,6 +26,8 @@ export default function Admin() {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
   const [selected, setSelected] = useState([]);
+  const [settings, setSettings] = useState({});
+  const [settingsSaving, setSettingsSaving] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
@@ -67,6 +69,8 @@ export default function Admin() {
     const s = await fetch('/api/stats', { headers: authHeaders() });
     if (s.ok) setStats(await s.json());
     else if (s.status === 401) autoLogout();
+    const setRes = await fetch('/api/settings');
+    if (setRes.ok) setSettings(await setRes.json());
   };
 
   const loadReviews = async (productId) => {
@@ -235,6 +239,7 @@ export default function Admin() {
           <button className={`btn ${tab === 'sync' ? 'btn-primary' : ''}`} onClick={() => setTab('sync')}>📊 Google Sheets</button>
           <button className={`btn ${tab === 'stats' ? 'btn-primary' : ''}`} onClick={() => { setTab('stats'); if (!stats) load(); }}>📊 Stats</button>
           <button className={`btn ${tab === 'delivery' ? 'btn-primary' : ''}`} onClick={() => setTab('delivery')}>🚚 Livraison</button>
+          <button className={`btn ${tab === 'settings' ? 'btn-primary' : ''}`} onClick={() => setTab('settings')}>⚙️ Paramètres</button>
         </div>
         <button className="btn btn-ghost" style={{ border: '1px solid #ddd' }} onClick={() => { sessionStorage.clear(); setLoggedIn(false); setPassword(''); }}>
           🚪 Déconnexion
@@ -602,6 +607,50 @@ export default function Admin() {
           ) : (
             <p style={{ color: '#8e8e93', fontSize: 14 }}>Chargement...</p>
           )}
+        </div>
+      )}
+
+      {tab === 'settings' && (
+        <div className="card" style={{ maxWidth: 500 }}>
+          <h3 style={{ marginBottom: 16 }}>⚙️ Paramètres</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '16px 20px', background: '#f8f9fa', borderRadius: 12,
+            }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>صفحة "من نحن"</div>
+                <div style={{ fontSize: 13, color: '#6e6e73' }}>Afficher ou masquer la page À Propos</div>
+              </div>
+              <label style={{ position: 'relative', display: 'inline-block', width: 50, height: 28, cursor: 'pointer' }}>
+                <input type="checkbox" checked={settings.about_visible !== 'false'}
+                       onChange={async e => {
+                         const v = e.target.checked ? 'true' : 'false';
+                         setSettings(s => ({ ...s, about_visible: v }));
+                         setSettingsSaving(true);
+                         await fetch('/api/settings', {
+                           method: 'PATCH', headers: authHeaders(),
+                           body: JSON.stringify({ key: 'about_visible', value: v }),
+                         });
+                         setSettingsSaving(false);
+                       }}
+                       style={{ opacity: 0, width: 0, height: 0 }} />
+                <span style={{
+                  position: 'absolute', cursor: 'pointer', inset: 0,
+                  background: settings.about_visible === 'false' ? '#ccc' : '#16a34a',
+                  borderRadius: 28, transition: 'all 0.2s',
+                  pointerEvents: settingsSaving ? 'none' : undefined,
+                  opacity: settingsSaving ? 0.6 : 1,
+                }}>
+                  <span style={{
+                    position: 'absolute', left: settings.about_visible === 'false' ? 4 : 26, top: 4,
+                    width: 20, height: 20, background: '#fff', borderRadius: '50%',
+                    transition: 'all 0.2s',
+                  }} />
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       )}
 
