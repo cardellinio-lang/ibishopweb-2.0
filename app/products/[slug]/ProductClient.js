@@ -42,6 +42,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const formRef = useRef(null);
   const prevTierRef = useRef(false);
   const audioCtxRef = useRef(null);
+  const submittedRef = useRef(false);
 
   const variants = product.slug === 'cahier-magique' ? [
     { label: 'A5', price: 1700, desc: 'صغير' },
@@ -98,10 +99,12 @@ export default function ProductClient({ product, wilayas, communes}) {
   };
 
   const submitOrder = async () => {
+    if (submittedRef.current) return;
     if (!customer || !phone || !wilayaId || !communeId) {
       setError('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
+    submittedRef.current = true;
     setLoading(true);
     setError('');
     try {
