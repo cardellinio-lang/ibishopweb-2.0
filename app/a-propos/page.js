@@ -84,39 +84,7 @@ function playBird(ctx) {
   });
 }
 
-function playWater(ctx) {
-  if (!ctx) return;
-  const now = ctx.currentTime;
-  const bufferSize = ctx.sampleRate * 1.5;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * Math.pow(Math.random(), 3);
-  }
-  const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
-  const bandpass = ctx.createBiquadFilter();
-  bandpass.type = 'bandpass';
-  bandpass.frequency.value = 600 + Math.random() * 400;
-  bandpass.Q.value = 0.8;
-  const gain = ctx.createGain();
-  gain.gain.setValueAtTime(0.012, now);
-  gain.gain.linearRampToValueAtTime(0.008, now + 0.5);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-  noise.connect(bandpass);
-  bandpass.connect(gain);
-  gain.connect(ctx.destination);
-  noise.start(now);
-  noise.stop(now + 1.5);
-}
 
-function playForest(ctx) {
-  if (!ctx) return;
-  for (let i = 0; i < 2; i++) {
-    setTimeout(() => playBird(ctx), i * 800 + Math.random() * 400);
-  }
-  setTimeout(() => playWater(ctx), 200);
-}
 
 function FloatingElement({ children, index }) {
   const elRef = useRef(null);
@@ -143,6 +111,37 @@ function FloatingElement({ children, index }) {
     <span ref={elRef} style={{ display: 'inline-block', fontSize: 24, transition: 'none' }}>
       {children}
     </span>
+  );
+}
+
+function ParallaxImage({ src, index }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (!ref.current) return;
+      const speed = 0.08 + (index % 3) * 0.04;
+      const y = window.scrollY * speed;
+      const x = Math.sin(window.scrollY * 0.001 + index) * 10;
+      ref.current.style.transform = `translate(${x}px, ${y}px)`;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [index]);
+
+  return (
+    <img ref={ref} src={src} alt="" style={{
+      position: 'fixed',
+      bottom: '5%',
+      right: '3%',
+      width: 90,
+      height: 90,
+      objectFit: 'contain',
+      zIndex: 2,
+      opacity: 0.35,
+      pointerEvents: 'none',
+      borderRadius: 20,
+      transition: 'transform 0.1s ease-out',
+    }} />
   );
 }
 
@@ -308,10 +307,8 @@ export default function APropos() {
   const handleEnter = useCallback(() => {
     const ctx = initAudio();
     if (ctx && soundOn) {
-      playBird(ctx);
-      setTimeout(() => playBird(ctx), 400);
-      setTimeout(() => playWater(ctx), 700);
-      setTimeout(() => playBird(ctx), 1200);
+      setTimeout(() => playBird(ctx), 200);
+      setTimeout(() => playBird(ctx), 800);
     }
     setEntered(true);
   }, [initAudio, soundOn]);
@@ -319,10 +316,8 @@ export default function APropos() {
   useEffect(() => {
     if (entered && audioCtx && soundOn) {
       const interval = setInterval(() => {
-        const r = Math.random();
-        if (r < 0.3) playForest(audioCtx);
-        else if (r < 0.5) playBird(audioCtx);
-      }, 5000 + Math.random() * 3000);
+        if (Math.random() < 0.35) playBird(audioCtx);
+      }, 6000 + Math.random() * 4000);
       return () => clearInterval(interval);
     }
   }, [entered, audioCtx, soundOn]);
@@ -426,6 +421,7 @@ export default function APropos() {
       {animals.slice(0, 8).map((a, i) => (
         <ParallaxAnimal key={i} emoji={a} index={i} />
       ))}
+      <ParallaxImage src="https://i.ibb.co/bjg5Lr0Q/ee8540708d94e854f5d52bf6082bf359.jpg" index={0} />
 
       <div style={{ position: 'relative', minHeight: '100vh', zIndex: 1 }}>
 
