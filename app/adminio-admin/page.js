@@ -481,13 +481,11 @@ export default function Admin() {
                               const phone = '213' + o.phone.replace(/^(\+?213|0)/, '').replace(/[\s\-]/g, '');
                               const origin = window.location.origin;
                               const confirmLink = origin + '/api/confirm?token=' + o.token + '&action=yes';
-                              const cancelLink = origin + '/api/confirm?token=' + o.token + '&action=no';
                               const msg = 'مرحبا ' + o.customer + ' 👋\n'
                                 + 'تم استلام طلبك ' + o.number + '\n'
                                 + 'المنتج: ' + (item(o).name || '') + '\n'
                                 + 'المبلغ: ' + (o.total?.toLocaleString() || '') + ' دج\n\n'
-                                + 'اضغط ✅ للتأكيد:\n' + confirmLink + '\n\n'
-                                + 'أو ❌ للإلغاء:\n' + cancelLink;
+                                + 'اضغط ✅ لتأكيد طلبك:\n' + confirmLink;
                               window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
                             }}>
                               💬 WhatsApp
