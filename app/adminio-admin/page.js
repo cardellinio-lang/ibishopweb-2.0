@@ -301,6 +301,7 @@ export default function Admin() {
         <div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ margin: 0, fontSize: 20 }}>📋 Commandes ({orders.length})</h3>
+            <button className="btn btn-ghost" style={{ padding: '6px 16px', fontSize: 13 }} onClick={load}>🔄 Actualiser</button>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {['all','pending','confirmed','shipped','delivered','cancelled'].map(s => (
                 <button key={s} onClick={() => setOrderFilter(s)} style={{
@@ -479,8 +480,8 @@ export default function Admin() {
                             }} onClick={() => {
                               const phone = '213' + o.phone.replace(/^(\+?213|0)/, '').replace(/[\s\-]/g, '');
                               const origin = window.location.origin;
-                              const confirmLink = origin + '/confirm?token=' + o.token + '&action=yes';
-                              const cancelLink = origin + '/confirm?token=' + o.token + '&action=no';
+                              const confirmLink = origin + '/api/confirm?token=' + o.token + '&action=yes';
+                              const cancelLink = origin + '/api/confirm?token=' + o.token + '&action=no';
                               const msg = 'مرحبا ' + o.customer + ' 👋\n'
                                 + 'تم استلام طلبك ' + o.number + '\n'
                                 + 'المنتج: ' + (item(o).name || '') + '\n'
