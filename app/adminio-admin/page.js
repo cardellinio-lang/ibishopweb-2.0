@@ -20,6 +20,10 @@ export default function Admin() {
   const [deliveryForm, setDeliveryForm] = useState({});
   const [deliverySaving, setDeliverySaving] = useState({});
   const [stats, setStats] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewForm, setReviewForm] = useState({ name: '', city: '', rating: 5, text: '', date: '' });
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
   const [selected, setSelected] = useState([]);
 
@@ -65,6 +69,11 @@ export default function Admin() {
     else if (s.status === 401) autoLogout();
   };
 
+  const loadReviews = async (productId) => {
+    const r = await fetch(`/api/reviews?productId=${productId}`);
+    if (r.ok) setReviews(await r.json());
+  };
+
   useEffect(() => { if (loggedIn) load(); }, [loggedIn]);
 
   const save = async () => {
@@ -92,6 +101,9 @@ export default function Admin() {
     const imgs = (Array.isArray(p.images) ? p.images : JSON.parse(p.images || '[]')).filter(i => i && (i.startsWith('http') || i.startsWith('data:')));
     setForm({ name: p.name, price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setEditingReviewId(null);
+    loadReviews(p.id);
   };
 
   const remove = async (id) => {
@@ -109,6 +121,43 @@ export default function Admin() {
     if (r.status === 401) { alert('Session expirée. Reconnectez-vous.'); autoLogout(); return; }
     if (!r.ok) return alert('Erreur');
     load();
+  };
+
+  const addReview = async () => {
+    if (!reviewForm.name || !reviewForm.text) return;
+    setReviewLoading(true);
+    const isEdit = !!editingReviewId;
+    const url = isEdit ? `/api/reviews/${editingReviewId}` : '/api/reviews';
+    const method = isEdit ? 'PUT' : 'POST';
+    const r = await fetch(url, {
+      method,
+      headers: authHeaders(),
+      body: JSON.stringify({ ...reviewForm, productId: editId, rating: Number(reviewForm.rating) }),
+    });
+    if (r.status === 401) { alert('Session expirée.'); autoLogout(); setReviewLoading(false); return; }
+    if (!r.ok) { alert(isEdit ? 'Erreur modification avis' : 'Erreur ajout avis'); setReviewLoading(false); return; }
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setEditingReviewId(null);
+    setReviewLoading(false);
+    loadReviews(editId);
+  };
+
+  const editReview = (r) => {
+    setReviewForm({ name: r.name, city: r.city, rating: r.rating, text: r.text, date: r.date });
+    setEditingReviewId(r.id);
+  };
+
+  const cancelEditReview = () => {
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setEditingReviewId(null);
+  };
+
+  const deleteReview = async (id) => {
+    if (!confirm('Supprimer cet avis ?')) return;
+    const r = await fetch(`/api/reviews/${id}`, { method: 'DELETE', headers: authHeaders() });
+    if (r.status === 401) { alert('Session expirée.'); autoLogout(); return; }
+    if (editingReviewId === id) cancelEditReview();
+    loadReviews(editId);
   };
 
   const selectAll = (checked) => {
@@ -619,6 +668,73 @@ export default function Admin() {
             <button className="btn btn-primary w-full" style={{ marginTop: 8 }} onClick={save} disabled={loading || !form.name || !form.price}>
               {loading ? '⏳...' : editId ? '💾 Enregistrer' : '✅ Ajouter le produit'}
             </button>
+
+            {editId && (
+              <div style={{ borderTop: '2px dashed #e5e5ea', marginTop: 24, paddingTop: 16 }}>
+                <h4 style={{ fontSize: 16, fontWeight: 800, marginBottom: 12 }}>⭐ Avis clients ({reviews.length})</h4>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+                  {reviews.map(r => (
+                    <div key={r.id} style={{
+                      display: 'flex', gap: 10, padding: '10px 12px', borderRadius: 10,
+                      background: editingReviewId === r.id ? '#fefce8' : '#f8f9fa',
+                      border: editingReviewId === r.id ? '2px solid #f59e0b' : '1px solid #f0f0f0',
+                      alignItems: 'flex-start',
+                    }}>
+                      <div style={{ flex: 1, fontSize: 13 }}>
+                        <div style={{ fontWeight: 700 }}>{r.name} <span style={{ color: '#8e8e93', fontWeight: 400 }}>📍 {r.city}</span></div>
+                        <div style={{ color: '#f59e0b', fontSize: 12 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+                        <div style={{ color: '#444', marginTop: 2 }}>{r.text}</div>
+                        <div style={{ color: '#8e8e93', fontSize: 11, marginTop: 2 }}>{r.date}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                        <button onClick={() => editReview(r)}
+                                style={{ background: '#e8e8ed', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>
+                          ✏️
+                        </button>
+                        <button onClick={() => deleteReview(r.id)}
+                                style={{ background: '#fee2e2', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 13, color: '#dc2626', fontWeight: 700 }}>
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {reviews.length === 0 && (
+                    <p style={{ fontSize: 13, color: '#8e8e93' }}>Aucun avis pour ce produit.</p>
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
+                           placeholder="Nom" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                    <input value={reviewForm.city} onChange={e => setReviewForm(f => ({ ...f, city: e.target.value }))}
+                           placeholder="Ville" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                    <select value={reviewForm.rating} onChange={e => setReviewForm(f => ({ ...f, rating: e.target.value }))}
+                            style={{ padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }}>
+                      {[5,4,3,2,1].map(n => <option key={n} value={n}>{n}★</option>)}
+                    </select>
+                  </div>
+                  <textarea value={reviewForm.text} onChange={e => setReviewForm(f => ({ ...f, text: e.target.value }))}
+                            placeholder="Texte de l'avis" rows={2}
+                            style={{ width: '100%', padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input value={reviewForm.date} onChange={e => setReviewForm(f => ({ ...f, date: e.target.value }))}
+                           placeholder="Date (ex: منذ 3 أيام)" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                    {editingReviewId && (
+                      <button onClick={cancelEditReview}
+                              style={{ padding: '8px 14px', background: '#fff', color: '#666', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                        ✕ Annuler
+                      </button>
+                    )}
+                    <button onClick={addReview} disabled={reviewLoading || !reviewForm.name || !reviewForm.text}
+                            style={{ padding: '8px 20px', background: reviewLoading ? '#666' : '#000', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                      {reviewLoading ? '...' : editingReviewId ? '💾 Sauvegarder' : '➕ Ajouter'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
