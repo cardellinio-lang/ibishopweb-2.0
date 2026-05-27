@@ -18,8 +18,6 @@ const TAGS = {
   'puzzles-educatifs': ['ألغاز'],
   'jeu-differences-32': ['ألغاز', '3-5'],
   'jeu-tri-animaux': ['ألغاز', '3-5'],
-  'jeu-portable-400-jeux': ['ألغاز'],
-  'fast-sling-puck': ['ألغاز'],
   'quisuisje': ['ألغاز'],
   'spelling-cubes': ['ألغاز', 'إنجليزية'],
   'jeu-multiplication-montessori-tableau': ['ألغاز'],
@@ -30,7 +28,6 @@ const TAGS = {
   'cahier-magique': ['3-5'],
   'cadre': [],
   'wiklo': [],
-  'sijada-salat': ['عربية'],
   'tableau-pliable-reglable-hauteur-oxybul': [],
   'coffret-perles-fleuries-oxybul': [],
 };
