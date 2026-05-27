@@ -126,5 +126,8 @@ export function getAllPosts() {
 }
 
 export function getPostBySlug(slug) {
-  return posts.find(p => p.slug === slug) || null;
+  if (!slug) return null;
+  const clean = slug.includes('%') ? decodeURIComponent(slug) : slug;
+  const n = s => s.normalize('NFC');
+  return posts.find(p => n(p.slug) === n(clean)) || null;
 }
