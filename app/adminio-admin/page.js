@@ -28,6 +28,10 @@ export default function Admin() {
   const [selected, setSelected] = useState([]);
   const [settings, setSettings] = useState({});
   const [settingsSaving, setSettingsSaving] = useState(false);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', icon: '📖', image: '', content: '[{"title":"","body":""}]' });
+  const [blogEditId, setBlogEditId] = useState(null);
+  const [blogLoading, setBlogLoading] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
@@ -80,6 +84,11 @@ export default function Admin() {
 
   useEffect(() => { if (loggedIn) load(); }, [loggedIn]);
 
+  const loadBlog = async () => {
+    const r = await fetch('/api/blog');
+    if (r.ok) setBlogPosts(await r.json());
+  };
+
   const save = async () => {
     setLoading(true);
     const body = { ...form, images: form.images.filter(i => i && (i.startsWith('http') || i.startsWith('data:'))), price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
@@ -106,8 +115,48 @@ export default function Admin() {
     setForm({ name: p.name, price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
     setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
-    setEditingReviewId(null);
+      setEditingReviewId(null);
     loadReviews(p.id);
+  };
+
+  const saveBlog = async () => {
+    setBlogLoading(true);
+    try {
+      let content;
+      try { content = JSON.parse(blogForm.content); } catch { content = [{ title: '', body: '' }]; }
+      const body = {
+        title: blogForm.title,
+        excerpt: blogForm.excerpt,
+        icon: blogForm.icon,
+        image: blogForm.image,
+        content: JSON.stringify(content.filter(s => s.title || s.body)),
+        visible: blogForm.visible !== false,
+      };
+      if (blogEditId) body.id = blogEditId;
+      const res = await fetch('/api/blog', {
+        method: blogEditId ? 'PUT' : 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) { alert('Erreur'); setBlogLoading(false); return; }
+      setBlogForm({ title: '', excerpt: '', icon: '📖', image: '', content: '[{"title":"","body":""}]' });
+      setBlogEditId(null);
+      setBlogLoading(false);
+      loadBlog();
+    } catch (e) { alert(e.message); setBlogLoading(false); }
+  };
+
+  const editBlog = (p) => {
+    setBlogForm({
+      title: p.title,
+      excerpt: p.excerpt || '',
+      icon: p.icon || '📖',
+      image: p.image || '',
+      content: p.content || '[{"title":"","body":""}]',
+      visible: p.visible !== false,
+    });
+    setBlogEditId(p.id);
+    setTab('blog-add');
   };
 
   const remove = async (id) => {
@@ -239,6 +288,7 @@ export default function Admin() {
           <button className={`btn ${tab === 'sync' ? 'btn-primary' : ''}`} onClick={() => setTab('sync')}>📊 Google Sheets</button>
           <button className={`btn ${tab === 'stats' ? 'btn-primary' : ''}`} onClick={() => { setTab('stats'); if (!stats) load(); }}>📊 Stats</button>
           <button className={`btn ${tab === 'delivery' ? 'btn-primary' : ''}`} onClick={() => setTab('delivery')}>🚚 Livraison</button>
+          <button className={`btn ${tab === 'blog' || tab === 'blog-add' ? 'btn-primary' : ''}`} onClick={() => { setTab('blog'); loadBlog(); }}>📝 Blog ({blogPosts.length})</button>
           <button className={`btn ${tab === 'settings' ? 'btn-primary' : ''}`} onClick={() => setTab('settings')}>⚙️ Paramètres</button>
         </div>
         <button className="btn btn-ghost" style={{ border: '1px solid #ddd' }} onClick={() => { sessionStorage.clear(); setLoggedIn(false); setPassword(''); }}>
@@ -675,6 +725,97 @@ export default function Admin() {
           ) : (
             <p style={{ color: '#8e8e93', fontSize: 14 }}>Chargement...</p>
           )}
+        </div>
+      )}
+
+      {tab === 'blog' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ margin: 0 }}>📝 Articles du blog</h3>
+            <button className="btn btn-primary" onClick={() => { setBlogForm({ title: '', excerpt: '', icon: '📖', image: '', category: '', readingTime: '5 دقائق', content: '[{"title":"","body":""}]', visible: true }); setBlogEditId(null); setTab('blog-add'); }}>
+              ➕ Nouvel article
+            </button>
+          </div>
+          {blogPosts.length === 0 ? (
+            <div className="card" style={{ textAlign: 'center', padding: 40, color: '#8e8e93' }}>
+              <p style={{ fontSize: 32, marginBottom: 8 }}>📝</p>
+              <p>Aucun article pour le moment.</p>
+              <button className="btn btn-primary" style={{ marginTop: 12 }} onClick={() => { setBlogForm({ title: '', excerpt: '', icon: '📖', image: '', category: '', readingTime: '5 دقائق', content: '[{"title":"","body":""}]', visible: true }); setBlogEditId(null); setTab('blog-add'); }}>
+                ✍️ Créer le premier article
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {blogPosts.map(p => (
+                <div key={p.id} className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px' }}>
+                  <span style={{ fontSize: 28 }}>{p.icon || '📖'}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>{p.title}</div>
+                    <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#8e8e93' }}>
+                      <span>{p.category || 'Non classé'}</span>
+                      <span>{p.readingTime || '5 دقائق'}</span>
+                      {!p.visible && <span style={{ color: '#dc2626' }}>مخفي</span>}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={async () => {
+                      const r = await fetch('/api/blog', { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ id: p.id, visible: !p.visible }) });
+                      if (r.ok) loadBlog();
+                    }} style={{ background: '#f0f0f0', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 14 }}>
+                      {p.visible ? '🙈' : '👀'}
+                    </button>
+                    <button onClick={() => editBlog(p)} style={{ background: '#e8e8ed', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 14 }}>
+                      ✏️
+                    </button>
+                    <button onClick={async () => {
+                      if (!confirm('Supprimer cet article ?')) return;
+                      const r = await fetch('/api/blog', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ id: p.id }) });
+                      if (r.ok) loadBlog();
+                    }} style={{ background: '#fee2e2', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 14, color: '#dc2626' }}>
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'blog-add' && (
+        <div className="card" style={{ maxWidth: 500 }}>
+          <h3 style={{ marginBottom: 12 }}>{blogEditId ? '✏️ Modifier l\'article' : '➕ Nouvel article'}</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div><label style={{ fontWeight: 700 }}>Titre *</label><input value={blogForm.title} onChange={e => setBlogForm(f => ({ ...f, title: e.target.value }))} /></div>
+            <div><label style={{ fontWeight: 700 }}>Extrait</label><textarea value={blogForm.excerpt} onChange={e => setBlogForm(f => ({ ...f, excerpt: e.target.value }))} placeholder="Brève description" rows={2} /></div>
+            <div><label style={{ fontWeight: 700 }}>Catégorie</label>
+              <select value={blogForm.category} onChange={e => setBlogForm(f => ({ ...f, category: e.target.value }))} style={{ width: '100%', padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 14 }}>
+                <option value="">اختر فئة</option>
+                <option value="تعلم الحروف">تعلم الحروف</option>
+                <option value="الأرقام والحساب">الأرقام والحساب</option>
+                <option value="الإبداع واليدوي">الإبداع واليدوي</option>
+                <option value="الألعاب المنطقية">الألعاب المنطقية</option>
+                <option value="النطق واللغة">النطق واللغة</option>
+                <option value="التربية والقيم">التربية والقيم</option>
+              </select>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <div style={{ flex: 1 }}><label style={{ fontWeight: 700 }}>Icône (emoji)</label><input value={blogForm.icon} onChange={e => setBlogForm(f => ({ ...f, icon: e.target.value }))} placeholder="📖" /></div>
+              <div style={{ flex: 1 }}><label style={{ fontWeight: 700 }}>Temps de lecture</label><input value={blogForm.readingTime} onChange={e => setBlogForm(f => ({ ...f, readingTime: e.target.value }))} placeholder="5 دقائق" /></div>
+            </div>
+            <div><label style={{ fontWeight: 700 }}>Image URL (optionnel)</label><input value={blogForm.image} onChange={e => setBlogForm(f => ({ ...f, image: e.target.value }))} placeholder="https://..." /></div>
+            <div><label style={{ fontWeight: 700 }}>Contenu (JSON)</label><textarea value={blogForm.content} onChange={e => setBlogForm(f => ({ ...f, content: e.target.value }))} rows={4} style={{ fontFamily: 'monospace', fontSize: 12 }} /></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <input type="checkbox" checked={blogForm.visible !== false} onChange={e => setBlogForm(f => ({ ...f, visible: e.target.checked }))} style={{ width: 18, height: 18 }} />
+              <label style={{ fontWeight: 700 }}>Visible sur le site</label>
+            </div>
+            <button className="btn btn-primary w-full" style={{ marginTop: 8 }} onClick={saveBlog} disabled={blogLoading || !blogForm.title}>
+              {blogLoading ? '⏳...' : blogEditId ? '💾 Enregistrer' : '✅ Publier'}
+            </button>
+            <button className="btn btn-ghost w-full" style={{ border: '1px solid #ddd' }} onClick={() => setTab('blog')}>
+              ← Retour à la liste
+            </button>
+          </div>
         </div>
       )}
 
