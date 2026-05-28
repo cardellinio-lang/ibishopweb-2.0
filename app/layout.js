@@ -48,9 +48,8 @@ export default async function RootLayout({ children }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div>
                 <a href="/" style={{ fontWeight: 800, fontSize: 20, color: '#1d1d1f' }}>المنتجات</a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
-                  <img src="/85.png" alt="" style={{ height: 14, width: 'auto', display: 'block' }} />
-                  <span style={{ fontSize: 10, color: '#8e8e93', fontWeight: 600, letterSpacing: 0.5 }}>imagine build inspire</span>
+                <div style={{ marginTop: 1 }}>
+                  <img src="/84.png" alt="imagine build inspire" style={{ height: 24, width: 'auto', display: 'block' }} />
                 </div>
               </div>
               {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>}
