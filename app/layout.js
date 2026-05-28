@@ -50,10 +50,7 @@ export default async function RootLayout({ children }) {
             </div>
             <a href="/"><img src="/logo-final.png" alt="ibishop" style={{ height: 90 }} /></a>
           </div>
-          <svg viewBox="0 0 1200 20" style={{ width: '100%', height: 20, display: 'block', marginTop: 8, marginBottom: 12 }} preserveAspectRatio="none">
-            <path d="M0,10 Q15,2 30,10 T60,10 T90,10 T120,10 T150,10 T180,10 T210,10 T240,10 T270,10 T300,10 T330,10 T360,10 T390,10 T420,10 T450,10 T480,10 T510,10 T540,10 T570,10 T600,10 T630,10 T660,10 T690,10 T720,10 T750,10 T780,10 T810,10 T840,10 T870,10 T900,10 T930,10 T960,10 T990,10 T1020,10 T1050,10 T1080,10 T1110,10 T1140,10 T1170,10 T1200,10" fill="none" stroke="#E54E19" strokeWidth="3" strokeLinecap="round" opacity="0.4" strokeDasharray="8 8" />
-            <path d="M0,14 Q15,6 30,14 T60,14 T90,14 T120,14 T150,14 T180,14 T210,14 T240,14 T270,14 T300,14 T330,14 T360,14 T390,14 T420,14 T450,14 T480,14 T510,14 T540,14 T570,14 T600,14 T630,14 T660,14 T690,14 T720,14 T750,14 T780,14 T810,14 T840,14 T870,14 T900,14 T930,14 T960,14 T990,14 T1020,14 T1050,14 T1080,14 T1110,14 T1140,14 T1170,14 T1200,14" fill="none" stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" opacity="0.4" strokeDasharray="6 10" />
-          </svg>
+
         </div>
         <main className="container" style={{ paddingBottom: 60 }}>
           {children}
