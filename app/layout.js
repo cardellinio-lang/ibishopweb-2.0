@@ -4,7 +4,7 @@ import prisma from '@/lib/db';
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
-  icons: { icon: '/favicon5.png' },
+  icons: { icon: '/logo-final.png' },
 };
 
 export default async function RootLayout({ children }) {
@@ -15,8 +15,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/favicon5.png" sizes="48x48" />
-        <link rel="shortcut icon" href="/favicon5.png" sizes="48x48" />
+        <link rel="icon" href="/logo-final.png" sizes="48x48" />
+        <link rel="shortcut icon" href="/logo-final.png" sizes="48x48" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
@@ -48,7 +48,7 @@ export default async function RootLayout({ children }) {
               <a href="/blog" style={{ fontWeight: 700, fontSize: 16, color: '#4CAF50' }}>المدونة</a>
               {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>}
             </div>
-            <a href="/"><img src="/logo-ibi5.png" alt="ibishop" style={{ height: 90 }} /></a>
+            <a href="/"><img src="/logo-final.png" alt="ibishop" style={{ height: 90 }} /></a>
           </div>
           <svg viewBox="0 0 1200 20" style={{ width: '100%', height: 20, display: 'block', marginTop: 8, marginBottom: 12 }} preserveAspectRatio="none">
             <path d="M0,10 Q15,2 30,10 T60,10 T90,10 T120,10 T150,10 T180,10 T210,10 T240,10 T270,10 T300,10 T330,10 T360,10 T390,10 T420,10 T450,10 T480,10 T510,10 T540,10 T570,10 T600,10 T630,10 T660,10 T690,10 T720,10 T750,10 T780,10 T810,10 T840,10 T870,10 T900,10 T930,10 T960,10 T990,10 T1020,10 T1050,10 T1080,10 T1110,10 T1140,10 T1170,10 T1200,10" fill="none" stroke="#E54E19" strokeWidth="3" strokeLinecap="round" opacity="0.4" strokeDasharray="8 8" />

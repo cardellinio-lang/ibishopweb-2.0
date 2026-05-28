@@ -63,7 +63,7 @@ export default async function ConfirmOrder({ params }) {
         <meta property="og:title" content="✅ تأكيد طلبك - ibishop" />
         <meta property="og:description" content="اضغط لتأكيد طلبك بكل أمان. تأكيد فوري بدون انتظار." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://ibishopweb-2-0.vercel.app/logo-ibi5.png" />
+        <meta property="og:image" content="https://ibishopweb-2-0.vercel.app/logo-final.png" />
         <meta property="og:image:width" content="400" />
         <meta property="og:image:height" content="400" />
         <meta name="twitter:card" content="summary_large_image" />
