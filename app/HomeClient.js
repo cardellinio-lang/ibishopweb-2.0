@@ -111,7 +111,7 @@ export default function HomeClient({ products }) {
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
           <h2 style={{ fontSize: 22, fontWeight: 900, marginBottom: 4 }}>منتجاتنا</h2>
           <p style={{ color: '#8e8e93', fontSize: 14 }}>
-            {products.length} منتج متخصص للأرطوفونيا و الدعم البيداغوجي
+            {products.length} منتجات و ألعاب تعليمية لتنمية طفلك
           </p>
         </div>
 
@@ -180,7 +180,7 @@ export default function HomeClient({ products }) {
       }}>
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px 12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: '#E54E19' }}>{products.length}+</div>
-          <div style={{ fontSize: 13, color: '#6e6e73', fontWeight: 600, marginTop: 4 }}>منتج متخصص</div>
+          <div style={{ fontSize: 13, color: '#6e6e73', fontWeight: 600, marginTop: 4 }}>منتج و لعبة</div>
         </div>
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px 12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: '#4CAF50' }}>58</div>
