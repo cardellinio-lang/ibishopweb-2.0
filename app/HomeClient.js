@@ -182,7 +182,7 @@ export default function HomeClient({ products }) {
                     style={{
                       padding: '8px 18px', borderRadius: 20, fontSize: 14, fontWeight: 800,
                       border: 'none', cursor: 'pointer', transition: 'all .15s',
-                      background: active === f.key ? '#1d1d1f' : '#e8e8ed',
+                      background: active === f.key ? '#E54E19' : '#e8e8ed',
                       color: active === f.key ? '#fff' : '#1d1d1f',
                     }}>
               {f.label}

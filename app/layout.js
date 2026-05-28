@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
         <div style={{ background: '#E54E19', color: '#fff', textAlign: 'center', fontSize: 12, fontWeight: 600, padding: '6px 16px' }}>
           🚚 توصيل إلى 58 ولاية • 💳 الدفع عند الاستلام
         </div>
-        <div style={{ background: 'url(/opacite20.png) #f5f5f7', backgroundSize: 'cover', padding: '10px 16px 0', position: 'relative' }}>
+        <div style={{ background: 'url(/opacite20.png) #f5f5f7', backgroundSize: 'cover', padding: '10px 16px 0', position: 'relative', borderBottom: '2px solid rgba(229,78,25,0.12)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 20, color: '#1d1d1f' }}>المنتجات</a>
