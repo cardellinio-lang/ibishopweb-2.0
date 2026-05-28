@@ -9,8 +9,10 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
-  const setting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
-  const aboutVisible = setting ? setting.value !== 'false' : true;
+  const aboutSetting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
+  const aboutVisible = aboutSetting ? aboutSetting.value !== 'false' : true;
+  const blogSetting = await prisma.setting.findUnique({ where: { key: 'blog_visible' } });
+  const blogVisible = blogSetting ? blogSetting.value !== 'false' : true;
 
   return (
     <html lang="ar" dir="rtl">
@@ -45,7 +47,7 @@ export default async function RootLayout({ children }) {
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 20, color: '#1d1d1f' }}>المنتجات</a>
-              <a href="/blog" style={{ fontWeight: 700, fontSize: 16, color: '#4CAF50' }}>المدونة</a>
+              {blogVisible && <a href="/blog" style={{ fontWeight: 700, fontSize: 16, color: '#4CAF50' }}>المدونة</a>}
               {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>}
             </div>
             <a href="/"><img src="/logo-final.png" alt="ibishop" style={{ height: 90 }} /></a>

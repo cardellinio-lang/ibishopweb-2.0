@@ -718,6 +718,42 @@ export default function Admin() {
                 </span>
               </label>
             </div>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '16px 20px', background: '#f8f9fa', borderRadius: 12,
+            }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>صفحة المدونة</div>
+                <div style={{ fontSize: 13, color: '#6e6e73' }}>Afficher ou masquer la page Blog</div>
+              </div>
+              <label style={{ position: 'relative', display: 'inline-block', width: 50, height: 28, cursor: 'pointer' }}>
+                <input type="checkbox" checked={settings.blog_visible !== 'false'}
+                       onChange={async e => {
+                         const v = e.target.checked ? 'true' : 'false';
+                         setSettings(s => ({ ...s, blog_visible: v }));
+                         setSettingsSaving(true);
+                         await fetch('/api/settings', {
+                           method: 'PATCH', headers: authHeaders(),
+                           body: JSON.stringify({ key: 'blog_visible', value: v }),
+                         });
+                         setSettingsSaving(false);
+                       }}
+                       style={{ opacity: 0, width: 0, height: 0 }} />
+                <span style={{
+                  position: 'absolute', cursor: 'pointer', inset: 0,
+                  background: settings.blog_visible === 'false' ? '#ccc' : '#16a34a',
+                  borderRadius: 28, transition: 'all 0.2s',
+                  pointerEvents: settingsSaving ? 'none' : undefined,
+                  opacity: settingsSaving ? 0.6 : 1,
+                }}>
+                  <span style={{
+                    position: 'absolute', left: settings.blog_visible === 'false' ? 4 : 26, top: 4,
+                    width: 20, height: 20, background: '#fff', borderRadius: '50%',
+                    transition: 'all 0.2s',
+                  }} />
+                </span>
+              </label>
+            </div>
           </div>
         </div>
       )}
