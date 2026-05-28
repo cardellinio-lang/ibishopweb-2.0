@@ -41,13 +41,6 @@ const FILTERS = [
   { key: '3-5', label: '3-5 سنوات' },
 ];
 
-const CATEGORIES = [
-  { icon: '🗣️', label: 'صعوبات النطق', color: '#E54E19' },
-  { icon: '📚', label: 'صعوبات التعلم', color: '#4CAF50' },
-  { icon: '🧠', label: 'فرط الحركة', color: '#E54E19' },
-  { icon: '✋', label: 'مهارات حركية', color: '#4CAF50' },
-];
-
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
 function ProductCard({ p, now }) {
@@ -113,60 +106,6 @@ export default function HomeClient({ products }) {
 
   return (
     <div>
-      {/* Hero Section */}
-      <div style={{
-        background: '#faf6f0', borderRadius: 24, padding: '40px 20px',
-        textAlign: 'center', marginBottom: 32, position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute', top: -30, right: -30, width: 120, height: 120,
-          borderRadius: '50%', background: 'rgba(229,78,25,0.08)',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: -40, left: -20, width: 160, height: 160,
-          borderRadius: '50%', background: 'rgba(76,175,80,0.08)',
-        }} />
-        <div style={{ fontSize: 48, marginBottom: 12 }}>🧩</div>
-        <h1 style={{ fontSize: 28, fontWeight: 900, lineHeight: 1.3, marginBottom: 8 }}>
-          وسائل تعليمية و علاجية
-        </h1>
-        <p style={{ fontSize: 16, color: '#6e6e73', lineHeight: 1.6, marginBottom: 20, maxWidth: 500, margin: '0 auto 20px' }}>
-          لأخصائيي الأرطوفونيا و المعالجة البيداغوجية — نصنع و نوفر أدوات الدعم للأطفال ذوي صعوبات التعلم و النطق و فرط الحركة
-        </p>
-        <a href="/blog" style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: '#E54E19', color: '#fff', padding: '14px 32px',
-          borderRadius: 14, fontWeight: 800, fontSize: 16,
-        }}>
-          📖 اكتشف مقالاتنا
-        </a>
-      </div>
-
-      {/* Category Icons */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12,
-        marginBottom: 36,
-      }}>
-        {CATEGORIES.map(cat => (
-          <div key={cat.label} style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            gap: 8, padding: '16px 8px', background: '#fff', borderRadius: 20,
-            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-          }}>
-            <div style={{
-              width: 56, height: 56, borderRadius: '50%',
-              background: cat.color, display: 'flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: 26,
-            }}>
-              {cat.icon}
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#1d1d1f', textAlign: 'center', lineHeight: 1.3 }}>
-              {cat.label}
-            </span>
-          </div>
-        ))}
-      </div>
-
       {/* Products Section */}
       <div style={{ marginBottom: 36 }}>
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
