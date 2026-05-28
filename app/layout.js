@@ -68,7 +68,7 @@ export default async function RootLayout({ children }) {
           </div>
           ibishop-2026
         </footer>
-        <style>{`*{-webkit-user-select:none;user-select:none}img{-webkit-user-drag:none;pointer-events:none}`}</style>
+        <style>{`img{-webkit-user-drag:none;pointer-events:none}`}</style>
         <script dangerouslySetInnerHTML={{ __html: `fetch('/api/pageview',{method:'POST'}).catch(()=>{})` }} />
       </body>
     </html>
