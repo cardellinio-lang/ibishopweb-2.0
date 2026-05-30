@@ -402,9 +402,12 @@ export default function Admin() {
                 )}
                 {filtered.map(o => (
                   <div key={o.id} style={{
-                    background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 1px 8px rgba(0,0,0,0.06)',
-                    border: o.status === 'cancelled' ? '1px solid #fecaca' : '1px solid #f0f0f0',
+                    background: o.confirmed === 'yes' ? '#f0fdf4' : '#fff',
+                    borderRadius: 16, padding: 20,
+                    boxShadow: o.confirmed === 'yes' ? '0 0 0 1px #86efac, 0 1px 8px rgba(22,163,74,0.1)' : '0 1px 8px rgba(0,0,0,0.06)',
+                    border: o.status === 'cancelled' ? '1px solid #fecaca' : o.confirmed === 'yes' ? '1px solid #86efac' : '1px solid #f0f0f0',
                     opacity: o.status === 'cancelled' ? 0.6 : 1,
+                    borderRight: o.confirmed === 'yes' ? '5px solid #16a34a' : o.status === 'cancelled' ? '1px solid #fecaca' : '1px solid #f0f0f0',
                     transition: 'all 0.15s',
                   }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start', justifyContent: 'space-between' }}>
