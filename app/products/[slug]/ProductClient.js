@@ -31,6 +31,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [error, setError] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
+  const [orderNumber, setOrderNumber] = useState('');
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -121,6 +122,8 @@ export default function ProductClient({ product, wilayas, communes}) {
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
+      const orderData = await res.json();
+      setOrderNumber(orderData.number);
 
       if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
         window.fbq('track', 'Purchase', {
@@ -137,7 +140,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   };
 
   if (done) {
-    return <Confirmation product={product} qty={qty} total={total} />;
+    return <Confirmation product={product} qty={qty} total={total} orderNumber={orderNumber} customer={customer} phone={phone} />;
   }
 
   return (
@@ -685,7 +688,7 @@ function CelebrationOverlay({ data, onClose }) {
   );
 }
 
-function Confirmation({ product, qty, total }) {
+function Confirmation({ product, qty, total, orderNumber, customer, phone }) {
   const [showMsg, setShowMsg] = useState(false);
 
   useEffect(() => {
@@ -797,6 +800,16 @@ function Confirmation({ product, qty, total }) {
           <p style={{ color: '#86efac', fontSize: 14, fontWeight: 500 }}>
             {product.name} x{qty} — {total.toLocaleString()} د.ج
           </p>
+
+          {/* Order number */}
+          <div style={{
+            display: 'inline-block', marginTop: 16, padding: '10px 28px',
+            background: 'rgba(255,215,0,0.15)', border: '2px solid #ffd700',
+            borderRadius: 16, backdropFilter: 'blur(4px)',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#fef3c7', marginBottom: 2 }}>رقم الطلب</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#ffd700', letterSpacing: 1 }}>{orderNumber}</div>
+          </div>
 
           {/* Action buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 28 }}>

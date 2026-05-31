@@ -32,6 +32,10 @@ export default function Admin() {
   const [blogForm, setBlogForm] = useState({ title: '', excerpt: '', icon: '📖', image: '', content: '[{"title":"","body":""}]' });
   const [blogEditId, setBlogEditId] = useState(null);
   const [blogLoading, setBlogLoading] = useState(false);
+  const [ecotrackShipping, setEcotrackShipping] = useState({});
+  const [ecotrackTestStatus, setEcotrackTestStatus] = useState(null);
+  const [ecotrackTestLoading, setEcotrackTestLoading] = useState(false);
+  const [ecotrackLabelLoading, setEcotrackLabelLoading] = useState({});
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
@@ -562,6 +566,77 @@ export default function Admin() {
                           )
                         )}
 
+                        {/* EcoTrack / Packers info */}
+                        {o.ecoTrackData && (
+                          <div style={{
+                            width: '100%', padding: '10px 12px', borderRadius: 10,
+                            background: '#f0fdf4', border: '1px solid #86efac',
+                            fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4,
+                          }}>
+                            <div style={{ fontWeight: 700, color: '#16a34a', marginBottom: 2 }}>📦 Packers</div>
+                            {o.ecoTrackData.trackingNumber && (
+                              <div style={{ fontWeight: 600 }}>
+                                Tracking: <span style={{ direction: 'ltr', display: 'inline-block' }}>{o.ecoTrackData.trackingNumber}</span>
+                              </div>
+                            )}
+                            {o.ecoTrackData.shipmentId && (
+                              <div style={{ color: '#6e6e73' }}>ID: {o.ecoTrackData.shipmentId}</div>
+                            )}
+                            <button style={{
+                              padding: '6px 10px', borderRadius: 8, border: '1px solid #86efac',
+                              background: '#fff', color: '#16a34a',
+                              fontSize: 12, fontWeight: 700, cursor: ecotrackLabelLoading[o.id] ? 'wait' : 'pointer',
+                              width: '100%', marginTop: 4,
+                            }} disabled={ecotrackLabelLoading[o.id]}
+                            onClick={async () => {
+                              setEcotrackLabelLoading(s => ({ ...s, [o.id]: true }));
+                              try {
+                                const r = await fetch('/api/orders/' + o.id + '/ecotrack/label');
+                                const d = await r.json();
+                                if (d.ok && d.url) {
+                                  window.open(d.url, '_blank');
+                                  load();
+                                } else {
+                                  alert(d.error || 'Étiquette non disponible');
+                                }
+                              } catch (e) {
+                                alert('Erreur: ' + e.message);
+                              }
+                              setEcotrackLabelLoading(s => ({ ...s, [o.id]: false }));
+                            }}>
+                              {ecotrackLabelLoading[o.id] ? '⏳...' : o.ecoTrackData.labelUrl ? '🖨️ Bordereau' : '🖨️ Obtenir le bordereau'}
+                            </button>
+                          </div>
+                        )}
+
+                        {/* EcoTrack send button */}
+                        {(o.status === 'confirmed' || o.status === 'shipped') && !o.ecoTrackData && (
+                          <button style={{
+                            padding: '8px 12px', borderRadius: 10, border: 'none',
+                            background: ecotrackShipping[o.id] ? '#a3a3a3' : '#16a34a',
+                            color: '#fff', fontSize: 13, fontWeight: 700, cursor: ecotrackShipping[o.id] ? 'wait' : 'pointer',
+                            width: '100%',
+                          }} disabled={ecotrackShipping[o.id]} onClick={async () => {
+                            setEcotrackShipping(s => ({ ...s, [o.id]: true }));
+                            try {
+                              const r = await fetch('/api/orders/' + o.id + '/ecotrack', {
+                                method: 'POST', headers: authHeaders(),
+                              });
+                              const d = await r.json();
+                              if (!d.ok) {
+                                alert('Erreur Packers: ' + (d.error || 'inconnue'));
+                              }
+                              load();
+                            } catch (e) {
+                              alert('Erreur réseau: ' + e.message);
+                            } finally {
+                              setEcotrackShipping(s => ({ ...s, [o.id]: false }));
+                            }
+                          }}>
+                            {ecotrackShipping[o.id] ? '⏳ Envoi...' : '📦 Envoyer à Packers'}
+                          </button>
+                        )}
+
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%', marginTop: 4 }}>
                           {o.status === 'pending' && (
                             <>
@@ -897,6 +972,41 @@ export default function Admin() {
                   }} />
                 </span>
               </label>
+            </div>
+
+            <div style={{ borderTop: '1px solid #e5e5ea', margin: '8px 0' }} />
+
+            <div style={{ padding: '16px 20px', background: '#f8f9fa', borderRadius: 12 }}>
+              <h4 style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>📦 Connexion Packers (EcoTrack)</h4>
+              <p style={{ fontSize: 13, color: '#6e6e73', marginBottom: 12 }}>
+                Teste la connexion avec l'API de Packers. 
+                Le token doit être configuré dans <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>.env.local</code> via <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>ECOTRACK_API_TOKEN</code>.
+              </p>
+              <button className="btn btn-primary" disabled={ecotrackTestLoading}
+                      onClick={async () => {
+                        setEcotrackTestLoading(true);
+                        setEcotrackTestStatus(null);
+                        try {
+                          const r = await fetch('/api/ecotrack/test', { headers: authHeaders() });
+                          const d = await r.json();
+                          setEcotrackTestStatus(d);
+                        } catch (e) {
+                          setEcotrackTestStatus({ ok: false, message: e.message });
+                        }
+                        setEcotrackTestLoading(false);
+                      }}>
+                {ecotrackTestLoading ? '⏳ Test en cours...' : '🔌 Tester la connexion'}
+              </button>
+              {ecotrackTestStatus && (
+                <div style={{
+                  marginTop: 12, padding: '10px 14px', borderRadius: 10,
+                  fontSize: 13, fontWeight: 600,
+                  background: ecotrackTestStatus.ok ? '#f0fdf4' : '#fef2f2',
+                  color: ecotrackTestStatus.ok ? '#16a34a' : '#dc2626',
+                }}>
+                  {ecotrackTestStatus.message}
+                </div>
+              )}
             </div>
           </div>
         </div>
