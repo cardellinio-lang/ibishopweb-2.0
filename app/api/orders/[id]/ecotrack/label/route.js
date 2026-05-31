@@ -25,10 +25,9 @@ export async function GET(req, { params }) {
         where: { id },
         data: { ecoTrackData: { ...order.ecoTrackData, labelUrl: url } },
       });
+      return Response.redirect(url, 302);
     }
-    return url
-      ? Response.json({ ok: true, url })
-      : Response.json({ ok: false, error: 'Étiquette non disponible' });
+    return Response.json({ ok: false, error: 'Étiquette non disponible' });
   } catch (err) {
     return Response.json({
       error: err instanceof EcotrackError ? err.message : 'Erreur inconnue',

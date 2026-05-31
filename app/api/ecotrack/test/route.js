@@ -7,7 +7,7 @@ export async function GET(req) {
 
   try {
     await testCredentials();
-    return Response.json({ ok: true, message: '✅ Connexion réussie' });
+    return Response.json({ ok: true, message: '✅ Token valide — connexion réussie' });
   } catch (err) {
     const msg = err instanceof EcotrackError ? err.message : 'Erreur inconnue';
     return Response.json({ ok: false, message: msg }, { status: 200 });
