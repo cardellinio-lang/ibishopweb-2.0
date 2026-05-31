@@ -17,8 +17,14 @@ export async function POST(req, { params }) {
     return Response.json({ error: 'Commande introuvable' }, { status: 404 });
   }
 
+  const commune = await prisma.commune.findUnique({ where: { id: order.communeId } });
+  const orderWithNames = {
+    ...order,
+    communeName: commune?.name || '',
+  };
+
   try {
-    const result = await createShipment(order);
+    const result = await createShipment(orderWithNames);
 
     await prisma.order.update({
       where: { id },
