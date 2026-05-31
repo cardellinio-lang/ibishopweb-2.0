@@ -17,10 +17,16 @@ export async function POST(req, { params }) {
     return Response.json({ error: 'Commande introuvable' }, { status: 404 });
   }
 
-  const commune = await prisma.commune.findUnique({ where: { id: order.communeId } });
+  const [commune, wilaya] = await Promise.all([
+    prisma.commune.findUnique({ where: { id: order.communeId } }),
+    prisma.wilaya.findUnique({ where: { id: order.wilayaId } }),
+  ]);
+  const communeName = commune?.name || '';
+  const wilayaName = wilaya?.name || '';
   const orderWithNames = {
     ...order,
-    communeName: commune?.name || '',
+    communeName,
+    address: order.address || `${communeName}, ${wilayaName}`.replace(/^, /, ''),
   };
 
   try {
