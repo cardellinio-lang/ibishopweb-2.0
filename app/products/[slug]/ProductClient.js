@@ -51,6 +51,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   ] : product.slug === 'sijada-salat' ? [
     { label: 'سجادة ابنتي', price: 2400, desc: 'وردي', color: '#e91e63' },
     { label: 'سجادة ابني', price: 2400, desc: 'أزرق', color: '#1565c0' },
+  ] : product.slug === 'word-box' ? [
+    { label: 'نسخة عربية', price: 3500, desc: 'حروف اللغة العربية' },
+    { label: 'نسخة فرنسية', price: 3500, desc: 'Lettres françaises' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -109,7 +112,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     setLoading(true);
     setError('');
     try {
-      const variantLabel = variant && variant !== (variants?.[0]?.label || '') ? ` (${variant})` : '';
+      const alwaysLabel = product.slug === 'word-box';
+      const variantLabel = variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '';
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
