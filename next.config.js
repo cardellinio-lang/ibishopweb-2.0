@@ -1,1 +1,1 @@
-module.exports = { images: { remotePatterns: [{ protocol: 'https', hostname: 'placehold.co' }, { protocol: 'https', hostname: 'omartoys.com' }] } };
+module.exports = { images: { remotePatterns: [{ protocol: 'https', hostname: 'placehold.co' }, { protocol: 'https', hostname: 'omartoys.com' }, { protocol: 'https', hostname: 'www.totatoys.com' }] } };
