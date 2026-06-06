@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto';
 import prisma from '@/lib/db';
 import { sendAdminNotification } from '@/lib/telegram';
+import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
 
 export async function GET() {
@@ -53,7 +54,27 @@ export async function POST(req) {
 
   await prisma.product.update({ where: { id: product.id }, data: { stock: product.stock - data.qty } });
 
-  // Telegram notification (waitUntil = s'exécute après la réponse, Vercel ne coupe pas)
+  // Fire CAPI Purchase (same event_id as browser → Meta deduplicates → 100% coverage)
+  const capiEventId = `order_${order.id}`;
+  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
+  const accessToken = process.env.FACEBOOK_CAPI_ACCESS_TOKEN;
+  if (pixelId && accessToken) {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '';
+    const ua = req.headers.get('user-agent') || '';
+    waitUntil(sendCapiEvents([{
+      event_name: 'Purchase',
+      event_id: capiEventId,
+      event_source_url: data.pageUrl || '',
+      phone: data.phone || '',
+      ip,
+      ua,
+      value: orderTotal,
+      content_ids: [product.id],
+      num_items: data.qty,
+    }], pixelId, accessToken));
+  }
+
+  // Telegram notification
   const commune = await prisma.commune.findUnique({ where: { id: data.communeId } });
   waitUntil(sendAdminNotification({
     product: itemName, qty: data.qty, price: itemPrice,
@@ -83,5 +104,5 @@ export async function POST(req) {
     } catch {}
   }
 
-  return Response.json(order, { status: 201 });
+  return Response.json({ ...order, capiEventId }, { status: 201 });
 }

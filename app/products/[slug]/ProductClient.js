@@ -120,7 +120,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         body: JSON.stringify({
           productId: product.id, qty, customer, phone,
           wilayaId: Number(wilayaId), communeId: Number(communeId),
-          address, deliveryType,
+          address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
           variantPrice: variants ? basePrice : undefined,
         }),
@@ -133,7 +133,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         window.fbq('track', 'Purchase', {
           value: total / 100, currency: 'DZD',
           content_name: product.name, content_ids: [product.id],
-        });
+        }, { eventID: orderData.capiEventId });
       }
 
       setDone(true);

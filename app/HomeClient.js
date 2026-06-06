@@ -30,10 +30,14 @@ const TAGS = {
   'wiklo': [],
   'tableau-pliable-reglable-hauteur-oxybul': [],
   'coffret-perles-fleuries-oxybul': [],
+  'cartes-masculin-feminin-couleurs': ['نطق', 'عربية', '3-5'],
+  'cartes-association': ['نطق', 'عربية', '3-5'],
+  'cartes-defi': ['نطق', 'عربية', '3-5'],
 };
 
 const FILTERS = [
   { key: 'all', label: 'الكل' },
+  { key: 'نطق', label: 'نطق' },
   { key: 'خشبية', label: 'خشبية' },
   { key: 'إنجليزية', label: 'إنجليزية' },
   { key: 'عربية', label: 'عربية' },
