@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
@@ -54,11 +54,11 @@ export default function ProductClient({ product, wilayas, communes}) {
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
-  const wordBoxPacks = product.slug === 'word-box' ? [
+  const wordBoxPacks = useMemo(() => product.slug === 'word-box' ? [
     { label: 'باقة اكتشاف', subtitle: '1 لوحة + لغة واحدة', price: 3500, originalPrice: 3500, icon: '📖', emoji: '🌟', saving: 0, desc: 'اختر لغتك' },
     { label: 'باقة ثنائية', subtitle: '1 لوحة + اللغتين (عربية + فرنسية)', price: 4500, originalPrice: 7000, icon: '📚', emoji: '🔥', saving: 2500, desc: 'وفّر 2500 د.ج' },
     { label: 'باقة ثلاثية', subtitle: '1 لوحة + 3 لغات (عربية + فرنسية + إنجليزية)', price: 4900, originalPrice: 10500, icon: '🏆', emoji: '💥', saving: 5600, desc: 'وفّر 5600 د.ج' },
-  ] : null;
+  ] : null, [product.slug]);
   const [pack, setPack] = useState(wordBoxPacks ? wordBoxPacks[0].label : null);
   const prevPackRef = useRef(null);
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
