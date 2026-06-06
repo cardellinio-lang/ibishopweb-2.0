@@ -403,8 +403,8 @@ export default function Admin() {
             const filtered = orderFilter === 'all' ? orders : orders.filter(o => o.status === orderFilter);
             const statusConfig = {
               pending: { label: 'En attente', icon: '⏳', color: '#f59e0b', bg: '#fef3c7' },
-              confirmed: { label: 'Confirmée', icon: '✅', color: '#2563eb', bg: '#dbeafe' },
-              shipped: { label: 'Expédiée', icon: '📦', color: '#7c3aed', bg: '#ede9fe' },
+              confirmed: { label: 'Confirmée', icon: '✅', color: '#e11d48', bg: '#fce7f3' },
+              shipped: { label: 'Expédiée', icon: '📦', color: '#e11d48', bg: '#fce7f3' },
               delivered: { label: 'Livrée', icon: '🎉', color: '#16a34a', bg: '#dcfce7' },
               cancelled: { label: 'Annulée', icon: '❌', color: '#dc2626', bg: '#fee2e2' },
             };
@@ -418,70 +418,72 @@ export default function Admin() {
                     Aucune commande trouvée
                   </div>
                 )}
-                {filtered.map(o => (
+                {filtered.map(o => {
+                  const isPink = o.status === 'confirmed' || o.status === 'shipped';
+                  return (
                   <div key={o.id} style={{
-                    background: o.confirmed === 'yes' ? '#f0fdf4' : '#fff',
-                    borderRadius: 16, padding: 20,
-                    boxShadow: o.confirmed === 'yes' ? '0 0 0 1px #86efac, 0 1px 8px rgba(22,163,74,0.1)' : '0 1px 8px rgba(0,0,0,0.06)',
-                    border: o.status === 'cancelled' ? '1px solid #fecaca' : o.confirmed === 'yes' ? '1px solid #86efac' : '1px solid #f0f0f0',
+                    background: isPink ? '#fff5f5' : o.status === 'cancelled' ? '#fef2f2' : o.confirmed === 'yes' ? '#f0fdf4' : '#fff',
+                    borderRadius: 12, padding: 14,
+                    boxShadow: isPink ? '0 0 0 1px #fecaca, 0 1px 4px rgba(225,29,72,0.06)' : o.confirmed === 'yes' ? '0 0 0 1px #86efac, 0 1px 4px rgba(22,163,74,0.06)' : '0 1px 4px rgba(0,0,0,0.04)',
+                    border: isPink ? '1px solid #fecaca' : o.status === 'cancelled' ? '1px solid #fecaca' : o.confirmed === 'yes' ? '1px solid #86efac' : '1px solid #f0f0f0',
                     opacity: o.status === 'cancelled' ? 0.6 : 1,
-                    borderRight: o.confirmed === 'yes' ? '5px solid #16a34a' : o.status === 'cancelled' ? '1px solid #fecaca' : '1px solid #f0f0f0',
+                    borderRight: isPink ? '4px solid #fb7185' : o.confirmed === 'yes' ? '4px solid #16a34a' : o.status === 'cancelled' ? '1px solid #fecaca' : '1px solid #f0f0f0',
                     transition: 'all 0.15s',
                   }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start', justifyContent: 'space-between' }}>
                       {/* Left: order info */}
-                      <div style={{ flex: '1 1 300px', minWidth: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                          <span style={{ fontSize: 14, fontWeight: 800, color: '#1d1d1f' }}>#{o.number}</span>
-                          <span style={{ fontSize: 12, color: '#8e8e93' }}>
+                      <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                          <span style={{ fontSize: 13, fontWeight: 800, color: '#1d1d1f' }}>#{o.number}</span>
+                          <span style={{ fontSize: 11, color: '#8e8e93' }}>
                             {new Date(o.createdAt).toLocaleDateString('fr', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px', fontSize: 14 }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 13 }}>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Client</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Client</span>
                             <div style={{ fontWeight: 700, color: '#1d1d1f' }}>{o.customer}</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Téléphone</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Téléphone</span>
                             <div style={{ fontWeight: 700, color: '#2563eb', direction: 'ltr' }}>{o.phone}</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Wilaya</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Wilaya</span>
                             <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.wilayaName}</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Commune</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Commune</span>
                             <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.communeName}</div>
                           </div>
                           {o.address && (
                             <div style={{ gridColumn: '1 / -1' }}>
-                              <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Adresse</span>
-                              <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.address}</div>
+                              <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Adresse</span>
+                              <div style={{ fontWeight: 600, color: '#1d1d1f', fontSize: 12 }}>{o.address}</div>
                             </div>
                           )}
                         </div>
 
-                        <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px dashed #e8e8ed', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px 16px', fontSize: 14 }}>
+                        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px dashed #e8e8ed', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px 12px', fontSize: 13 }}>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Produit</span>
-                            <div style={{ fontWeight: 600, color: '#1d1d1f', fontSize: 13 }}>{item(o).name}</div>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Produit</span>
+                            <div style={{ fontWeight: 600, color: '#1d1d1f', fontSize: 12 }}>{item(o).name}</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Prix unitaire</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Prix unitaire</span>
                             <div style={{ fontWeight: 700, color: '#1d1d1f' }}>{item(o).price?.toLocaleString()} DA</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Quantité</span>
-                            <div style={{ fontWeight: 800, color: '#1d1d1f', fontSize: 16 }}>x{qty(o)}</div>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Quantité</span>
+                            <div style={{ fontWeight: 800, color: '#1d1d1f', fontSize: 14 }}>x{qty(o)}</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Livraison</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Livraison</span>
                             <div style={{ fontWeight: 600, color: '#1d1d1f' }}>
                               <span style={{
-                                display: 'inline-block', padding: '2px 8px', borderRadius: 6,
-                                fontSize: 12, fontWeight: 700,
+                                display: 'inline-block', padding: '2px 6px', borderRadius: 6,
+                                fontSize: 11, fontWeight: 700,
                                 background: o.deliveryType === 'office' ? '#f0fdf4' : '#eff6ff',
                                 color: o.deliveryType === 'office' ? '#16a34a' : '#2563eb',
                               }}>
@@ -490,18 +492,18 @@ export default function Admin() {
                             </div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Frais livraison</span>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Frais livraison</span>
                             <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.delivery?.toLocaleString()} DA</div>
                           </div>
                           <div>
-                            <span style={{ color: '#8e8e93', fontSize: 12, fontWeight: 600 }}>Total</span>
-                            <div style={{ fontWeight: 900, fontSize: 18, color: '#f59e0b' }}>{o.total?.toLocaleString()} DA</div>
+                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Total</span>
+                            <div style={{ fontWeight: 900, fontSize: 16, color: '#f59e0b' }}>{o.total?.toLocaleString()} DA</div>
                           </div>
                         </div>
                       </div>
 
                       {/* Right: status + actions */}
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center', minWidth: 140 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', minWidth: 120 }}>
                         <span style={{
                           display: 'inline-flex', alignItems: 'center', gap: 4,
                           padding: '6px 16px', borderRadius: 100,
@@ -685,7 +687,8 @@ export default function Admin() {
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
             );
           })()}
