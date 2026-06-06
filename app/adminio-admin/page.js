@@ -293,6 +293,7 @@ export default function Admin() {
         <div style={{ display: 'flex', gap: 8 }}>
           <button className={`btn ${tab === 'products' ? 'btn-primary' : ''}`} onClick={() => setTab('products')}>📦 Produits ({products.length})</button>
           <button className={`btn ${tab === 'orders' ? 'btn-primary' : ''}`} onClick={() => setTab('orders')}>📋 Commandes ({orders.length})</button>
+          <button className={`btn ${tab === 'ordertable' ? 'btn-primary' : ''}`} onClick={() => setTab('ordertable')}>📊 Tableau</button>
           <button className={`btn ${tab === 'add' ? 'btn-primary' : ''}`} onClick={() => { setTab('add'); setForm({ name: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' }); setEditId(null); }}>
             {editId ? '✏️ Modifier' : '➕ Ajouter'}
           </button>
@@ -692,6 +693,83 @@ export default function Admin() {
               </div>
             );
           })()}
+        </div>
+      )}
+
+      {tab === 'ordertable' && (
+        <div className="card" style={{ overflowX: 'auto' }}>
+          <h3 style={{ marginBottom: 16 }}>📊 Tableau des commandes</h3>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: '#f5f5f7', borderBottom: '2px solid #e8e8ed' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>N°</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Client</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Téléphone</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Wilaya</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Commune</th>
+                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Produit</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center' }}>Statut</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center' }}>WhatsApp</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(() => {
+                const sorted = [...orders].sort((a, b) => {
+                  const aPink = a.status === 'confirmed' || a.status === 'shipped';
+                  const bPink = b.status === 'confirmed' || b.status === 'shipped';
+                  if (aPink && !bPink) return -1;
+                  if (!aPink && bPink) return 1;
+                  return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                const statusColors = { pending: '#fef3c7', confirmed: '#fce7f3', shipped: '#fce7f3', delivered: '#dcfce7', cancelled: '#fee2e2' };
+                return sorted.map(o => {
+                  const isPink = o.status === 'confirmed' || o.status === 'shipped';
+                  const isWhatsApp = o.confirmed === 'yes';
+                  return (
+                    <tr key={o.id} style={{
+                      background: isWhatsApp ? '#f0fdf4' : isPink ? '#fff5f5' : '#fff',
+                      borderBottom: '1px solid #f0f0f0',
+                    }}>
+                      <td style={{ padding: '10px 12px', fontWeight: 700 }}>#{o.number}</td>
+                      <td style={{ padding: '10px 12px', fontWeight: 600 }}>{o.customer}</td>
+                      <td style={{ padding: '10px 12px', direction: 'ltr', color: '#2563eb' }}>{o.phone}</td>
+                      <td style={{ padding: '10px 12px' }}>{o.wilayaName}</td>
+                      <td style={{ padding: '10px 12px' }}>{o.communeName}</td>
+                      <td style={{ padding: '10px 12px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.items?.[0]?.name || '-'}</td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>{o.total?.toLocaleString()} DA</td>
+                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                        <span style={{
+                          display: 'inline-block', padding: '3px 10px', borderRadius: 100,
+                          fontSize: 12, fontWeight: 700,
+                          background: statusColors[o.status] || '#f5f5f7',
+                          color: isPink ? '#e11d48' : o.status === 'delivered' ? '#16a34a' : o.status === 'cancelled' ? '#dc2626' : '#92400e',
+                        }}>
+                          {o.status === 'pending' ? '⏳ En attente' : o.status === 'confirmed' ? '✅ Confirmée' : o.status === 'shipped' ? '📦 Expédiée' : o.status === 'delivered' ? '🎉 Livrée' : '❌ Annulée'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                        {o.token ? (
+                          <span style={{
+                            display: 'inline-block', padding: '3px 10px', borderRadius: 100,
+                            fontSize: 12, fontWeight: 700,
+                            background: o.confirmed === 'yes' ? '#f0fdf4' : '#fef3c7',
+                            color: o.confirmed === 'yes' ? '#16a34a' : '#92400e',
+                          }}>
+                            {o.confirmed === 'yes' ? '✅ Confirmé' : o.confirmed === 'no' ? '❌ Annulé' : '⏳ En attente'}
+                          </span>
+                        ) : <span style={{ color: '#d2d2d7' }}>-</span>}
+                      </td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', color: '#8e8e93', fontSize: 12, whiteSpace: 'nowrap' }}>
+                        {new Date(o.createdAt).toLocaleDateString('fr', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                      </td>
+                    </tr>
+                  );
+                });
+              })()}
+            </tbody>
+          </table>
         </div>
       )}
 
