@@ -765,7 +765,7 @@ export default function Admin() {
                   const isDelivered = o.status === 'delivered';
                   return (
                     <tr key={o.id} style={{
-                      background: isWhatsApp ? '#f0fdf4' : isDelivered ? '#f0fdf4' : isPink ? '#fff5f5' : '#fff',
+                      background: isWhatsApp ? '#eff6ff' : isDelivered ? '#f0fdf4' : isPink ? '#fff5f5' : '#fff',
                       borderBottom: '1px solid #f0f0f0',
                     }}>
                       <td style={{ padding: '10px 12px', fontWeight: 700 }}>#{o.number}</td>
