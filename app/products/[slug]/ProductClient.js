@@ -776,7 +776,7 @@ function CelebrationOverlay({ data, onClose }) {
           marginBottom: 16,
         }}>
           <div style={{
-            fontSize: 28, fontWeight: 900, lineHeight: 1.2,
+            fontSize: 24, fontWeight: 900, lineHeight: 1.2,
             background: 'linear-gradient(90deg, #ffd700, #fff, #ffd700)',
             backgroundSize: '200% auto',
             WebkitBackgroundClip: 'text',
