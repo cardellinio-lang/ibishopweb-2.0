@@ -55,12 +55,14 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
   const wordBoxPacks = product.slug === 'word-box' ? [
-    { label: 'باقة اكتشاف', subtitle: '1 لوحة + لغة واحدة (عربية أو فرنسية)', price: 3500, originalPrice: 3500, icon: '📖', emoji: '🌟', saving: 0, desc: 'اكتشف الحروف' },
+    { label: 'باقة اكتشاف', subtitle: '1 لوحة + لغة واحدة', price: 3500, originalPrice: 3500, icon: '📖', emoji: '🌟', saving: 0, desc: 'اختر لغتك' },
     { label: 'باقة ثنائية', subtitle: '1 لوحة + اللغتين (عربية + فرنسية)', price: 4500, originalPrice: 7000, icon: '📚', emoji: '🔥', saving: 2500, desc: 'وفّر 2500 د.ج' },
     { label: 'باقة ثلاثية', subtitle: '1 لوحة + 3 لغات (عربية + فرنسية + إنجليزية)', price: 4900, originalPrice: 10500, icon: '🏆', emoji: '💥', saving: 5600, desc: 'وفّر 5600 د.ج' },
   ] : null;
   const [pack, setPack] = useState(wordBoxPacks ? wordBoxPacks[0].label : null);
   const prevPackRef = useRef(null);
+  const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
+  const [packLang, setPackLang] = useState(wordBoxLangs[0]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -139,7 +141,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     setError('');
     try {
       const alwaysLabel = product.slug === 'word-box';
-      const variantLabel = wordBoxPacks ? ` (${pack})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
+      const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -406,6 +409,28 @@ export default function ProductClient({ product, wilayas, communes}) {
                       );
                     })}
                   </div>
+
+                  {/* Language selector for Découverte pack */}
+                  {pack === 'باقة اكتشاف' && (
+                    <div style={{ marginTop: 12, background: '#f8f9fa', borderRadius: 12, padding: '12px 16px' }}>
+                      <label style={{ fontSize: 13, fontWeight: 800, display: 'block', marginBottom: 8, color: '#555' }}>اختر اللغة</label>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {wordBoxLangs.map(lang => (
+                          <button key={lang} type="button" onClick={() => setPackLang(lang)}
+                                  style={{
+                                    flex: 1, padding: '10px 8px', borderRadius: 10,
+                                    border: packLang === lang ? '2px solid ' + c : '1.5px solid #d2d2d7',
+                                    background: packLang === lang ? c : '#fff',
+                                    color: packLang === lang ? '#fff' : '#1d1d1f',
+                                    fontSize: 14, fontWeight: 800, cursor: 'pointer',
+                                    textAlign: 'center', transition: 'all .2s',
+                                  }}>
+                            {lang === 'عربية' ? '🇩🇿 عربية' : lang === 'فرنسية' ? '🇫🇷 Français' : '🇬🇧 English'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
