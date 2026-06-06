@@ -25,6 +25,7 @@ export default function Admin() {
   const [reviewLoading, setReviewLoading] = useState(false);
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
+  const [orderSort, setOrderSort] = useState({ key: 'createdAt', dir: 'desc' });
   const [selected, setSelected] = useState([]);
   const [settings, setSettings] = useState({});
   const [settingsSaving, setSettingsSaving] = useState(false);
@@ -702,26 +703,60 @@ export default function Admin() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr style={{ background: '#f5f5f7', borderBottom: '2px solid #e8e8ed' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>N°</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Client</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Téléphone</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Wilaya</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Commune</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Produit</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Total</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center' }}>Statut</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center' }}>WhatsApp</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right' }}>Date</th>
+                {[
+                  { key: 'number', label: 'N°', align: 'left' },
+                  { key: 'customer', label: 'Client', align: 'left' },
+                  { key: 'phone', label: 'Téléphone', align: 'left' },
+                  { key: 'wilayaName', label: 'Wilaya', align: 'left' },
+                  { key: 'communeName', label: 'Commune', align: 'left' },
+                  { key: 'product', label: 'Produit', align: 'left' },
+                  { key: 'total', label: 'Total', align: 'right' },
+                  { key: 'status', label: 'Statut', align: 'center' },
+                  { key: 'whatsapp', label: 'WhatsApp', align: 'center' },
+                  { key: 'createdAt', label: 'Date', align: 'right' },
+                ].map(col => (
+                  <th key={col.key} style={{
+                    padding: '10px 12px', textAlign: col.align, cursor: 'pointer',
+                    userSelect: 'none', whiteSpace: 'nowrap',
+                    color: orderSort.key === col.key ? '#e11d48' : '#1d1d1f',
+                  }} onClick={() => setOrderSort(prev => ({
+                    key: col.key,
+                    dir: prev.key === col.key && prev.dir === 'asc' ? 'desc' : 'asc',
+                  }))}>
+                    {col.label} {orderSort.key === col.key ? (orderSort.dir === 'asc' ? '▲' : '▼') : '▽'}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {(() => {
                 const sorted = [...orders].sort((a, b) => {
-                  const aPink = a.status === 'confirmed' || a.status === 'shipped';
-                  const bPink = b.status === 'confirmed' || b.status === 'shipped';
-                  if (aPink && !bPink) return -1;
-                  if (!aPink && bPink) return 1;
-                  return new Date(b.createdAt) - new Date(a.createdAt);
+                  const dir = orderSort.dir === 'asc' ? 1 : -1;
+                  const key = orderSort.key;
+                  if (key === 'status') {
+                    const orderVal = { pending: 0, confirmed: 1, shipped: 2, delivered: 3, cancelled: 4 };
+                    return (orderVal[a.status] - orderVal[b.status]) * dir;
+                  }
+                  if (key === 'number') {
+                    const na = parseInt(a.number) || 0;
+                    const nb = parseInt(b.number) || 0;
+                    return (na - nb) * dir;
+                  }
+                  if (key === 'total') return ((a.total || 0) - (b.total || 0)) * dir;
+                  if (key === 'product') {
+                    const na = (a.items?.[0]?.name || '').toLowerCase();
+                    const nb = (b.items?.[0]?.name || '').toLowerCase();
+                    return na < nb ? -1 * dir : na > nb ? 1 * dir : 0;
+                  }
+                  if (key === 'whatsapp') {
+                    const wa = a.confirmed === 'yes' ? 2 : a.confirmed === 'no' ? 1 : 0;
+                    const wb = b.confirmed === 'yes' ? 2 : b.confirmed === 'no' ? 1 : 0;
+                    return (wa - wb) * dir;
+                  }
+                  if (key === 'createdAt') return (new Date(a.createdAt) - new Date(b.createdAt)) * dir;
+                  const va = (a[key] || '').toLowerCase();
+                  const vb = (b[key] || '').toLowerCase();
+                  return va < vb ? -1 * dir : va > vb ? 1 * dir : 0;
                 });
                 const statusColors = { pending: '#fef3c7', confirmed: '#fce7f3', shipped: '#fce7f3', delivered: '#dcfce7', cancelled: '#fee2e2' };
                 return sorted.map(o => {
