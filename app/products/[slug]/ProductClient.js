@@ -51,11 +51,16 @@ export default function ProductClient({ product, wilayas, communes}) {
   ] : product.slug === 'sijada-salat' ? [
     { label: 'سجادة ابنتي', price: 2400, desc: 'وردي', color: '#e91e63' },
     { label: 'سجادة ابني', price: 2400, desc: 'أزرق', color: '#1565c0' },
-  ] : product.slug === 'word-box' ? [
-    { label: 'نسخة عربية', price: 3500, desc: 'حروف اللغة العربية' },
-    { label: 'نسخة فرنسية', price: 3500, desc: 'Lettres françaises' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
+
+  const wordBoxPacks = product.slug === 'word-box' ? [
+    { label: 'باقة اكتشاف', subtitle: '1 لوحة + لغة واحدة (عربية أو فرنسية)', price: 3500, originalPrice: 3500, icon: '📖', emoji: '🌟', saving: 0, desc: 'اكتشف الحروف' },
+    { label: 'باقة ثنائية', subtitle: '1 لوحة + اللغتين (عربية + فرنسية)', price: 4500, originalPrice: 7000, icon: '📚', emoji: '🔥', saving: 2500, desc: 'وفّر 2500 د.ج' },
+    { label: 'باقة ثلاثية', subtitle: '1 لوحة + 3 لغات (عربية + فرنسية + إنجليزية)', price: 4900, originalPrice: 10500, icon: '🏆', emoji: '💥', saving: 5600, desc: 'وفّر 5600 د.ج' },
+  ] : null;
+  const [pack, setPack] = useState(wordBoxPacks ? wordBoxPacks[0].label : null);
+  const prevPackRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -72,9 +77,11 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = variants ? variants.find(v => v.label === variant).price : product.price;
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
+  const selectedPack = wordBoxPacks?.find(p => p.label === pack);
+  const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
   const delivery = selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0;
   const subtotal = effectivePrice * qty;
@@ -85,7 +92,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const filteredCommunes = wilayaId ? communes.filter(c => c.wilayaId === Number(wilayaId)) : [];
 
-  // Celebration overlay — déclenché une fois quand le palier est atteint
+  // Celebration overlay — palier atteint ou pack Duo/Trio sélectionné
   useEffect(() => {
     if (product.tierEnabled && tierActive && !prevTierRef.current) {
       prevTierRef.current = true;
@@ -96,6 +103,25 @@ export default function ProductClient({ product, wilayas, communes}) {
       prevTierRef.current = false;
     }
   }, [tierActive, product.tierEnabled, savings, product.tierQty, product.tierPrice, product.price]);
+
+  // Wow effect when upgrading to Duo/Trio pack
+  useEffect(() => {
+    if (wordBoxPacks && pack !== prevPackRef.current && selectedPack?.saving > 0) {
+      prevPackRef.current = pack;
+      setCelebration({
+        savings: selectedPack.saving,
+        tierQty: 1,
+        tierPrice: selectedPack.price,
+        price: selectedPack.originalPrice,
+        title: selectedPack.emoji + ' ' + selectedPack.label,
+        subtitle: selectedPack.subtitle,
+      });
+      const timer = setTimeout(() => setCelebration(null), 4000);
+      return () => clearTimeout(timer);
+    } else if (wordBoxPacks) {
+      prevPackRef.current = pack;
+    }
+  }, [pack, wordBoxPacks, selectedPack?.saving, selectedPack?.label, selectedPack?.subtitle, selectedPack?.originalPrice, selectedPack?.price, selectedPack?.emoji]);
 
   const handleWilayaChange = (id) => {
     setWilayaId(id);
@@ -113,7 +139,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     setError('');
     try {
       const alwaysLabel = product.slug === 'word-box';
-      const variantLabel = variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '';
+      const variantLabel = wordBoxPacks ? ` (${pack})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,7 +148,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
-          variantPrice: variants ? basePrice : undefined,
+          variantPrice: (variants || wordBoxPacks) ? basePrice : undefined,
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
@@ -279,7 +305,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </select>
               </div>
 
-              {/* Variant selector */}
+              {/* Variant selector (non word-box) */}
               {variants && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار النوع</label>
@@ -303,6 +329,82 @@ export default function ProductClient({ product, wilayas, communes}) {
                         <div style={{ fontSize: 15, fontWeight: 800, marginTop: 4 }}>{v.price.toLocaleString()} د.ج</div>
                       </button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Word-box pack selector */}
+              {wordBoxPacks && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر باقتك</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {wordBoxPacks.map(p => {
+                      const active = pack === p.label;
+                      const wow = p.saving > 0;
+                      return (
+                        <button key={p.label} type="button" onClick={() => setPack(p.label)}
+                                style={{
+                                  display: 'flex', alignItems: 'center', gap: 14,
+                                  padding: '14px 16px', borderRadius: 14,
+                                  border: active ? '2px solid ' + c : '1.5px solid #d2d2d7',
+                                  background: active ? '#fff' : '#fff',
+                                  cursor: 'pointer', textAlign: 'right', transition: 'all .25s',
+                                  boxShadow: active ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
+                                  transform: active ? 'scale(1.02)' : 'scale(1)',
+                                  position: 'relative', overflow: 'hidden',
+                                }}>
+                          {wow && (
+                            <div style={{
+                              position: 'absolute', top: 0, left: 0, right: 0, height: 3,
+                              background: `linear-gradient(90deg, ${c}, #ffd700, ${c})`,
+                              backgroundSize: '200% 100%',
+                              animation: 'shimmerText 1.5s infinite',
+                            }} />
+                          )}
+                          <div style={{
+                            fontSize: 32, flexShrink: 0, width: 48, textAlign: 'center',
+                            animation: wow ? 'giftBounce 0.8s ease-out' : 'none',
+                          }}>{p.icon}</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{p.label}</span>
+                              {wow && (
+                                <span style={{
+                                  background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
+                                  color: '#fff', fontSize: 10, fontWeight: 900,
+                                  padding: '2px 8px', borderRadius: 10,
+                                  animation: 'pulse 1.5s infinite',
+                                }}>
+                                  {p.desc}
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ fontSize: 12, color: '#8e8e93', fontWeight: 600, marginTop: 2 }}>{p.subtitle}</div>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
+                              <span style={{
+                                fontSize: 18, fontWeight: 900,
+                                color: active ? c : '#1d1d1f',
+                                transition: 'color .2s',
+                              }}>
+                                {p.price.toLocaleString()} <span style={{ fontSize: 12 }}>د.ج</span>
+                              </span>
+                              {p.saving > 0 && (
+                                <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through' }}>
+                                  {p.originalPrice.toLocaleString()} د.ج
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {active && (
+                            <div style={{
+                              width: 24, height: 24, borderRadius: '50%', background: c,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              color: '#fff', fontSize: 13, fontWeight: 900, flexShrink: 0,
+                            }}>✓</div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -466,7 +568,8 @@ export default function ProductClient({ product, wilayas, communes}) {
 function CelebrationOverlay({ data, onClose }) {
   const canvasRef = useRef(null);
   const audioCtxRef = useRef(null);
-  const savingAmt = data.price - data.tierPrice;
+  const isPack = !!data.title;
+  const savingAmt = isPack ? data.savings : data.price - data.tierPrice;
 
   useEffect(() => {
     if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
@@ -653,11 +756,18 @@ function CelebrationOverlay({ data, onClose }) {
             WebkitTextFillColor: 'transparent',
             animation: 'wowShimmer 1.5s linear infinite',
           }}>
-            🎉 تم فتح العرض!
+            {isPack ? data.title : '🎉 تم فتح العرض!'}
           </div>
-          <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.9, marginTop: 4 }}>
-            {data.tierQty}+ بكمية
-          </div>
+          {!isPack && (
+            <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.9, marginTop: 4 }}>
+              {data.tierQty}+ بكمية
+            </div>
+          )}
+          {isPack && data.subtitle && (
+            <div style={{ fontSize: 15, fontWeight: 600, opacity: 0.8, marginTop: 4 }}>
+              {data.subtitle}
+            </div>
+          )}
         </div>
 
         {/* Price info */}
@@ -669,7 +779,7 @@ function CelebrationOverlay({ data, onClose }) {
             </span>
           </div>
           <div style={{ color: '#86efac', fontSize: 18, fontWeight: 700 }}>
-            وفر {savingAmt.toLocaleString()} د.ج لكل قطعة
+            وفر {savingAmt.toLocaleString()} د.ج
           </div>
           <div style={{ marginTop: 16 }}>
             <span style={{
