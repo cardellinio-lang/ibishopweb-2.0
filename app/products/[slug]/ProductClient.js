@@ -346,13 +346,15 @@ export default function ProductClient({ product, wilayas, communes}) {
                     {wordBoxPacks.map(p => {
                       const active = pack === p.label;
                       const showWow = wowAnim && p.saving > 0 && active;
+                      const packColors = { 'باقة اكتشاف': '#fefce8', 'باقة ثنائية': '#faf5ff', 'باقة ثلاثية': '#fce7f3' };
+                      const bg = packColors[p.label] || '#fff';
                       return (
                         <button key={p.label} type="button" onClick={() => setPack(p.label)}
                                 style={{
                                   display: 'flex', alignItems: 'center', gap: 14,
                                   padding: '14px 16px', borderRadius: 14,
                                   border: active ? '2px solid ' + c : '1.5px solid #d2d2d7',
-                                  background: active ? '#fff' : '#fff',
+                                  background: active ? bg : bg,
                                   cursor: 'pointer', textAlign: 'right', transition: 'all .25s',
                                   boxShadow: active ? '0 4px 20px rgba(0,0,0,0.1)' : 'none',
                                   transform: active ? 'scale(1.02)' : 'scale(1)',
