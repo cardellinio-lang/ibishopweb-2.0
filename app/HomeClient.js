@@ -33,7 +33,6 @@ const TAGS = {
   'cartes-masculin-feminin-couleurs': ['نطق', 'عربية', '3-5'],
   'cartes-association': ['نطق', 'عربية', '3-5'],
   'cartes-defi': ['نطق', 'عربية', '3-5'],
-  'imagier-ibi': ['نطق', 'عربية', '3-5'],
 };
 
 const FILTERS = [
