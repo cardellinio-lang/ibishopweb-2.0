@@ -63,6 +63,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const prevPackRef = useRef(null);
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
+  const [wowAnim, setWowAnim] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -110,6 +111,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   useEffect(() => {
     if (wordBoxPacks && pack !== prevPackRef.current && selectedPack?.saving > 0) {
       prevPackRef.current = pack;
+      setWowAnim(true);
       setCelebration({
         savings: selectedPack.saving,
         tierQty: 1,
@@ -118,10 +120,11 @@ export default function ProductClient({ product, wilayas, communes}) {
         title: selectedPack.emoji + ' ' + selectedPack.label,
         subtitle: selectedPack.subtitle,
       });
-      const timer = setTimeout(() => setCelebration(null), 4000);
+      const timer = setTimeout(() => { setCelebration(null); setWowAnim(false); }, 3000);
       return () => clearTimeout(timer);
     } else if (wordBoxPacks) {
       prevPackRef.current = pack;
+      setWowAnim(false);
     }
   }, [pack, wordBoxPacks, selectedPack?.saving, selectedPack?.label, selectedPack?.subtitle, selectedPack?.originalPrice, selectedPack?.price, selectedPack?.emoji]);
 
@@ -343,7 +346,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {wordBoxPacks.map(p => {
                       const active = pack === p.label;
-                      const wow = p.saving > 0;
+                      const showWow = wowAnim && p.saving > 0 && active;
                       return (
                         <button key={p.label} type="button" onClick={() => setPack(p.label)}
                                 style={{
@@ -356,27 +359,27 @@ export default function ProductClient({ product, wilayas, communes}) {
                                   transform: active ? 'scale(1.02)' : 'scale(1)',
                                   position: 'relative', overflow: 'hidden',
                                 }}>
-                          {wow && (
+                          {showWow && (
                             <div style={{
                               position: 'absolute', top: 0, left: 0, right: 0, height: 3,
                               background: `linear-gradient(90deg, ${c}, #ffd700, ${c})`,
                               backgroundSize: '200% 100%',
-                              animation: 'shimmerText 1.5s infinite',
+                              animation: 'shimmerText 1.5s linear',
                             }} />
                           )}
                           <div style={{
                             fontSize: 32, flexShrink: 0, width: 48, textAlign: 'center',
-                            animation: wow ? 'giftBounce 0.8s ease-out' : 'none',
+                            animation: showWow ? 'giftBounce 0.8s ease-out' : 'none',
                           }}>{p.icon}</div>
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{p.label}</span>
-                              {wow && (
+                              {showWow && (
                                 <span style={{
                                   background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
                                   color: '#fff', fontSize: 10, fontWeight: 900,
                                   padding: '2px 8px', borderRadius: 10,
-                                  animation: 'pulse 1.5s infinite',
+                                  animation: 'pulse 1.5s linear',
                                 }}>
                                   {p.desc}
                                 </span>
@@ -425,7 +428,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                                     fontSize: 14, fontWeight: 800, cursor: 'pointer',
                                     textAlign: 'center', transition: 'all .2s',
                                   }}>
-                            {lang === 'عربية' ? '🇩🇿 عربية' : lang === 'فرنسية' ? '🇫🇷 Français' : '🇬🇧 English'}
+                            {lang}
                           </button>
                         ))}
                       </div>
