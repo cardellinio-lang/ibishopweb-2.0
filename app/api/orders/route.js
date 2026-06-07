@@ -21,7 +21,25 @@ export async function POST(req) {
   // Backup log dans Vercel (visible dans les logs functions)
   console.log('[ORDER-BACKUP]', JSON.stringify({ ...data, _time: new Date().toISOString() }));
   const product = await prisma.product.findUnique({ where: { id: data.productId } });
-  if (!product || product.stock < data.qty) return Response.json({ error: 'Stock insuffisant' }, { status: 400 });
+  if (!product) return Response.json({ error: 'Stock insuffisant' }, { status: 400 });
+
+  // Vérification doublon : même téléphone + même produit aujourd'hui
+  const todayStart = new Date(new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Algiers' }) + 'T00:00:00+01:00');
+  const duplicate = await prisma.order.findFirst({
+    where: {
+      phone: data.phone,
+      createdAt: { gte: todayStart },
+      items: { some: { productId: data.productId } },
+    },
+  });
+  if (duplicate) {
+    return Response.json(
+      { error: 'لقد قمت بطلب نفس المنتج منذ لحظات سنتصل بك لتأكيد الطلبية' },
+      { status: 409 }
+    );
+  }
+
+  if (product.stock < data.qty) return Response.json({ error: 'Stock insuffisant' }, { status: 400 });
 
   const wilaya = await prisma.wilaya.findUnique({ where: { id: data.wilayaId } });
   if (!wilaya) return Response.json({ error: 'Wilaya invalide' }, { status: 400 });

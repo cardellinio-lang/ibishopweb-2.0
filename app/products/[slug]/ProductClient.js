@@ -31,6 +31,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
 
+  const DUPLICATE_MSG = 'لقد قمت بطلب نفس المنتج منذ لحظات سنتصل بك لتأكيد الطلبية';
+  const [duplicateBubble, setDuplicateBubble] = useState(false);
+
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -173,7 +176,13 @@ export default function ProductClient({ product, wilayas, communes}) {
       window.location.href = `/merci?${merciParams.toString()}`;
       return;
     } catch (e) {
-      setError(e.message || 'حدث خطأ أثناء الطلب');
+      if (e.message === DUPLICATE_MSG) {
+        setDuplicateBubble(true);
+        setTimeout(() => setDuplicateBubble(false), 5000);
+      } else {
+        setError(e.message || 'حدث خطأ أثناء الطلب');
+        submittedRef.current = false;
+      }
     }
     setLoading(false);
   };
@@ -487,6 +496,18 @@ export default function ProductClient({ product, wilayas, communes}) {
               </div>
 
               
+              {duplicateBubble && (
+                <div style={{
+                  background: '#fff3cd', border: '1.5px solid #ffc107', borderRadius: 16,
+                  padding: '16px 20px', marginBottom: 16, textAlign: 'center',
+                  animation: 'fadeInUp 0.3s ease-out', boxShadow: '0 4px 20px rgba(255,193,7,0.25)',
+                }}>
+                  <div style={{ fontSize: 28, marginBottom: 6 }}>⚠️</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: '#856404', lineHeight: 1.6 }}>
+                    {DUPLICATE_MSG}
+                  </div>
+                </div>
+              )}
               {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginBottom: 16 }}>{error}</div>}
 
               {/* Submit button */}
