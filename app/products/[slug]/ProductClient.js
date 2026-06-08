@@ -32,7 +32,6 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [celebration, setCelebration] = useState(null);
 
   const [blocked, setBlocked] = useState(false);
-  const [blockedProduct, setBlockedProduct] = useState(null);
 
   const [reviews, setReviews] = useState([]);
 
@@ -108,12 +107,10 @@ export default function ProductClient({ product, wilayas, communes}) {
         .then(r => r.json())
         .then(data => {
           setBlocked(data.blocked);
-          if (data.blocked) setBlockedProduct(product.name);
         })
         .catch(() => {});
     } else {
       setBlocked(false);
-      setBlockedProduct(null);
     }
   }, [phone, product.id, product.name]);
 
@@ -294,13 +291,12 @@ export default function ProductClient({ product, wilayas, communes}) {
 
             {blocked ? (
               <div style={{ padding: '40px 20px', textAlign: 'center' }}>
-                <div style={{ fontSize: 48, marginBottom: 16 }}>🚫</div>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
                 <div style={{ fontSize: 18, fontWeight: 900, color: '#dc2626', marginBottom: 8, lineHeight: 1.6 }}>
-                  تم حظر هذا الرقم لطلب "{blockedProduct}"
+                  عذراً، هذه الصفحة غير متاحة حالياً
                 </div>
                 <div style={{ fontSize: 14, color: '#6e6e73', lineHeight: 1.6 }}>
-                  لقد تم تسجيل 5 طلبات أو أكثر بهذا الرقم لنفس المنتج.<br />
-                  إذا كنت بحاجة للمساعدة، يرجى الاتصال بنا على الرقم التالي.
+                  يرجى تحديث الصفحة أو المحاولة لاحقاً.
                 </div>
               </div>
             ) : (

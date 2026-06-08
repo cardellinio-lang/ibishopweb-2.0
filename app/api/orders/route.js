@@ -32,7 +32,7 @@ export async function POST(req) {
   });
   if (abuseCount >= 5) {
     return Response.json(
-      { error: 'لقد تم حظر هذا الرقم بسبب تكرار الطلبات غير المؤكدة' },
+      { error: 'عذراً، حدث خطأ غير متوقع. يرجى تحديث الصفحة والمحاولة مرة أخرى' },
       { status: 409 }
     );
   }
