@@ -31,9 +31,21 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
   const [showLeavePopup, setShowLeavePopup] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
   const leaveAppliedRef = useRef(false);
   const lastScrollY = useRef(0);
   const pageEnterRef = useRef(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCount(prev => {
+        const delta = Math.random() < 0.5 ? 1 : -1;
+        return Math.max(12, Math.min(22, prev + delta));
+      });
+    }, 4000 + Math.random() * 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const [reviews, setReviews] = useState([]);
 
