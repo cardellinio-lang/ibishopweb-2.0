@@ -39,6 +39,20 @@ export default function ProductClient({ product, wilayas, communes}) {
   const lastScrollY = useRef(0);
   const pageEnterRef = useRef(Date.now());
 
+  // Synchronous DOM injection — guarantees popup appears even if page closes immediately
+  function injectLeavePopup() {
+    if (typeof document === 'undefined' || document.getElementById('__leave_popup_sync__')) return;
+    const el = document.createElement('div');
+    el.id = '__leave_popup_sync__';
+    el.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center';
+    el.innerHTML = '<div style="background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;border-radius:24px;padding:40px 36px;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(220,38,38,0.4)"><div style="font-size:48px;margin-bottom:8px">🎉</div><div style="font-size:22px;font-weight:900;margin-bottom:12px">عرض خاص جداً لك!</div><div style="font-size:56px;font-weight:900;background:linear-gradient(90deg,#ffd700,#fff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px">-10%</div><div style="font-size:16px;font-weight:700;opacity:0.9;margin-bottom:8px">خصم 10% على طلبك إذا طلبت الآن</div><div style="font-size:14px;opacity:0.7">السعر مخفض تلقائياً ✅</div></div>';
+    document.body.appendChild(el);
+  }
+  function removeLeavePopup() {
+    const el = document.getElementById('__leave_popup_sync__');
+    if (el) el.remove();
+  }
+
   // Restore discount from sessionStorage (FB in-app browser case)
   useEffect(() => {
     try {
@@ -50,14 +64,18 @@ export default function ProductClient({ product, wilayas, communes}) {
     } catch (e) {}
   }, []);
 
-  // Hide popup on bfcache restore
+  // Hide popup on bfcache restore + cleanup sync DOM popup
   useEffect(() => {
     const handlePageShow = (e) => {
       if (e.persisted) setShowLeavePopup(false);
+      removeLeavePopup();
     };
     window.addEventListener('pageshow', handlePageShow);
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
+
+  // Remove sync DOM popup once React popup renders
+  useEffect(() => { if (showLeavePopup) removeLeavePopup(); }, [showLeavePopup]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,11 +121,14 @@ export default function ProductClient({ product, wilayas, communes}) {
     const handleVisibility = () => {
       if (document.hidden && !offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
+        injectLeavePopup(); // synchronous — visible even if page closes
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
         try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+      } else if (!document.hidden) {
+        removeLeavePopup(); // cleanup sync popup on return
       }
     };
     document.addEventListener('visibilitychange', handleVisibility);
@@ -148,6 +169,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const handleBeforeUnload = (e) => {
       if (!offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
+        injectLeavePopup(); // synchronous — visible even if tab closes
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
