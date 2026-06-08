@@ -44,6 +44,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     try {
       if (sessionStorage.getItem('offerDiscount') === 'true') {
         setOfferDiscountActive(true);
+        setShowLeavePopup(true);
         sessionStorage.removeItem('offerDiscount');
       }
     } catch (e) {}
@@ -100,7 +101,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   useEffect(() => {
     if (blocked) return;
     const handleVisibility = () => {
-      if (document.hidden && !offerTriggeredRef.current && Date.now() - pageEnterRef.current > 4000) {
+      if (document.hidden && !offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
