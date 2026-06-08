@@ -30,19 +30,10 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [error, setError] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
-
-  const [blocked, setBlocked] = useState(false);
-  const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveCount(prev => {
-        const delta = Math.random() < 0.5 ? 1 : -1;
-        return Math.max(12, Math.min(22, prev + delta));
-      });
-    }, 4000 + Math.random() * 3000);
-    return () => clearInterval(interval);
-  }, []);
+  const [showLeavePopup, setShowLeavePopup] = useState(false);
+  const leaveAppliedRef = useRef(false);
+  const lastScrollY = useRef(0);
+  const pageEnterRef = useRef(Date.now());
 
   const [reviews, setReviews] = useState([]);
 
@@ -52,6 +43,55 @@ export default function ProductClient({ product, wilayas, communes}) {
       .then(data => setReviews(data))
       .catch(() => {});
   }, [product.id]);
+
+  // Leave offer detection — restore from session
+  useEffect(() => {
+    if (sessionStorage.getItem('leaveOffer') === 'true') {
+      leaveAppliedRef.current = true;
+    }
+  }, []);
+
+  // Visibilitychange trigger — user leaves app (back button, Facebook, etc.)
+  useEffect(() => {
+    if (blocked) return;
+    const handleVisibility = () => {
+      if (document.hidden && !leaveAppliedRef.current && Date.now() - pageEnterRef.current > 4000) {
+        leaveAppliedRef.current = true;
+        sessionStorage.setItem('leaveOffer', 'true');
+        setShowLeavePopup(true);
+        setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [blocked]);
+
+  // Scroll-to-top trigger — user scrolling up trying to close
+  useEffect(() => {
+    if (blocked) return;
+    let scrollTimer;
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY < 80 && currentY < lastScrollY.current - 8 && !leaveAppliedRef.current && Date.now() - pageEnterRef.current > 4000) {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          if (!leaveAppliedRef.current && window.scrollY < 80) {
+            leaveAppliedRef.current = true;
+            sessionStorage.setItem('leaveOffer', 'true');
+            setShowLeavePopup(true);
+            setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+          }
+        }, 400);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, [blocked]);
+
   const formRef = useRef(null);
   const prevTierRef = useRef(false);
   const audioCtxRef = useRef(null);
@@ -95,11 +135,13 @@ export default function ProductClient({ product, wilayas, communes}) {
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
+  const leaveOfferActive = leaveAppliedRef.current && !tierActive;
+  const finalPrice = leaveOfferActive ? Math.round(effectivePrice * 0.9) : effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
   const delivery = selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0;
-  const subtotal = effectivePrice * qty;
+  const subtotal = finalPrice * qty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
   const savings = product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0;
@@ -176,6 +218,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       const alwaysLabel = product.slug === 'word-box';
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
       const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
+      const leaveNote = leaveOfferActive ? ' (عرض -10%)' : '';
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -183,8 +226,8 @@ export default function ProductClient({ product, wilayas, communes}) {
           productId: product.id, qty, customer, phone,
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
-          variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
-          variantPrice: (variants || wordBoxPacks) ? basePrice : undefined,
+          variantName: variantLabel ? `${product.name} ${variantLabel}${leaveNote}`.trim() : undefined,
+          variantPrice: (variants || wordBoxPacks) ? finalPrice : undefined,
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
@@ -296,18 +339,22 @@ export default function ProductClient({ product, wilayas, communes}) {
             <div style={{ textAlign: 'center', position: 'relative' }}>
               <h1 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, color: '#1d1d1f' }}>{product.name}</h1>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                {product.oldPrice && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
+                {product.oldPrice && !leaveOfferActive && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
                 <span style={{
-                  fontSize: 28, fontWeight: 800, color: tierActive ? '#16a34a' : c,
+                  fontSize: 28, fontWeight: 800, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c),
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
-                  {effectivePrice.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span>
+                  {finalPrice.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span>
                 </span>
+                {leaveOfferActive && (
+                  <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{effectivePrice.toLocaleString()} د.ج</span>
+                )}
                 {tierActive && product.price !== effectivePrice && (
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString()}</span>
                 )}
               </div>
-              {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: c, color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
+              {leaveOfferActive && <span style={{ display: 'inline-block', background: '#dc2626', color: '#fff', fontSize: 13, padding: '4px 14px', borderRadius: 20, fontWeight: 900, marginTop: 8, animation: 'pulse 1.5s ease-in-out infinite' }}>🔥 -10% عرض خاص لك!</span>}
+              {!leaveOfferActive && discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: c, color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
               {tierActive && savings > 0 && (
                 <span style={{ display: 'inline-block', background: '#16a34a', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
                   ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
@@ -517,7 +564,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>
                     +
                   </button>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#16a34a' : c }}>× {effectivePrice.toLocaleString()} د.ج</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c) }}>× {finalPrice.toLocaleString()} د.ج</div>
                 </div>
               </div>
 
@@ -566,8 +613,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>سعر المنتج</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: tierActive ? '#16a34a' : '#6e6e73' }}>
-                      {effectivePrice.toLocaleString()} د.ج
+                    <span style={{ fontSize: 14, fontWeight: 700, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : '#6e6e73') }}>
+                      {finalPrice.toLocaleString()} د.ج
+                      {leaveOfferActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{effectivePrice.toLocaleString()}</span>}
                       {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString()}</span>}
                     </span>
                   </div>
@@ -651,6 +699,82 @@ export default function ProductClient({ product, wilayas, communes}) {
                   style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer' }}>
             اطلب الآن
           </button>
+        </div>
+      )}
+
+      {/* Leave offer popup */}
+      {showLeavePopup && (
+        <div onClick={() => setShowLeavePopup(false)} style={{
+          position: 'fixed', inset: 0, zIndex: 9999,
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+        }}>
+          <style>{`
+            @keyframes leavePop {
+              0% { transform: scale(0) rotate(-8deg); opacity: 0; }
+              60% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+              80% { transform: scale(0.96) rotate(-1deg); }
+              100% { transform: scale(1) rotate(0); opacity: 1; }
+            }
+            @keyframes leaveFloat {
+              0% { opacity: 0; transform: translateY(20px); }
+              100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes leavePulse {
+              0%,100% { transform: scale(1); box-shadow: 0 8px 40px rgba(220,38,38,0.3); }
+              50% { transform: scale(1.05); box-shadow: 0 8px 60px rgba(220,38,38,0.5); }
+            }
+          `}</style>
+          <div onClick={e => e.stopPropagation()} style={{
+            textAlign: 'center', animation: 'leavePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+          }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #dc2626, #ea580c)',
+              color: '#fff', borderRadius: 24, padding: '40px 36px',
+              boxShadow: '0 20px 60px rgba(220,38,38,0.4)',
+              position: 'relative', maxWidth: 360,
+            }}>
+              <button onClick={() => setShowLeavePopup(false)} style={{
+                position: 'absolute', top: 12, left: 12, width: 32, height: 32,
+                borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)',
+                color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>✕</button>
+              <div style={{ fontSize: 48, marginBottom: 8 }}>🎉</div>
+              <div style={{
+                fontSize: 22, fontWeight: 900, lineHeight: 1.4, marginBottom: 12,
+              }}>
+                عرض خاص جداً لك!
+              </div>
+              <div style={{
+                fontSize: 56, fontWeight: 900, lineHeight: 1,
+                background: 'linear-gradient(90deg, #ffd700, #fff, #ffd700)',
+                backgroundSize: '200% auto',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: 8,
+                animation: 'wowShimmer 1.5s linear infinite',
+              }}>
+                -10%
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, opacity: 0.9, marginBottom: 20, lineHeight: 1.5 }}>
+                خصم 10% على طلبك إذا طلبت الآن<br />
+                السعر مخفض تلقائياً ✅
+              </div>
+              <button onClick={() => {
+                setShowLeavePopup(false);
+                setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+              }} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: '#fff', color: '#dc2626', fontSize: 18, fontWeight: 900,
+                padding: '16px 32px', borderRadius: 14, border: 'none',
+                cursor: 'pointer', animation: 'leavePulse 2s ease-in-out infinite',
+              }}>
+                🔥 اشتري الآن
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
