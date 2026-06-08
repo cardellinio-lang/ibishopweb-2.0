@@ -56,7 +56,23 @@ export default function ProductClient({ product, wilayas, communes}) {
       .catch(() => {});
   }, [product.id]);
 
-  // Visibilitychange trigger — user leaves app (back button, Facebook, etc.)
+  // Back button interception — push extra state so popstate fires BEFORE leaving
+  useEffect(() => {
+    if (blocked) return;
+    window.history.pushState(null, null, window.location.href);
+    const handlePopState = () => {
+      if (!offerTriggeredRef.current) {
+        offerTriggeredRef.current = true;
+        setLeaveOfferActive(true);
+        window.history.pushState(null, null, window.location.href);
+        setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [blocked]);
+
+  // Visibilitychange — FB in-app X, app switch, home button
   useEffect(() => {
     if (blocked) return;
     const handleVisibility = () => {
@@ -93,6 +109,21 @@ export default function ProductClient({ product, wilayas, communes}) {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimer);
     };
+  }, [blocked]);
+
+  // beforeunload — close tab / X button (backup)
+  useEffect(() => {
+    if (blocked) return;
+    const handleBeforeUnload = (e) => {
+      if (!offerTriggeredRef.current) {
+        offerTriggeredRef.current = true;
+        setLeaveOfferActive(true);
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [blocked]);
 
   const formRef = useRef(null);
