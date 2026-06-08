@@ -32,6 +32,17 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [celebration, setCelebration] = useState(null);
 
   const [blocked, setBlocked] = useState(false);
+  const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCount(prev => {
+        const delta = Math.random() < 0.5 ? 1 : -1;
+        return Math.max(12, Math.min(22, prev + delta));
+      });
+    }, 4000 + Math.random() * 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const [reviews, setReviews] = useState([]);
 
@@ -229,12 +240,26 @@ export default function ProductClient({ product, wilayas, communes}) {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
+        @keyframes blinkPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.85); }
+        }
       `}} />
       {/* COD Banner */}
         <div style={{ background: c, color: '#fff', borderRadius: 0, padding: '14px 20px', textAlign: 'center', fontWeight: 900, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 16 }}>
           <span style={{ fontSize: 26 }}>🚚</span>
           الدفع عند الاستلام
         </div>
+
+      {/* Social proof : blinking green dot */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
+        <span style={{
+          width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block',
+          animation: 'blinkPulse 1.5s ease-in-out infinite',
+          boxShadow: '0 0 8px rgba(34,197,94,0.6)',
+        }} />
+        <span style={{ fontSize: 15, fontWeight: 800, color: '#16a34a' }}>{liveCount} شخص يشترون الآن</span>
+      </div>
 
       <div className="lg-flex-row" style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
         {/* Left column - Image */}
@@ -287,6 +312,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </span>
               )}
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }}>{product.description}</p>}
+            </div>
+
+            {/* Urgence */}
+            <div style={{ background: '#fff3cd', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid #ffc107' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#92400e', lineHeight: 1.6 }}>
+                هذا المنتج ينفذ بسرعة لذا اطلبوا نسختكم اليوم ليتم تأكيدها
+              </div>
             </div>
 
             {blocked ? (
