@@ -30,10 +30,10 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [error, setError] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
-  const [showLeavePopup, setShowLeavePopup] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
-  const leaveAppliedRef = useRef(false);
+  const [leaveOfferActive, setLeaveOfferActive] = useState(false);
+  const offerTriggeredRef = useRef(false);
   const lastScrollY = useRef(0);
   const pageEnterRef = useRef(Date.now());
 
@@ -56,21 +56,13 @@ export default function ProductClient({ product, wilayas, communes}) {
       .catch(() => {});
   }, [product.id]);
 
-  // Leave offer detection — restore discount silently (popup was shown when they left)
-  useEffect(() => {
-    if (sessionStorage.getItem('leaveOffer') === 'true') {
-      leaveAppliedRef.current = true;
-    }
-  }, []);
-
   // Visibilitychange trigger — user leaves app (back button, Facebook, etc.)
   useEffect(() => {
     if (blocked) return;
     const handleVisibility = () => {
-      if (document.hidden && !leaveAppliedRef.current && Date.now() - pageEnterRef.current > 4000) {
-        leaveAppliedRef.current = true;
-        sessionStorage.setItem('leaveOffer', 'true');
-        setShowLeavePopup(true);
+      if (document.hidden && !offerTriggeredRef.current && Date.now() - pageEnterRef.current > 4000) {
+        offerTriggeredRef.current = true;
+        setLeaveOfferActive(true);
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       }
     };
@@ -84,13 +76,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     let scrollTimer;
     const handleScroll = () => {
       const currentY = window.scrollY;
-      if (currentY < 80 && currentY < lastScrollY.current - 8 && !leaveAppliedRef.current && Date.now() - pageEnterRef.current > 4000) {
+      if (currentY < 80 && currentY < lastScrollY.current - 8 && !offerTriggeredRef.current && Date.now() - pageEnterRef.current > 4000) {
         clearTimeout(scrollTimer);
         scrollTimer = setTimeout(() => {
-          if (!leaveAppliedRef.current && window.scrollY < 80) {
-            leaveAppliedRef.current = true;
-            sessionStorage.setItem('leaveOffer', 'true');
-            setShowLeavePopup(true);
+          if (!offerTriggeredRef.current && window.scrollY < 80) {
+            offerTriggeredRef.current = true;
+            setLeaveOfferActive(true);
             setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
           }
         }, 400);
@@ -147,8 +138,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
-  const leaveOfferActive = leaveAppliedRef.current && !tierActive;
-  const finalPrice = leaveOfferActive ? Math.round(effectivePrice * 0.9) : effectivePrice;
+  const isLeaveOfferActive = leaveOfferActive && !tierActive;
+  const finalPrice = isLeaveOfferActive ? Math.round(effectivePrice * 0.9) : effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
@@ -230,7 +221,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       const alwaysLabel = product.slug === 'word-box';
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
       const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
-      const leaveNote = leaveOfferActive ? ' (عرض -10%)' : '';
+      const leaveNote = isLeaveOfferActive ? ' (عرض -10%)' : '';
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -351,22 +342,22 @@ export default function ProductClient({ product, wilayas, communes}) {
             <div style={{ textAlign: 'center', position: 'relative' }}>
               <h1 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, color: '#1d1d1f' }}>{product.name}</h1>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                {product.oldPrice && !leaveOfferActive && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
+                {product.oldPrice && !isLeaveOfferActive && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
                 <span style={{
-                  fontSize: 28, fontWeight: 800, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c),
+                  fontSize: 28, fontWeight: 800, color: isLeaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c),
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
                   {finalPrice.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span>
                 </span>
-                {leaveOfferActive && (
+                {isLeaveOfferActive && (
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{effectivePrice.toLocaleString()} د.ج</span>
                 )}
                 {tierActive && product.price !== effectivePrice && (
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString()}</span>
                 )}
               </div>
-              {leaveOfferActive && <span style={{ display: 'inline-block', background: '#dc2626', color: '#fff', fontSize: 13, padding: '4px 14px', borderRadius: 20, fontWeight: 900, marginTop: 8, animation: 'pulse 1.5s ease-in-out infinite' }}>🔥 -10% عرض خاص لك!</span>}
-              {!leaveOfferActive && discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: c, color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
+              {isLeaveOfferActive && <span style={{ display: 'inline-block', background: '#dc2626', color: '#fff', fontSize: 13, padding: '4px 14px', borderRadius: 20, fontWeight: 900, marginTop: 8, animation: 'pulse 1.5s ease-in-out infinite' }}>🔥 -10% عرض خاص لك!</span>}
+              {!isLeaveOfferActive && discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: c, color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
               {tierActive && savings > 0 && (
                 <span style={{ display: 'inline-block', background: '#16a34a', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
                   ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
@@ -576,7 +567,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>
                     +
                   </button>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c) }}>× {finalPrice.toLocaleString()} د.ج</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: isLeaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : c) }}>× {finalPrice.toLocaleString()} د.ج</div>
                 </div>
               </div>
 
@@ -625,9 +616,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>سعر المنتج</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: leaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : '#6e6e73') }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: isLeaveOfferActive ? '#dc2626' : (tierActive ? '#16a34a' : '#6e6e73') }}>
                       {finalPrice.toLocaleString()} د.ج
-                      {leaveOfferActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{effectivePrice.toLocaleString()}</span>}
+                      {isLeaveOfferActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{effectivePrice.toLocaleString()}</span>}
                       {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString()}</span>}
                     </span>
                   </div>
@@ -715,8 +706,8 @@ export default function ProductClient({ product, wilayas, communes}) {
       )}
 
       {/* Leave offer popup */}
-      {showLeavePopup && (
-        <div onClick={() => setShowLeavePopup(false)} style={{
+      {leaveOfferActive && (
+        <div onClick={() => setLeaveOfferActive(false)} style={{
           position: 'fixed', inset: 0, zIndex: 9999,
           background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -747,7 +738,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               boxShadow: '0 20px 60px rgba(220,38,38,0.4)',
               position: 'relative', maxWidth: 360,
             }}>
-              <button onClick={() => setShowLeavePopup(false)} style={{
+              <button onClick={() => setLeaveOfferActive(false)} style={{
                 position: 'absolute', top: 12, left: 12, width: 32, height: 32,
                 borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)',
                 color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer',
@@ -775,7 +766,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 السعر مخفض تلقائياً ✅
               </div>
               <button onClick={() => {
-                setShowLeavePopup(false);
+                setLeaveOfferActive(false);
                 setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
               }} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
