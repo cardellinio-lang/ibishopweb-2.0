@@ -34,6 +34,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
   const [leaveOfferActive, setLeaveOfferActive] = useState(false);
   const offerTriggeredRef = useRef(false);
+  const popupMinTimeRef = useRef(0);
   const lastScrollY = useRef(0);
   const pageEnterRef = useRef(Date.now());
 
@@ -63,6 +64,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const handlePopState = () => {
       if (!offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
+        popupMinTimeRef.current = Date.now() + 2000;
         setLeaveOfferActive(true);
         window.history.pushState(null, null, window.location.href);
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
@@ -78,6 +80,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const handleVisibility = () => {
       if (document.hidden && !offerTriggeredRef.current && Date.now() - pageEnterRef.current > 4000) {
         offerTriggeredRef.current = true;
+        popupMinTimeRef.current = Date.now() + 2000;
         setLeaveOfferActive(true);
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       }
@@ -97,6 +100,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         scrollTimer = setTimeout(() => {
           if (!offerTriggeredRef.current && window.scrollY < 80) {
             offerTriggeredRef.current = true;
+            popupMinTimeRef.current = Date.now() + 2000;
             setLeaveOfferActive(true);
             setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
           }
@@ -117,6 +121,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const handleBeforeUnload = (e) => {
       if (!offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
+        popupMinTimeRef.current = Date.now() + 2000;
         setLeaveOfferActive(true);
         e.preventDefault();
         e.returnValue = '';
@@ -738,7 +743,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
       {/* Leave offer popup */}
       {leaveOfferActive && (
-        <div onClick={() => setLeaveOfferActive(false)} style={{
+        <div onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setLeaveOfferActive(false); }} style={{
           position: 'fixed', inset: 0, zIndex: 9999,
           background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -769,7 +774,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               boxShadow: '0 20px 60px rgba(220,38,38,0.4)',
               position: 'relative', maxWidth: 360,
             }}>
-              <button onClick={() => setLeaveOfferActive(false)} style={{
+              <button onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setLeaveOfferActive(false); }} style={{
                 position: 'absolute', top: 12, left: 12, width: 32, height: 32,
                 borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)',
                 color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer',
@@ -797,6 +802,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 السعر مخفض تلقائياً ✅
               </div>
               <button onClick={() => {
+                if (Date.now() < popupMinTimeRef.current) return;
                 setLeaveOfferActive(false);
                 setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
               }} style={{
