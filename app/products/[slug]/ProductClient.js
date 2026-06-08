@@ -53,13 +53,13 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (el) el.remove();
   }
 
-  // Restore discount from sessionStorage (FB in-app browser case)
+  // Restore discount from localStorage (FB in-app browser case)
   useEffect(() => {
     try {
-      if (sessionStorage.getItem('offerDiscount') === 'true') {
+      if (localStorage.getItem('offerDiscount') === 'true') {
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
-        sessionStorage.removeItem('offerDiscount');
+        localStorage.removeItem('offerDiscount');
       }
     } catch (e) {}
   }, []);
@@ -106,7 +106,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
-        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
+        try { localStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         window.history.pushState(null, null, window.location.href);
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       }
@@ -125,7 +125,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
-        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
+        try { localStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       } else if (!document.hidden) {
         removeLeavePopup(); // cleanup sync popup on return
@@ -149,7 +149,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             popupMinTimeRef.current = Date.now() + 2000;
             setOfferDiscountActive(true);
             setShowLeavePopup(true);
-            try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
+            try { localStorage.setItem('offerDiscount', 'true'); } catch (e) {}
             setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
           }
         }, 400);
@@ -173,7 +173,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         popupMinTimeRef.current = Date.now() + 2000;
         setOfferDiscountActive(true);
         setShowLeavePopup(true);
-        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
+        try { localStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         e.preventDefault();
         e.returnValue = '';
       }
