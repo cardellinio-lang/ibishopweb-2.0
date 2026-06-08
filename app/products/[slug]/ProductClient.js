@@ -32,11 +32,31 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [celebration, setCelebration] = useState(null);
   const [blocked, setBlocked] = useState(false);
   const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
-  const [leaveOfferActive, setLeaveOfferActive] = useState(false);
+  const [offerDiscountActive, setOfferDiscountActive] = useState(false);
+  const [showLeavePopup, setShowLeavePopup] = useState(false);
   const offerTriggeredRef = useRef(false);
   const popupMinTimeRef = useRef(0);
   const lastScrollY = useRef(0);
   const pageEnterRef = useRef(Date.now());
+
+  // Restore discount from sessionStorage (FB in-app browser case)
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('offerDiscount') === 'true') {
+        setOfferDiscountActive(true);
+        sessionStorage.removeItem('offerDiscount');
+      }
+    } catch (e) {}
+  }, []);
+
+  // Hide popup on bfcache restore
+  useEffect(() => {
+    const handlePageShow = (e) => {
+      if (e.persisted) setShowLeavePopup(false);
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,7 +85,9 @@ export default function ProductClient({ product, wilayas, communes}) {
       if (!offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
         popupMinTimeRef.current = Date.now() + 2000;
-        setLeaveOfferActive(true);
+        setOfferDiscountActive(true);
+        setShowLeavePopup(true);
+        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         window.history.pushState(null, null, window.location.href);
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       }
@@ -81,7 +103,9 @@ export default function ProductClient({ product, wilayas, communes}) {
       if (document.hidden && !offerTriggeredRef.current && Date.now() - pageEnterRef.current > 4000) {
         offerTriggeredRef.current = true;
         popupMinTimeRef.current = Date.now() + 2000;
-        setLeaveOfferActive(true);
+        setOfferDiscountActive(true);
+        setShowLeavePopup(true);
+        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
       }
     };
@@ -101,7 +125,9 @@ export default function ProductClient({ product, wilayas, communes}) {
           if (!offerTriggeredRef.current && window.scrollY < 80) {
             offerTriggeredRef.current = true;
             popupMinTimeRef.current = Date.now() + 2000;
-            setLeaveOfferActive(true);
+            setOfferDiscountActive(true);
+            setShowLeavePopup(true);
+            try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
             setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
           }
         }, 400);
@@ -122,7 +148,9 @@ export default function ProductClient({ product, wilayas, communes}) {
       if (!offerTriggeredRef.current) {
         offerTriggeredRef.current = true;
         popupMinTimeRef.current = Date.now() + 2000;
-        setLeaveOfferActive(true);
+        setOfferDiscountActive(true);
+        setShowLeavePopup(true);
+        try { sessionStorage.setItem('offerDiscount', 'true'); } catch (e) {}
         e.preventDefault();
         e.returnValue = '';
       }
@@ -174,7 +202,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
-  const isLeaveOfferActive = leaveOfferActive && !tierActive;
+  const isLeaveOfferActive = (offerDiscountActive || showLeavePopup) && !tierActive;
   const finalPrice = isLeaveOfferActive ? Math.round(effectivePrice * 0.9) : effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
@@ -742,8 +770,8 @@ export default function ProductClient({ product, wilayas, communes}) {
       )}
 
       {/* Leave offer popup */}
-      {leaveOfferActive && (
-        <div onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setLeaveOfferActive(false); }} style={{
+      {showLeavePopup && (
+        <div onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setShowLeavePopup(false); setOfferDiscountActive(false); }} style={{
           position: 'fixed', inset: 0, zIndex: 9999,
           background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -774,7 +802,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               boxShadow: '0 20px 60px rgba(220,38,38,0.4)',
               position: 'relative', maxWidth: 360,
             }}>
-              <button onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setLeaveOfferActive(false); }} style={{
+              <button onClick={() => { if (Date.now() < popupMinTimeRef.current) return; setShowLeavePopup(false); setOfferDiscountActive(false); }} style={{
                 position: 'absolute', top: 12, left: 12, width: 32, height: 32,
                 borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)',
                 color: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer',
@@ -803,7 +831,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               </div>
               <button onClick={() => {
                 if (Date.now() < popupMinTimeRef.current) return;
-                setLeaveOfferActive(false);
+                setShowLeavePopup(false);
                 setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
               }} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
