@@ -1,44 +1,29 @@
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/admin-auth';
-
-const ECOTRACK_BASE = process.env.ECOTRACK_API_URL || 'https://packers.ecotrack.dz';
-
-function getToken() {
-  const t = process.env.ECOTRACK_API_TOKEN;
-  if (!t) throw new Error('ECOTRACK_API_TOKEN non configuré');
-  return t;
-}
+import ShippingDz, { ShippingProvider } from 'shippingdz';
 
 export async function POST(req) {
   const auth = requireAdmin(req);
   if (auth) return auth;
 
   try {
-    const token = getToken();
+    const token = process.env.ECOTRACK_API_TOKEN;
+    if (!token) throw new Error('ECOTRACK_API_TOKEN non configuré');
 
-    const res = await fetch(`${ECOTRACK_BASE}/api/v1/tarifs`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const provider = ShippingDz.provider(ShippingProvider.PACKERS, { token });
+    const rates = await provider.getRates();
 
-    if (!res.ok) {
-      const body = await res.text();
-      return Response.json({ ok: false, error: `Packers API HTTP ${res.status}: ${body}` }, { status: 200 });
-    }
-
-    const data = await res.json();
-    const rows = data?.tarifs ?? data?.data ?? data;
-
-    if (!Array.isArray(rows)) {
-      return Response.json({ ok: false, error: 'Format inattendu', raw: data }, { status: 200 });
+    if (!Array.isArray(rates)) {
+      return Response.json({ ok: false, error: 'Format rates inattendu', raw: rates }, { status: 200 });
     }
 
     let updated = 0;
     let skipped = 0;
 
-    for (const item of rows) {
-      const wilayaId = item.wilaya_id ?? item.id;
-      const homePrice = item.home_price ?? item.price;
-      const officePrice = item.stopdesk_price ?? item.office_price;
+    for (const rate of rates) {
+      const wilayaId = rate.toWilayaId ?? rate.wilaya_id ?? rate.id;
+      const homePrice = rate.homeDeliveryPrice ?? rate.home_price ?? rate.price;
+      const officePrice = rate.stopDeskPrice ?? rate.stopdesk_price ?? rate.office_price;
 
       if (!wilayaId || homePrice == null) {
         skipped++;
