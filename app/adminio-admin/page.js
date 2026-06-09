@@ -37,6 +37,8 @@ export default function Admin() {
   const [ecotrackTestStatus, setEcotrackTestStatus] = useState(null);
   const [ecotrackTestLoading, setEcotrackTestLoading] = useState(false);
   const [ecotrackLabelLoading, setEcotrackLabelLoading] = useState({});
+  const [syncPricesLoading, setSyncPricesLoading] = useState(false);
+  const [syncPricesResult, setSyncPricesResult] = useState(null);
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
@@ -859,7 +861,36 @@ export default function Admin() {
         <div className="card" style={{ overflowX: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <h3 style={{ margin: 0 }}>🚚 Tarifs de livraison par wilaya</h3>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button className="btn btn-primary" disabled={syncPricesLoading}
+                      onClick={async () => {
+                        setSyncPricesLoading(true);
+                        setSyncPricesResult(null);
+                        try {
+                          const r = await fetch('/api/wilayas/sync-prices', { method: 'POST', headers: authHeaders() });
+                          const d = await r.json();
+                          setSyncPricesResult(d);
+                          if (d.ok && d.wilayas) setWilayas(d.wilayas);
+                        } catch (e) {
+                          setSyncPricesResult({ ok: false, error: e.message });
+                        }
+                        setSyncPricesLoading(false);
+                      }}>
+                {syncPricesLoading ? '⏳ Synchronisation...' : '🔄 Sync Packers'}
+              </button>
+            </div>
           </div>
+          {syncPricesResult && (
+            <div style={{
+              padding: '10px 14px', borderRadius: 10, marginBottom: 12, fontSize: 13, fontWeight: 600,
+              background: syncPricesResult.ok ? '#f0fdf4' : '#fef2f2',
+              color: syncPricesResult.ok ? '#16a34a' : '#dc2626',
+            }}>
+              {syncPricesResult.ok
+                ? `✅ ${syncPricesResult.updated} wilayas mises à jour, ${syncPricesResult.skipped} ignorées`
+                : `❌ ${syncPricesResult.error}`}
+            </div>
+          )}
           <table>
             <thead>
               <tr><th>Wilaya</th><th>Prix Domicile (DA)</th><th>Prix Bureau (DA)</th><th>Actions</th></tr>
