@@ -8,46 +8,58 @@ export async function POST(req) {
   if (auth) return auth;
 
   const token = process.env.ECOTRACK_API_TOKEN;
-  if (!token) return Response.json({ ok: false, error: 'ECOTRACK_API_TOKEN non configuré' }, { status: 200 });
+  if (!token) {
+    return Response.json({ ok: false, error: 'ECOTRACK_API_TOKEN non configuré' }, { status: 200 });
+  }
 
-  const endpoints = [
-    '/api/v1/get/fees',
-    '/api/v1/tarifs',
-    '/api/v1/delivery-pricing/rates',
-    '/api/v1/prices',
-    '/api/v1/get/tarifs',
-    '/api/v1/fees',
-  ];
+  try {
+    const res = await fetch(`${BASE}/api/v1/get/fees?api_token=${encodeURIComponent(token)}`);
 
-  const results = [];
+    if (!res.ok) {
+      const body = await res.text();
+      return Response.json({ ok: false, error: `Packers API HTTP ${res.status}: ${body}` }, { status: 200 });
+    }
 
-  for (const ep of endpoints) {
-    try {
-      const res = await fetch(`${BASE}${ep}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    const data = await res.json();
+    const rows = data?.livraison;
+
+    if (!Array.isArray(rows)) {
+      return Response.json({ ok: false, error: 'Format inattendu', raw: data }, { status: 200 });
+    }
+
+    let updated = 0;
+    let skipped = 0;
+
+    for (const item of rows) {
+      const wilayaId = item.wilaya_id;
+      const homePrice = item.tarif;
+      const officePrice = item.tarif_stopdesk;
+
+      if (!wilayaId || homePrice == null) {
+        skipped++;
+        continue;
+      }
+
+      const existing = await prisma.wilaya.findUnique({ where: { id: Number(wilayaId) } });
+      if (!existing) {
+        skipped++;
+        continue;
+      }
+
+      await prisma.wilaya.update({
+        where: { id: Number(wilayaId) },
+        data: {
+          price: Math.round(Number(homePrice)),
+          priceOffice: officePrice != null ? Math.round(Number(officePrice)) : existing.priceOffice,
+        },
       });
-      const text = await res.text();
-      results.push({ auth: 'Bearer', endpoint: ep, status: res.status, body: text.slice(0, 500) });
-    } catch (err) {
-      results.push({ auth: 'Bearer', endpoint: ep, error: err.message });
+      updated++;
     }
-  }
 
-  // Also try with api_token query param (legacy auth)
-  for (const ep of endpoints) {
-    try {
-      const sep = ep.includes('?') ? '&' : '?';
-      const res = await fetch(`${BASE}${ep}${sep}api_token=${encodeURIComponent(token)}`);
-      const text = await res.text();
-      results.push({ auth: 'api_token', endpoint: ep, status: res.status, body: text.slice(0, 500) });
-    } catch (err) {
-      results.push({ auth: 'api_token', endpoint: ep, error: err.message });
-    }
-  }
+    const all = await prisma.wilaya.findMany({ orderBy: { id: 'asc' } });
 
-  return Response.json({
-    ok: false,
-    error: 'Aucun endpoint ne fonctionne. Détails :',
-    debug: results,
-  }, { status: 200 });
+    return Response.json({ ok: true, updated, skipped, wilayas: all });
+  } catch (err) {
+    return Response.json({ ok: false, error: err.message }, { status: 200 });
+  }
 }
