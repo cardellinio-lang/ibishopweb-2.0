@@ -301,7 +301,6 @@ export default function ProductClient({ product, wilayas, communes}) {
       return;
     }
     submittedRef.current = true;
-    setLoading(true);
     setError('');
     try {
       const alwaysLabel = product.slug === 'word-box';
@@ -339,7 +338,6 @@ export default function ProductClient({ product, wilayas, communes}) {
       setError(e.message || 'حدث خطأ أثناء الطلب');
       submittedRef.current = false;
     }
-    setLoading(false);
   };
 
   return (
@@ -687,9 +685,9 @@ export default function ProductClient({ product, wilayas, communes}) {
               {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginBottom: 16 }}>{error}</div>}
 
               {/* Submit button */}
-              <button type="submit" disabled={loading}
-                      style={{ width: '100%', padding: '16px 24px', background: loading ? '#666' : c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: loading ? 'default' : 'pointer', transition: 'background .2s' }}>
-                {loading ? 'جاري التحميل...' : 'اطلب الآن'}
+              <button type="submit"
+                      style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'background .2s' }}>
+                اطلب الآن
               </button>
 
               {/* Order Summary */}
