@@ -770,10 +770,17 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
       </div>
 
-      {/* Sticky bottom button — scrolls to form */}
+      {/* Sticky bottom button — scrolls to form OR submits if form is complete */}
       {scrolled && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: '#fff', borderTop: '1px solid #e8e8ed', zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
-          <button onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          <button onClick={() => {
+            const allFilled = customer && phone && wilayaId && communeId;
+            if (allFilled) {
+              submitOrder();
+            } else {
+              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
                   style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer' }}>
             اطلب الآن
           </button>
