@@ -43,6 +43,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     return () => clearInterval(interval);
   }, []);
 
+  const [framePhoto, setFramePhoto] = useState(null);
+  const [frameCelebration, setFrameCelebration] = useState(false);
+  const fileInputRef = useRef(null);
+
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -271,6 +275,17 @@ export default function ProductClient({ product, wilayas, communes}) {
         }} />
         <span style={{ fontSize: 15, fontWeight: 800, color: '#16a34a' }}>{liveCount} شخص يشترون الآن</span>
       </div>
+
+      {/* Frame simulator for etar-sanaouati */}
+      {product.slug === 'etar-sanaouati' && (
+        <FrameSimulator
+          photo={framePhoto}
+          setPhoto={setFramePhoto}
+          showCelebration={frameCelebration}
+          setShowCelebration={setFrameCelebration}
+          fileInputRef={fileInputRef}
+        />
+      )}
 
       <div className="lg-flex-row" style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
         {/* Left column - Image */}
@@ -673,6 +688,166 @@ export default function ProductClient({ product, wilayas, communes}) {
 
       {/* Celebration overlay */}
       {celebration && <CelebrationOverlay data={celebration} onClose={() => setCelebration(null)} />}
+      {frameCelebration && <FrameCelebrationOverlay onClose={() => setFrameCelebration(false)} />}
+    </div>
+  );
+}
+
+function FrameCelebrationOverlay({ onClose }) {
+  const canvasRef = useRef(null);
+  const audioCtxRef = useRef(null);
+
+  useEffect(() => {
+    if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = audioCtxRef.current;
+    ctx.resume().then(() => {
+      const now = ctx.currentTime;
+      const notes = [
+        { freq: [523.25, 659.25, 783.99], time: 0 },
+        { freq: [587.33, 739.99, 880.00], time: 0.25 },
+        { freq: [659.25, 830.61, 987.77], time: 0.5 },
+        { freq: [783.99, 987.77, 1174.66], time: 0.75 },
+        { freq: [1046.50, 1318.51, 1567.98], time: 1.0 },
+      ];
+      notes.forEach(({ freq, time }) => {
+        freq.forEach(f => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = f;
+          gain.gain.setValueAtTime(0.2, now + time);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + time + 0.8);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + time);
+          osc.stop(now + time + 0.8);
+        });
+      });
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    canvas.width = parent.offsetWidth;
+    canvas.height = parent.offsetHeight;
+
+    const goldShades = ['#ffd700','#ffaa00','#ffec8b','#daa520','#b8860b','#f0e68c','#ffd700','#fff8dc','#ffc125','#ffb90f'];
+    let pieces = [];
+    for (let i = 0; i < 120; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: -10 - Math.random() * 80,
+        w: 4 + Math.random() * 10,
+        h: 4 + Math.random() * 10,
+        color: goldShades[Math.floor(Math.random() * goldShades.length)],
+        vx: (Math.random() - 0.5) * 6,
+        vy: 2 + Math.random() * 5,
+        rot: Math.random() * 360,
+        rotV: (Math.random() - 0.5) * 12,
+        gravity: 0.05 + Math.random() * 0.05,
+        opacity: 1,
+        shape: Math.random() > 0.5 ? 'rect' : 'star',
+      });
+    }
+    const ctx2d = canvas.getContext('2d');
+    let animId;
+    function draw() {
+      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+      pieces = pieces.filter(p => {
+        p.x += p.vx;
+        p.vy += p.gravity;
+        p.y += p.vy;
+        p.rot += p.rotV;
+        p.opacity -= 0.003;
+        ctx2d.save();
+        ctx2d.translate(p.x, p.y);
+        ctx2d.rotate((p.rot * Math.PI) / 180);
+        ctx2d.globalAlpha = Math.max(0, p.opacity);
+        ctx2d.fillStyle = p.color;
+        ctx2d.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx2d.restore();
+        return p.opacity > 0 && p.y < canvas.height + 20;
+      });
+      if (pieces.length > 0) animId = requestAnimationFrame(draw);
+    }
+    draw();
+    return () => { if (animId) cancelAnimationFrame(animId); };
+  }, []);
+
+  return (
+    <div onClick={onClose} style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      cursor: 'pointer',
+    }}>
+      <style>{`
+        @keyframes framePop {
+          0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+          70% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+          100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes frameFloat {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes frameShimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes frameGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 60px rgba(255,215,0,0.1); }
+          50% { box-shadow: 0 0 40px rgba(255,215,0,0.6), 0 0 80px rgba(255,215,0,0.2); }
+        }
+      `}</style>
+
+      <canvas ref={canvasRef} style={{
+        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        pointerEvents: 'none', zIndex: 1,
+      }} />
+
+      <div onClick={e => e.stopPropagation()} style={{
+        position: 'relative', zIndex: 3, textAlign: 'center',
+        animation: 'framePop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+      }}>
+        <div style={{
+          display: 'inline-block',
+          background: 'linear-gradient(135deg, #8B6914, #C9A84C, #FFD700, #C9A84C, #8B6914)',
+          color: '#fff',
+          borderRadius: 24,
+          padding: '32px 48px',
+          boxShadow: '0 8px 60px rgba(201,168,76,0.5)',
+          marginBottom: 16,
+          border: '3px solid #FFD700',
+          animation: 'frameGlow 2s ease-in-out infinite',
+        }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>🎓</div>
+          <div style={{
+            fontSize: 32, fontWeight: 900, lineHeight: 1.3,
+            background: 'linear-gradient(90deg, #fff, #ffd700, #fff)',
+            backgroundSize: '200% auto',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            animation: 'frameShimmer 2s linear infinite',
+          }}>
+            مبروك!
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, marginTop: 8, color: '#fff8dc' }}>
+            🎉 صورة طفلك جاهزة في إطار السنواتي
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 600, marginTop: 6, color: '#f0e68c', opacity: 0.9 }}>
+            سنة خامسة ابتدائي — ذكريات لا تُنسى
+          </div>
+        </div>
+
+        <div style={{ animation: 'frameFloat 0.6s ease-out 0.4s both' }}>
+          <div style={{ color: '#ffd700', fontSize: 15, fontWeight: 600, marginTop: 12, opacity: 0.8 }}>
+            ⭐ اطلب الإطار الآن وخلّد ذكرى طفلك
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -914,4 +1089,246 @@ function CelebrationOverlay({ data, onClose }) {
   );
 }
 
+const YEARS = [
+  { label: 'تحضيري', key: 'prep', icon: '🌱' },
+  { label: 'سنة أولى', key: 'y1', icon: '📚' },
+  { label: 'سنة ثانية', key: 'y2', icon: '✏️' },
+  { label: 'سنة ثالثة', key: 'y3', icon: '📖' },
+  { label: 'سنة رابعة', key: 'y4', icon: '🧮' },
+  { label: 'سنة خامسة', key: 'y5', icon: '🎓', highlight: true },
+];
 
+function FrameSimulator({ photo, setPhoto, showCelebration, setShowCelebration, fileInputRef }) {
+  const [slotImages, setSlotImages] = useState({});
+  const [activeSlot, setActiveSlot] = useState(null);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      setPhoto(dataUrl);
+      const newSlots = { ...slotImages, y5: dataUrl };
+      setSlotImages(newSlots);
+      setActiveSlot('y5');
+      setTimeout(() => setShowCelebration(true), 600);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSlotClick = (key) => {
+    setActiveSlot(key);
+    if (key === 'y5') {
+      fileInputRef.current?.click();
+    }
+  };
+
+  return (
+    <div style={{
+      marginBottom: 24,
+      background: 'linear-gradient(180deg, #1a1205 0%, #2a1f0a 50%, #1a1205 100%)',
+      borderRadius: 20,
+      padding: '24px 16px',
+      border: '3px solid #C9A84C',
+      boxShadow: '0 8px 50px rgba(201,168,76,0.2), inset 0 0 40px rgba(201,168,76,0.05)',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <style>{`
+        @keyframes slotPop {
+          0% { transform: scale(0.85); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes goldenGlow {
+          0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+          50% { box-shadow: 0 0 25px rgba(255,215,0,0.6); }
+        }
+        @keyframes sparkle {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+      `}</style>
+
+      {/* Corner ornaments */}
+      {[
+        { top: -2, left: -2, rotate: '0deg' },
+        { top: -2, right: -2, rotate: '90deg' },
+        { bottom: -2, left: -2, rotate: '-90deg' },
+        { bottom: -2, right: -2, rotate: '180deg' },
+      ].map((pos, i) => (
+        <div key={i} style={{
+          position: 'absolute', ...pos,
+          width: 40, height: 40,
+          borderTop: '4px solid #FFD700',
+          borderLeft: '4px solid #FFD700',
+          transform: `rotate(${pos.rotate})`,
+          opacity: 0.8,
+          zIndex: 2,
+        }} />
+      ))}
+
+      {/* Title */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <div style={{ fontSize: 13, color: '#C9A84C', fontWeight: 700, letterSpacing: 2, opacity: 0.7 }}>✨ تجربة تفاعلية ✨</div>
+        <h2 style={{ fontSize: 22, fontWeight: 900, color: '#FFD700', margin: '6px 0', textShadow: '0 2px 10px rgba(255,215,0,0.3)' }}>
+          إطار سنواتي المدرسية
+        </h2>
+        <div style={{ fontSize: 13, color: '#d4c08c', fontWeight: 600, opacity: 0.8 }}>
+          ضع صورة طفلك في إطار السنة الخامسة وشوف النتيجة
+        </div>
+      </div>
+
+      {/* Frame slots grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 10,
+        maxWidth: 400,
+        margin: '0 auto 20px',
+        direction: 'ltr',
+      }}>
+        {YEARS.map((year) => {
+          const filled = !!slotImages[year.key];
+          const isActive = activeSlot === year.key;
+          return (
+            <div
+              key={year.key}
+              onClick={() => handleSlotClick(year.key)}
+              style={{
+                aspectRatio: '1',
+                borderRadius: 12,
+                border: year.highlight
+                  ? '3px solid #FFD700'
+                  : '2px solid rgba(201,168,76,0.4)',
+                background: filled
+                  ? `url(${slotImages[year.key]}) center/cover`
+                  : 'rgba(201,168,76,0.08)',
+                cursor: year.key === 'y5' ? 'pointer' : 'default',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.3s ease',
+                animation: filled ? 'slotPop 0.5s ease-out' : 'none',
+                boxShadow: isActive && year.highlight ? '0 0 20px rgba(255,215,0,0.4)' : 'none',
+                opacity: year.key === 'y5' && !filled ? 0.85 : 1,
+              }}
+            >
+              {!filled && (
+                <>
+                  <div style={{ fontSize: 22, marginBottom: 4, opacity: 0.6 }}>{year.icon}</div>
+                  <div style={{
+                    fontSize: 10,
+                    fontWeight: 800,
+                    color: year.highlight ? '#FFD700' : 'rgba(201,168,76,0.7)',
+                    textAlign: 'center',
+                    lineHeight: 1.3,
+                  }}>
+                    {year.label}
+                  </div>
+                  {year.highlight && (
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      border: '2px dashed rgba(255,215,0,0.3)',
+                      borderRadius: 10,
+                      animation: 'goldenGlow 2s ease-in-out infinite',
+                    }} />
+                  )}
+                </>
+              )}
+              {filled && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
+                  padding: '4px 6px',
+                  fontSize: 9,
+                  fontWeight: 800,
+                  color: '#FFD700',
+                  textAlign: 'center',
+                }}>
+                  {year.label}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* CTA button */}
+      {!photo ? (
+        <div style={{ textAlign: 'center' }}>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              background: 'linear-gradient(135deg, #C9A84C, #FFD700)',
+              color: '#1a1205',
+              border: 'none',
+              borderRadius: 14,
+              padding: '14px 32px',
+              fontSize: 17,
+              fontWeight: 900,
+              cursor: 'pointer',
+              transition: 'transform 0.2s',
+              boxShadow: '0 4px 20px rgba(201,168,76,0.4)',
+            }}
+            className="order-btn"
+          >
+            📸 أضف صورة طفلك في إطار السنة الخامسة
+          </button>
+          <p style={{ fontSize: 12, color: '#d4c08c', marginTop: 8, opacity: 0.6 }}>
+            الصورة تبقى خاصة ولن تُرفع لأي سيرفر
+          </p>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'rgba(255,215,0,0.1)',
+            border: '1px solid rgba(255,215,0,0.3)',
+            borderRadius: 12,
+            padding: '10px 20px',
+          }}>
+            <span style={{ fontSize: 16 }}>✅</span>
+            <span style={{ color: '#FFD700', fontWeight: 700, fontSize: 14 }}>
+              صورة طفلك في إطار السنة الخامسة 🎓
+            </span>
+          </div>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              display: 'block',
+              margin: '10px auto 0',
+              background: 'transparent',
+              color: '#d4c08c',
+              border: '1px solid rgba(201,168,76,0.3)',
+              borderRadius: 10,
+              padding: '8px 20px',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            🔄 تغيير الصورة
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handlePhotoUpload}
+        style={{ display: 'none' }}
+      />
+    </div>
+  );
+}
