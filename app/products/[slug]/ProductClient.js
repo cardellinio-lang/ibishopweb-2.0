@@ -322,7 +322,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
                 </span>
               )}
-              {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }}>{product.description}</p>}
+              {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
             </div>
 
             {/* Urgence */}

@@ -59,6 +59,14 @@ function MerciContent() {
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    if (!showMsg) return;
+    const redirectTimer = setTimeout(() => {
+      window.location.href = '/products/etar-sanaouati';
+    }, 4000);
+    return () => clearTimeout(redirectTimer);
+  }, [showMsg]);
+
   return (
     <div style={{
       minHeight: '100vh', background: 'linear-gradient(135deg, #0f4c2d 0%, #166534 40%, #15803d 70%, #16a34a 100%)',
@@ -137,6 +145,9 @@ function MerciContent() {
                }}>
               العودة إلى المتجر
             </a>
+            <p style={{ color: '#86efac', fontSize: 13, fontWeight: 500, marginTop: 8 }}>
+              سيتم تحويلك إلى صفحة إطار سنواتي المدرسية...
+            </p>
           </div>
         </div>
       )}

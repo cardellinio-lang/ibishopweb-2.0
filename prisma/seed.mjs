@@ -678,6 +678,21 @@ const PRODUCTS = [
     ],
     description: 'جهاز ألعاب محمول صغير الحجم للأطفال — يحتوي على 400 لعبة كلاسيكية مدمجة. قابل لإعادة الشحن عبر USB، تصميم كلاسيكي أحمر أنيق. مناسب للسفر والاستخدام اليومي، يعمل ببطارية مدمجة تدوم لساعات. هدية مثالية للأطفال.'
   },
+  {
+    name: 'إطار سنواتي المدرسية',
+    slug: 'etar-sanaouati',
+    price: 1600,
+    color: '#C9A84C',
+    images: [
+      'https://placehold.co/600x600/C9A84C/white?text=إطار+سنواتي+المدرسية',
+      'https://placehold.co/600x600/C9A84C/white?text=format+A5',
+    ],
+    description: 'إطار "سنواتي المدرسية" الفاخر بلمسته الذهبية الراقية - <strong style="color:red">format A5</strong>. مصمم خصيصاً لمرافقة طفلك خطوة بخطوة في رحلته الابتدائية، من قسم التحضيري حتى السنة الخامسة.',
+    category: 'إطارات',
+    tierEnabled: true, tierQty: 3, tierPrice: 1200,
+    tierMessage: '➕ أضف {remaining} فقط ووفر 400 د.ج لكل إطار!',
+    tierGift: '🎁 تغليف هدايا مجاني',
+  },
 ];
 
 async function main() {
@@ -707,6 +722,41 @@ async function main() {
   await prisma.product.createMany({ data: products });
 
   console.log(`✅ ${PRODUCTS.length} produits | ${WILAYAS.length} wilayas | ${COMMUNES.length} communes`);
+
+  // Upsert etar-sanaouati (update description if already exists, create if not)
+  const etarProduct = PRODUCTS.find(p => p.slug === 'etar-sanaouati');
+  if (etarProduct) {
+    await prisma.product.upsert({
+      where: { slug: 'etar-sanaouati' },
+      update: {
+        description: etarProduct.description,
+        name: etarProduct.name,
+        price: etarProduct.price,
+        color: etarProduct.color,
+        tierEnabled: etarProduct.tierEnabled,
+        tierQty: etarProduct.tierQty,
+        tierPrice: etarProduct.tierPrice,
+        tierMessage: etarProduct.tierMessage,
+        tierGift: etarProduct.tierGift,
+      },
+      create: {
+        slug: etarProduct.slug || 'etar-sanaouati',
+        name: etarProduct.name,
+        price: etarProduct.price,
+        color: etarProduct.color || '#C9A84C',
+        images: JSON.stringify(etarProduct.images || []),
+        description: etarProduct.description,
+        stock: 50,
+        category: etarProduct.category || '',
+        tierEnabled: etarProduct.tierEnabled || false,
+        tierQty: etarProduct.tierQty || null,
+        tierPrice: etarProduct.tierPrice || null,
+        tierMessage: etarProduct.tierMessage || null,
+        tierGift: etarProduct.tierGift || null,
+      },
+    });
+    console.log('✅ etar-sanaouati product updated/created');
+  }
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
