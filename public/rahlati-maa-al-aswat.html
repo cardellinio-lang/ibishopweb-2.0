@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلتي مع الأصوات — برنامج النطق العربي المصوّر</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;800;900&family=Tajawal:wght@400;700;800;900&family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #d4a853;
+  --gold-light: #f0d78c;
+  --green: #2a9d4e;
+  --green-dark: #1a6b3c;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+  --red: #dc2626;
+  --teal: #0d9488;
+  --pink: #db2777;
+  --bg: #faf8f4;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-light: #6b7280;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans Arabic', 'Tajawal', 'Readex Pro', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav .logo {
+  font-size: 18px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+nav select {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  max-width: 220px;
+}
+nav .count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-light);
+  background: #f3f4f6;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* ─── HERO COVER ─── */
+.hero-cover {
+  margin-top: 56px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+.hero-cover .bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.25;
+}
+.hero-cover .overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(15,23,42,0.8) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 700px;
+}
+.hero-content .icon-top {
+  font-size: 64px;
+  margin-bottom: 16px;
+  display: block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.hero-content h1 {
+  font-size: clamp(36px, 7vw, 64px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.hero-content h1 .gold {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), #b8860b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-content .subtitle {
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 800;
+  color: var(--gold-light);
+  margin-bottom: 20px;
+}
+.hero-content .desc {
+  font-size: 16px;
+  color: #cbd5e1;
+  line-height: 1.8;
+  max-width: 500px;
+  margin: 0 auto 28px;
+}
+.hero-content .badges {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.hero-content .badge {
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.hero-content .fields {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hero-content .field {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px 24px;
+  text-align: right;
+  min-width: 180px;
+}
+.hero-content .field label {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.hero-content .field .line {
+  display: block;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  margin-top: 4px;
+}
+
+/* ─── SECTIONS ─── */
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+.section-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.section-title .highlight {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.section-sub {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+/* ─── PAGE CARD ─── */
+.page-card {
+  background: var(--card);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s;
+}
+.page-card:hover {
+  transform: translateY(-2px);
+}
+
+.page-card .card-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+}
+.page-card .card-header .num {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.page-card .card-body {
+  padding: 24px;
+}
+
+/* Part colors */
+.part-0 { background: linear-gradient(135deg, #1e293b, #0f172a); } /* cover */
+.part-1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); } /* blue */
+.part-2 { background: linear-gradient(135deg, #16a34a, #15803d); } /* green */
+.part-3 { background: linear-gradient(135deg, #d97706, #b45309); } /* yellow/amber */
+.part-4 { background: linear-gradient(135deg, #9333ea, #7e22ce); } /* purple */
+.part-5 { background: linear-gradient(135deg, #dc2626, #b91c1c); } /* red */
+.part-6 { background: linear-gradient(135deg, #ea580c, #c2410c); } /* orange */
+
+/* Grid for page list */
+.part-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Sound circle */
+.sound-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+/* Exercise row */
+.exercise {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+.exercise:last-child { margin-bottom: 0; }
+.exercise .info { flex: 1; }
+.exercise .info .title {
+  font-size: 18px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+.exercise .info .scene {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.exercise .info .words {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.exercise .info .words .word {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.exercise .info .words .word.correct {
+  background: #dcfce7;
+  color: #15803d;
+}
+.exercise .info .words .word.decoy {
+  background: #fef2f2;
+  color: #b91c1c;
+  text-decoration: line-through;
+}
+.exercise .info .goal {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 600;
+  margin-top: 6px;
+}
+.exercise .info .goal span { font-weight: 800; }
+
+/* Certificate */
+.certificate {
+  text-align: center;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, #fefce8, #fef9c3);
+  border: 3px solid var(--gold);
+  border-radius: 24px;
+  margin: 20px 0;
+}
+.certificate .icon { font-size: 56px; margin-bottom: 12px; }
+.certificate h2 {
+  font-size: 28px;
+  font-weight: 900;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+.certificate .stars {
+  font-size: 32px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  margin: 12px 0;
+}
+.certificate .line-field {
+  display: inline-block;
+  border-bottom: 2px dashed #92400e;
+  min-width: 200px;
+  margin: 8px 0;
+  padding-bottom: 4px;
+  font-weight: 700;
+  color: #92400e;
+}
+
+/* Cards for syllabes / phonology */
+.activity-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 12px;
+  border: 1px solid #f0f0f0;
+}
+.activity-card h3 {
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.activity-card .syllable-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+  flex-wrap: wrap;
+}
+.activity-card .syllable-row:last-child { border-bottom: none; }
+.activity-card .syllable-box {
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+}
+.activity-card .eq {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text-light);
+}
+
+/* Communication situation */
+.situation {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+}
+.situation .scene-icon { font-size: 48px; flex-shrink: 0; }
+.situation .details { flex: 1; }
+.situation .details h3 { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+.situation .details ul {
+  list-style: none;
+  padding: 0;
+}
+.situation .details ul li {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  padding: 4px 0;
+  padding-right: 20px;
+  position: relative;
+}
+.situation .details ul li::before {
+  content: '💬';
+  position: absolute;
+  right: 0;
+}
+.situation .details .phrases {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.situation .details .phrases span {
+  padding: 4px 14px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Part intro banner */
+.part-intro {
+  padding: 32px 24px;
+  border-radius: 24px;
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.part-intro .big-icon { font-size: 48px; margin-bottom: 8px; }
+.part-intro h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+.part-intro p { font-size: 14px; opacity: 0.9; font-weight: 600; }
+
+/* Map */
+.map-stops {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-right: 30px;
+}
+.map-stops::before {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--blue), var(--green), #d97706, var(--purple), var(--red), var(--orange));
+  border-radius: 3px;
+}
+.map-stop {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 0;
+}
+.map-stop .dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.map-stop .info h3 { font-size: 18px; font-weight: 900; }
+.map-stop .info p { font-size: 13px; color: var(--text-light); font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .exercise { flex-direction: column; align-items: stretch; }
+  .sound-circle { margin: 0 auto; }
+  .situation { flex-direction: column; align-items: center; text-align: center; }
+  nav .logo { font-size: 14px; }
+  nav select { max-width: 140px; font-size: 12px; }
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🌟 رحلتي مع الأصوات</div>
+  <select id="pageNav" onchange="document.getElementById(this.value).scrollIntoView({behavior:'smooth', block:'start'})">
+    <option value="">⬇️ اذهب إلى...</option>
+    <option value="cover">الغلاف</option>
+    <option value="instructions">كيفية الاستخدام</option>
+    <option value="roadmap">خريطة الرحلة</option>
+    <option value="student-card">بطاقة البطل</option>
+    <option value="part1">🔵 الجزء 1: أول الكلمة</option>
+    <option value="part2">🟢 الجزء 2: وسط الكلمة</option>
+    <option value="part3">🟡 الجزء 3: آخر الكلمة</option>
+    <option value="part4">🟣 الجزء 4: المقاطع</option>
+    <option value="part5">🔴 الجزء 5: الوعي الصوتي</option>
+    <option value="part6">🟠 الجزء 6: المواقف التواصلية</option>
+  </select>
+  <span class="count">٦٠ صفحة</span>
+</nav>
+
+<!-- ─────────────── COVER ─────────────── -->
+<section id="cover" class="hero-cover fade-in visible">
+  <img class="bg-img" src="https://cdn.pixabay.com/photo/2017/07/24/19/57/child-2535718_1280.jpg" alt="طفل يقرأ" loading="lazy">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <span class="icon-top">🌟</span>
+    <h1>رحلتي مع <span class="gold">الأصوات</span></h1>
+    <div class="subtitle">🗣️ برنامج النطق العربي المصوَّر</div>
+    <div class="desc">
+      للأطفال من ٣ إلى ٨ سنوات<br>
+      ٦٠ وضعية تدريبية • موجَّه لاختصاصيي النطق • يُستخدم في البيت والعيادة
+    </div>
+    <div class="badges">
+      <span class="badge" style="background:#2563eb;">🔵 أول الكلمة</span>
+      <span class="badge" style="background:#16a34a;">🟢 وسط الكلمة</span>
+      <span class="badge" style="background:#d97706;">🟡 آخر الكلمة</span>
+      <span class="badge" style="background:#9333ea;">🟣 المقاطع</span>
+      <span class="badge" style="background:#dc2626;">🔴 الوعي الصوتي</span>
+      <span class="badge" style="background:#ea580c;">🟠 المواقف</span>
+    </div>
+    <div class="fields">
+      <div class="field">
+        <label>اسم الطفل</label>
+        <span class="line"></span>
+      </div>
+      <div class="field">
+        <label>الأرطفوني / المعالج</label>
+        <span class="line"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── INSTRUCTIONS ─────────────── -->
+<section id="instructions" class="section fade-in">
+  <div class="section-title">🏠 رسالة إلى <span class="highlight">الأهل الكرام</span></div>
+  <div class="section-sub">كيف تستخدم هذا البرنامج مع طفلك</div>
+
+  <div class="page-card">
+    <div class="card-body" style="padding:32px;">
+      <p style="font-size:16px;font-weight:600;color:var(--text-light);line-height:1.8;margin-bottom:20px;text-align:center;">
+        هذا البرنامج صُمِّم خصيصاً لمساعدة طفلكم على تحسين نطقه في المنزل.<br>
+       只需要 10-15 دقيقة يومياً لتحقيق نتائج ملحوظة.
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+        <div style="background:#f0fdf4;border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:6px;">⏰</div>
+          <div style="font-weight:900;font-size:15px;">خصصوا 10-15 دقيقة</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">يومياً في مكان هادئ</div>
+        </div>
+        <div style="background:#fefce8;border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:6px;">📖</div>
+          <div style="font-weight:900;font-size:15px;">اقرأوا التعليمات معاً</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">ثم شاهدوا الصور معاً</div>
+        </div>
+        <div style="background:#fef2f2;border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:6px;">🗣️</div>
+          <div style="font-weight:900;font-size:15px;">دعوا الطفل يجيب</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">بمفرده وشجّعوه</div>
+        </div>
+        <div style="background:#f0f0ff;border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:32px;margin-bottom:6px;">⭐</div>
+          <div style="font-weight:900;font-size:15px;">احتفلوا بكل نجاح</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">وضعوا نجمة على الصفحة</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── ROADMAP ─────────────── -->
+<section id="roadmap" class="section fade-in">
+  <div class="section-title">🗺️ خريطة <span class="highlight">رحلتي مع الأصوات</span></div>
+  <div class="section-sub">٦ محطات — ٦٠ صفحة من التدرج العلاجي</div>
+
+  <div class="map-stops">
+    <div class="map-stop">
+      <div class="dot" style="background:#2563eb;">١</div>
+      <div class="info">
+        <h3>🔵 المحطة 1: صوتي في أول الكلمة</h3>
+        <p>الصفحات ٥ إلى ١٤ — ١٠ أصوات عربية في أول الكلمة</p>
+      </div>
+    </div>
+    <div class="map-stop">
+      <div class="dot" style="background:#16a34a;">٢</div>
+      <div class="info">
+        <h3>🟢 المحطة 2: صوتي في وسط الكلمة</h3>
+        <p>الصفحات ١٥ إلى ٢٤ — ١٠ أصوات في وسط الكلمة</p>
+      </div>
+    </div>
+    <div class="map-stop">
+      <div class="dot" style="background:#d97706;">٣</div>
+      <div class="info">
+        <h3>🟡 المحطة 3: صوتي في آخر الكلمة</h3>
+        <p>الصفحات ٢٥ إلى ٣٤ — ١٠ أصوات في آخر الكلمة</p>
+      </div>
+    </div>
+    <div class="map-stop">
+      <div class="dot" style="background:#9333ea;">٤</div>
+      <div class="info">
+        <h3>🟣 المحطة 4: ألعب بالمقاطع</h3>
+        <p>الصفحات ٣٥ إلى ٤٤ — تركيب وتقطيع المقاطع الصوتية</p>
+      </div>
+    </div>
+    <div class="map-stop">
+      <div class="dot" style="background:#dc2626;">٥</div>
+      <div class="info">
+        <h3>🔴 المحطة 5: أكتشف الأصوات</h3>
+        <p>الصفحات ٤٥ إلى ٥٤ — الوعي الصوتي والتحليل والتركيب</p>
+      </div>
+    </div>
+    <div class="map-stop">
+      <div class="dot" style="background:#ea580c;">٦</div>
+      <div class="info">
+        <h3>🟠 المحطة 6: أتكلم وأحكي</h3>
+        <p>الصفحات ٥٥ إلى ٦٤ — المواقف التواصلية والتعبير الكامل</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── STUDENT CARD ─────────────── -->
+<section id="student-card" class="section fade-in">
+  <div class="page-card">
+    <div class="card-header part-0">
+      <span>⭐ بطاقة البطل ⭐</span>
+      <span class="num">بطاقة</span>
+    </div>
+    <div class="card-body" style="padding:32px;">
+      <div style="display:flex;gap:32px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;">اسمي</div>
+            <div style="border-bottom:2px solid #e5e7eb;padding-bottom:4px;font-weight:900;font-size:18px;">_________________</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;">عمري</div>
+            <div style="border-bottom:2px solid #e5e7eb;padding-bottom:4px;font-weight:900;font-size:18px;">_________________</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;">معالجي</div>
+            <div style="border-bottom:2px solid #e5e7eb;padding-bottom:4px;font-weight:900;font-size:18px;">_________________</div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--text-light);margin-bottom:4px;">تاريخ البداية</div>
+            <div style="border-bottom:2px solid #e5e7eb;padding-bottom:4px;font-weight:900;font-size:18px;">_________________</div>
+          </div>
+        </div>
+        <div style="flex:2;min-width:250px;">
+          <div style="font-size:14px;font-weight:800;color:var(--gold);margin-bottom:12px;">🌟 نجومي المجموعة</div>
+          <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px;direction:ltr;">
+            {Array.from({length:50}, (_,i) => '<div style="aspect-ratio:1;border:2px dashed #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.2s;background:#fafafa;"></div>').join('')}
+          </div>
+          <div style="margin-top:16px;padding:12px;background:#fefce8;border-radius:12px;text-align:center;border:2px solid var(--gold);">
+            <span style="font-weight:900;font-size:16px;color:#92400e;">🏆 عندما أجمع ٣٠ نجمة — أنا بطل!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Scroll animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Fill star grid
+const grid = document.querySelector('.page-card .card-body .grid');
+// Generate student card stars
+</script>
+
+<style>
+  .star-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  .star-cell {
+    aspect-ratio: 1;
+    border: 2px dashed #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafafa;
+  }
+  .star-cell.filled {
+    border: 2px solid var(--gold);
+    background: #fefce8;
+  }
+  .star-cell:hover {
+    border-color: var(--gold);
+    background: #fefce8;
+  }
+</style>
+
+<section class="section fade-in" id="part1">
+  <div class="part-intro" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+    <div class="big-icon">🔵</div>
+    <h2>الجزء الأول: صوتي في أول الكلمة</h2>
+    <p>الصفحات ٥ إلى ١٤ • ١٠ أصوات • ١٠ وضعيات تدريبية</p>
+  </div>
+
+  <div class="part-grid">
+    <div class="page-card">
+      <div class="card-header part-1"><span>🎒 الوضعية 1</span><span class="num">صفحة 5</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">م</div>
+          <div class="info">
+            <div class="title">🎒 أذهب إلى المدرسة</div>
+            <div class="scene">🏫 في المدرسة — الصوت: /م/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">مسطرة</span>
+              <span class="word correct">ممحاة</span>
+              <span class="word correct">ملعقة</span>
+              <span class="word correct">مقص</span>
+              <span class="word decoy">حقيبة</span>
+              <span class="word decoy">قلم</span>
+              <span class="word decoy">شجرة</span>
+              <span class="word decoy">سيارة</span>
+            </div>
+            <div class="goal">💬 <span>"أحمل في حقيبتي..."</span> 🎯 الهدف: <span>تمييز صوت /م/ في أول الكلمة</span> 📊 <span>سهل</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🏡 الوضعية 2</span><span class="num">صفحة 6</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ب</div>
+          <div class="info">
+            <div class="title">🏡 أنا في البيت</div>
+            <div class="scene">🏠 في البيت — الصوت: /ب/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">بيت</span>
+              <span class="word correct">باب</span>
+              <span class="word correct">بساط</span>
+              <span class="word correct">بطانية</span>
+              <span class="word decoy">كرسي</span>
+              <span class="word decoy">طاولة</span>
+              <span class="word decoy">ساعة</span>
+              <span class="word decoy">مصباح</span>
+            </div>
+            <div class="goal">💬 <span>"في بيتنا يوجد..."</span> 🎯 الهدف: <span>تمييز صوت /ب/ في أول الكلمة</span> 📊 <span>سهل</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🌳 الوضعية 3</span><span class="num">صفحة 7</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ف</div>
+          <div class="info">
+            <div class="title">🌳 أنا في الحديقة</div>
+            <div class="scene">🌳 في الحديقة — الصوت: /ف/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">فراشة</span>
+              <span class="word correct">فيل</span>
+              <span class="word correct">فاكهة</span>
+              <span class="word correct">فطر</span>
+              <span class="word decoy">وردة</span>
+              <span class="word decoy">شجرة</span>
+              <span class="word decoy">طائر</span>
+              <span class="word decoy">نملة</span>
+            </div>
+            <div class="goal">💬 <span>"في الحديقة أرى..."</span> 🎯 الهدف: <span>تمييز صوت /ف/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🛒 الوضعية 4</span><span class="num">صفحة 8</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">س</div>
+          <div class="info">
+            <div class="title">🛒 أنا في السوق</div>
+            <div class="scene">🛒 في السوق — الصوت: /س/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">سمك</span>
+              <span class="word correct">سيارة</span>
+              <span class="word correct">سلة</span>
+              <span class="word correct">سكر</span>
+              <span class="word decoy">تفاح</span>
+              <span class="word decoy">لحم</span>
+              <span class="word decoy">خبز</span>
+              <span class="word decoy">جبن</span>
+            </div>
+            <div class="goal">💬 <span>"في السوق اشتريت..."</span> 🎯 الهدف: <span>تمييز صوت /س/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🏖️ الوضعية 5</span><span class="num">صفحة 9</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ش</div>
+          <div class="info">
+            <div class="title">🏖️ أنا في الشاطئ</div>
+            <div class="scene">🏖️ على الشاطئ — الصوت: /ش/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">شمس</span>
+              <span class="word correct">شاطئ</span>
+              <span class="word correct">شمسية</span>
+              <span class="word correct">شوكة</span>
+              <span class="word decoy">بحر</span>
+              <span class="word decoy">رمل</span>
+              <span class="word decoy">موج</span>
+              <span class="word decoy">قارب</span>
+            </div>
+            <div class="goal">💬 <span>"في الشاطئ أرى..."</span> 🎯 الهدف: <span>تمييز صوت /ش/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🚜 الوضعية 6</span><span class="num">صفحة 10</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ر</div>
+          <div class="info">
+            <div class="title">🚜 أنا في المزرعة</div>
+            <div class="scene">🧑‍🌾 في المزرعة — الصوت: /ر/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">رمان</span>
+              <span class="word correct">ريحان</span>
+              <span class="word correct">روضة</span>
+              <span class="word correct">رياح</span>
+              <span class="word decoy">بقرة</span>
+              <span class="word decoy">شجرة</span>
+              <span class="word decoy">تفاح</span>
+              <span class="word decoy">دجاجة</span>
+            </div>
+            <div class="goal">💬 <span>"في المزرعة وجدت..."</span> 🎯 الهدف: <span>تمييز صوت /ر/ في أول الكلمة</span> 📊 <span>صعب</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🎪 الوضعية 7</span><span class="num">صفحة 11</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ل</div>
+          <div class="info">
+            <div class="title">🎪 أنا في الملعب</div>
+            <div class="scene">🎪 في الملعب — الصوت: /ل/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">لعبة</span>
+              <span class="word correct">لاعب</span>
+              <span class="word correct">لوح</span>
+              <span class="word correct">لون</span>
+              <span class="word decoy">كرة</span>
+              <span class="word decoy">ملعب</span>
+              <span class="word decoy">حارس</span>
+              <span class="word decoy">شبكة</span>
+            </div>
+            <div class="goal">💬 <span>"في الملعب أرى..."</span> 🎯 الهدف: <span>تمييز صوت /ل/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🌙 الوضعية 8</span><span class="num">صفحة 12</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ن</div>
+          <div class="info">
+            <div class="title">🌙 أنا في رمضان</div>
+            <div class="scene">🌙 في رمضان — الصوت: /ن/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">نجمة</span>
+              <span class="word correct">نخلة</span>
+              <span class="word correct">نعناع</span>
+              <span class="word correct">ناقة</span>
+              <span class="word decoy">هلال</span>
+              <span class="word decoy">فانوس</span>
+              <span class="word decoy">تمر</span>
+              <span class="word decoy">قمر</span>
+            </div>
+            <div class="goal">💬 <span>"في رمضان نرى..."</span> 🎯 الهدف: <span>تمييز صوت /ن/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>🎂 الوضعية 9</span><span class="num">صفحة 13</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ك</div>
+          <div class="info">
+            <div class="title">🎂 أنا في حفلة العيد</div>
+            <div class="scene">🎉 حفلة العيد — الصوت: /ك/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">كعك</span>
+              <span class="word correct">كرة</span>
+              <span class="word correct">كتاب</span>
+              <span class="word correct">كرسي</span>
+              <span class="word decoy">بالون</span>
+              <span class="word decoy">هدية</span>
+              <span class="word decoy">شمعة</span>
+              <span class="word decoy">عصير</span>
+            </div>
+            <div class="goal">💬 <span>"في حفلة العيد أرى..."</span> 🎯 الهدف: <span>تمييز صوت /ك/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-card">
+      <div class="card-header part-1"><span>✈️ الوضعية 10</span><span class="num">صفحة 14</span></div>
+      <div class="card-body">
+        <div class="exercise">
+          <div class="sound-circle" style="background:#2563eb;">ت</div>
+          <div class="info">
+            <div class="title">✈️ أنا في المطار</div>
+            <div class="scene">✈️ في المطار — الصوت: /ت/ في أول الكلمة</div>
+            <div class="words">
+              <span class="word correct">تذكرة</span>
+              <span class="word correct">تلفون</span>
+              <span class="word correct">تاكسي</span>
+              <span class="word correct">ترمس</span>
+              <span class="word decoy">حقيبة</span>
+              <span class="word decoy">طائرة</span>
+              <span class="word decoy">مطار</span>
+              <span class="word decoy">جواز</span>
+            </div>
+            <div class="goal">💬 <span>"في المطار أحمل..."</span> 🎯 الهدف: <span>تمييز صوت /ت/ في أول الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate 1 -->
+  <div class="certificate">
+    <div class="icon">🏆</div>
+    <h2>أنا أنجزت المحطة الأولى!</h2>
+    <p style="font-size:16px;font-weight:700;color:#92400e;">أعرف الأصوات في أول الكلمة</p>
+    <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+    <div style="margin:12px 0;">
+      <div style="display:inline-block;margin:0 12px;">
+        <div style="font-size:12px;font-weight:700;color:#92400e;">اسمي</div>
+        <div class="line-field"></div>
+      </div>
+      <div style="display:inline-block;margin:0 12px;">
+        <div style="font-size:12px;font-weight:700;color:#92400e;">توقيع المعالج</div>
+        <div class="line-field"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── PART 2 ─────────────── -->
+<section class="section fade-in" id="part2">
+  <div class="part-intro" style="background:linear-gradient(135deg,#16a34a,#15803d);">
+    <div class="big-icon">🟢</div>
+    <h2>الجزء الثاني: صوتي في وسط الكلمة</h2>
+    <p>الصفحات ١٥ إلى ٢٤ • ١٠ أصوات • ١٠ وضعيات تدريبية</p>
+  </div>
+
+  <div class="part-grid">
+    {['م','ر','ل','ب','ن','س','ك','ت','ف','ش'].map((s, i) => {
+      const scenes = [
+        {title:'🚗 أنا في السيارة',emoji:'🚗',place:'في رحلتنا بالسيارة',words:['جمل','قمر','رمل','شمس'],decoys:['بيت','كلب','طير','ورد']},
+        {title:'🌊 أنا في البحر',emoji:'🌊',place:'في البحر',words:['قارب','فراخ','بحر','مرجان'],decoys:['موج','سمك','شاطئ','طحلب']},
+        {title:'🍽️ أنا في المطبخ',emoji:'🍽️',place:'في المطبخ',words:['ملعقة','سلطة','فلفل','بلح'],decoys:['موقد','طنجرة','صحن','ثلاجة']},
+        {title:'🏥 أنا في العيادة',emoji:'🏥',place:'في العيادة',words:['طبيب','حبوب','كلاب','قبة'],decoys:['سرير','دواء','ممرضة','سماعة']},
+        {title:'🎡 في الحديقة العامة',emoji:'🎡',place:'في الحديقة',words:['منزل','حنفية','بنفسج','عندليب'],decoys:['وردة','عشب','شجرة','كرسي']},
+        {title:'🕌 في المسجد',emoji:'🕌',place:'في المسجد',words:['مسجد','سجادة','وضوء','مصحف'],decoys:['بيت','مدرسة','سوق','مطار']},
+        {title:'🎪 في الملعب',emoji:'🎪',place:'في الملعب',words:['ملعب','حارس','شبكة','هدف'],decoys:['بيت','مدرسة','سيارة','طريق']},
+        {title:'📖 في المكتبة',emoji:'📖',place:'في المكتبة',words:['رفوف','قلم','كتاب','مجلة'],decoys:['كرسي','مكتب','طاولة','باب']},
+        {title:'🚜 في المزرعة',emoji:'🚜',place:'في المزرعة',words:['دجاج','عجول','حقول','أغنام'],decoys:['بيت','سيارة','طريق','جبل']},
+        {title:'🎉 في الحفل',emoji:'🎉',place:'في الحفل',words:['فرح','غناء','رقص','زفة'],decoys:['بيت','مدرسة','عمل','نوم']},
+      ];
+      const sc = scenes[i];
+      return `
+      <div class="page-card">
+        <div class="card-header part-2"><span>${sc.title}</span><span class="num">صفحة ${15+i}</span></div>
+        <div class="card-body">
+          <div class="exercise">
+            <div class="sound-circle" style="background:#16a34a;">${s}</div>
+            <div class="info">
+              <div class="title">${sc.title}</div>
+              <div class="scene">${sc.emoji} ${sc.place} — الصوت: /${s}/ في وسط الكلمة</div>
+              <div class="words">
+                ${sc.words.map(w => `<span class="word correct">${w}</span>`).join('')}
+                ${sc.decoys.map(w => `<span class="word decoy">${w}</span>`).join('')}
+              </div>
+              <div class="goal">💬 <span>قل جملة كاملة</span> 🎯 الهدف: <span>تمييز صوت /${s}/ في وسط الكلمة</span> 📊 <span>متوسط</span></div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+</section>
+
+<script>
+// Part 2 rendering via innerHTML
+document.addEventListener('DOMContentLoaded', function() {
+  // Parts 3-6 will be loaded via JS to avoid massive HTML
+  loadPart(3);
+  loadPart(4);
+  loadPart(5);
+  loadPart(6);
+});
+
+function loadPart(partNum) {
+  const parts = {
+    3: {
+      id: 'part3',
+      icon: '🟡', color: '#d97706', color2: '#b45309',
+      name: 'الجزء الثالث: صوتي في آخر الكلمة',
+      range: 'الصفحات ٢٥ إلى ٣٤',
+      sounds: ['م','ب','ر','ل','ن','س','ف','ك','ت','ش'],
+      scenes: [
+        {title:'🎪 في حفلة التخرج',emoji:'🎪',place:'في حفلة التخرج',words:['قلم','علم','نجم','نعم'],decoys:['كتاب','طاولة','كرسي','باب']},
+        {title:'🌲 في الغابة',emoji:'🌲',place:'في الغابة',words:['ذئب','كلب','غاب','عشب'],decoys:['شجر','نهر','صخر','طير']},
+        {title:'🍳 في المطبخ',emoji:'🍳',place:'في المطبخ',words:['سكر','قدر','عسل','جبن'],decoys:['موقد','طنجرة','صحن','ملعقة']},
+        {title:'🌸 في الحديقة',emoji:'🌸',place:'في الحديقة',words:['أمل','جبل','دل','حبل'],decoys:['وردة','شجرة','نافورة','مقعد']},
+        {title:'🌊 في البحر',emoji:'🌊',place:'في البحر',words:['سفن','حوت','تيار','نهر'],decoys:['موج','رمل','صخر','قارب']},
+        {title:'🏫 في المدرسة',emoji:'🏫',place:'في المدرسة',words:['دفتر','ممحاة','مسطرة','فصل'],decoys:['كتاب','قلم','كرسي','باب']},
+        {title:'🚌 في الحافلة',emoji:'🚌',place:'في الحافلة',words:['سائق','راكب','طريق','مقعد'],decoys:['عجلة','نافذة','باب','سقف']},
+        {title:'🏪 في الدكان',emoji:'🏪',place:'في الدكان',words:['خباز','بائع','فلوس','صندوق'],decoys:['رف','باب','شباك','ميزان']},
+        {title:'🚜 في المزرعة',emoji:'🚜',place:'في المزرعة',words:['ديك','حمار','عجل','جدي'],decoys:['بقرة','دجاجة','حصان','خروف']},
+        {title:'🏠 في المنزل',emoji:'🏠',place:'في المنزل',words:['جدار','ستار','نور','دهليز'],decoys:['باب','شباك','كرسي','طاولة']},
+      ]
+    },
+    4: {
+      id: 'part4',
+      icon: '🟣', color: '#9333ea', color2: '#7e22ce',
+      name: 'الجزء الرابع: ألعب بالمقاطع',
+      range: 'الصفحات ٣٥ إلى ٤٤',
+      activities: [
+        {title:'🚉 محطة القطار',desc:'اجمع المقاطع لتكوين كلمة',pairs:[{a:'ما',b:'ما',r:'ماما'},{a:'با',b:'ب',r:'باب'},{a:'كِ',b:'تاب',r:'كتاب'}]},
+        {title:'🏪 دكان المقاطع',desc:'اشترِ 3 مقاطع وكوّن كلمة',pairs:[{a:'مو',b:'ز',c:'ة',r:'موزة'},{a:'تُ',b:'فا',c:'حة',r:'تفاحة'},{a:'بُ',b:'رتُ',c:'قا',r:'برتقال'}]},
+        {title:'🎠 عجلة المقاطع',desc:'حرف + حركة = مقطع',pairs:[{a:'بَ',r:'بَيت'},{a:'بِ',r:'بِئر'},{a:'بُ',r:'بُرتقال'},{a:'مَ',r:'مَلعب'}]},
+        {title:'✂️ تقطيع الكلمات',desc:'قطّع الكلمة إلى مقاطع',pairs:[{a:'سَمَكَة',r:'سَ + مَ + كَ + ة (4)'},{a:'مَدْرَسَة',r:'مَد + رَ + سَة (3)'},{a:'شَجَرَة',r:'شَجَ + رَة (2)'}]},
+        {title:'👏 أصفق المقاطع',desc:'صفّق بعدد المقاطع',pairs:[{a:'باب',r:'تصفيقتان'},{a:'سيارة',r:'3 تصفيقات'},{a:'فراشة',r:'3 تصفيقات'},{a:'قلم',r:'تصفيقتان'}]},
+        {title:'📏 الطويل والقصير',desc:'أي كلمة أطول؟',pairs:[{a:'قَارِب ← طَوِيل',r:'سَفِينَة ← أَطْوَل'},{a:'يَد ← قَصِير',r:'أُصْبُع ← أَقْصَر'}]},
+        {title:'🧩 ابنِ الكلمة',desc:'رتب المقاطع المبعثرة',pairs:[{a:'رة + مَم + سَ',r:'مَمْسَحَة'},{a:'تاب + كِ',r:'كِتَاب'},{a:'فة + رَا + شَ',r:'فَرَاشَة'}]},
+        {title:'🐍 السلم والثعبان',desc:'تقدّم مع كل مقطع صحيح',pairs:[{a:'انطلق!',r:'----'}]},
+        {title:'🚂 القطار المتشابه',desc:'جد المقطع المشترك',pairs:[{a:'مَدْرَسَة',r:'مَ + ...'},{a:'مَلْعَب',r:'مَ + ...'},{a:'مِفْتَاح',r:'مِ + ...'}]},
+        {title:'🏆 مسابقة سريعة',desc:'من يكوّن أسرع؟',pairs:[{a:'أنا +ت + سَ + قِ + بَ',r:'أَنَا + أَسْ + قِطْ + بَ'}]},
+      ]
+    },
+    5: {
+      id: 'part5',
+      icon: '🔴', color: '#dc2626', color2: '#b91c1c',
+      name: 'الجزء الخامس: أكتشف الأصوات',
+      range: 'الصفحات ٤٥ إلى ٥٤',
+      activities: [
+        {title:'🔍 أبحث عن الصوت الأول',desc:'حدد الصوت الأول',pairs:[{a:'سمكة',r:'/س/'},{a:'قلم',r:'/ق/'},{a:'بيت',r:'/ب/'},{a:'نجمة',r:'/ن/'},{a:'كتاب',r:'/ك/'},{a:'فيل',r:'/ف/'}]},
+        {title:'✂️ أحذف صوتاً',desc:'احذف الصوت الأول',pairs:[{a:'سمك - /س/',r:'مك'},{a:'بيت - /ب/',r:'يت'},{a:'نار - /ن/',r:'ار'},{a:'فيل - /ف/',r:'يل'}]},
+        {title:'🔢 أعدّ الأصوات',desc:'كم صوتاً في الكلمة؟',pairs:[{a:'بن',r:'2'},{a:'قمر',r:'3'},{a:'سمكة',r:'4'},{a:'شجرة',r:'4'}]},
+        {title:'🔗 أدمج الأصوات',desc:'اجمع الأصوات',pairs:[{a:'/ب/+/ا/+/ب/',r:'باب'},{a:'/س/+/م/+/ك/',r:'سمك'},{a:'/ن/+/ا/+/ر/',r:'نار'},{a:'/ق/+/م/+/ر/',r:'قمر'}]},
+        {title:'🎵 قافية الكلمات',desc:'ما الكلمة التي تشبه؟',pairs:[{a:'باب',r:'باب - كتاب -__؟'},{a':'شمس',r:'شمس - قمر -__؟'}]},
+        {title:'🔍 المتطابق والمختلف',desc:'جد الصوت المختلف',pairs:[{a:'فيل - فول - فانوس',r:'... ف واحد'},{a:'بيت - باب - نار',r:'... ن مختلف'}]},
+        {title:'🔄 بدّل صوتاً',desc:'غيّر حرفاً وغيِّر الكلمة',pairs:[{a:'نار ← بـ',r:'بار'},{a:'بيت ← بـ',r:'بيت ← ___'}]},
+        {title:'🎯 أين الصوت المختلف؟',desc:'جد الكلمة المختلفة',pairs:[{a:'سمك - سكر - ساعة - شمس',r:'شمس (ش)'},{a:'فيل - فراشة - فول - شجرة',r:'شجرة (ش)'}]},
+        {title:'📞 لعبة المراسل',desc:'أرسل صوتاً',pairs:[{a:'أرسل /س/',r:'سيارة 🚗'},{a:'أرسل /م/',r:'مسطرة 📏'}]},
+        {title:'🃏 البطاقات الصوتية',desc:'المراجعة النهائية',pairs:[{a:'كل الأصوات',r:'⭐'}]},
+      ]
+    },
+    6: {
+      id: 'part6',
+      icon: '🟠', color: '#ea580c', color2: '#c2410c',
+      name: 'الجزء السادس: أتكلم وأحكي',
+      range: 'الصفحات ٥٥ إلى ٦٤',
+      situations: [
+        {icon:'🏥',title:'عند الطبيب',questions:['أين الطبيب؟','ماذا يحمل الطبيب؟','لماذا أنا هنا؟','ماذا يقول الطبيب؟'],phrases:['أنا عند الطبيب لأنّ...','الطبيب يعطيني...','أنا خائف قليلاً']},
+        {icon:'🛒',title:'في السوق الكبير',questions:['صف ما تراه في المشهد','ماذا تشتري؟','كيف تطلب من البائع؟','كم الثمن؟'],phrases:['أريد أن أشتري...','كم سعر...؟','من فضلك أعطني...']},
+        {icon:'🏫',title:'في المدرسة',questions:['صف الفصل','من في الفصل؟','ماذا يفعل الأستاذ؟','ماذا تتعلم اليوم؟'],phrases:['في الفصل يوجد...','الأستاذ يشرح...','أنا أتعلم...']},
+        {icon:'✈️',title:'في المطار',questions:['صف المطار','أين تذهب؟','ماذا تحمل في حقيبتك؟','كيف تشعر؟'],phrases:['أنا أسافر إلى...','أحمل في حقيبتي...','أنا سعيد لأن...']},
+        {icon:'🎉',title:'في حفلة العيد',questions:['صف الحفلة','من معك؟','ماذا تأكل؟','كيف تحيي الضيوف؟'],phrases:['في العيد أقول...','العيد فيه...','أنا أحب العيد لأن...']},
+        {icon:'🕌',title:'في المسجد',questions:['صف المسجد','ماذا يفعل المصلون؟','ماذا تقول عند الدخول؟','كيف تصلي؟'],phrases:['المسجد كبير و...','المصلون يصلون...','أقول السلام عليكم']},
+        {icon:'🌳',title:'في الحديقة مع العائلة',questions:['من معك؟','ماذا تفعلون؟','كم الوقت؟','كيف الجو؟'],phrases:['أنا في الحديقة مع...','نحن نلعب...','الطقس جميل']},
+        {icon:'🍳',title:'في المطبخ مع أمي',questions:['ماذا تطبخ أمي؟','هل تساعدها؟','ماذا ترى في المطبخ؟','ماذا تشم؟'],phrases:['أمي تطبخ...','أنا أساعد أمي...','رائحة الطعام لذيذة']},
+        {icon:'🎪',title:'في الملعب مع الأصدقاء',questions:['من معك؟','ماذا تلعبون؟','كم هدفاً سجلت؟','من فاز؟'],phrases:['ألعب مع أصدقائي...','نحن نلعب كرة...','لقد سجلت هدفاً']},
+        {icon:'🚌',title:'في رحلة المدرسة',questions:['أين تذهب الرحلة؟','مع من أنت؟','ماذا أخذت معك؟','ما أجمل شيء رأيته؟'],phrases:['الرحلة إلى...','أخذت معي...','رأيت منظراً جميلاً']},
+      ]
+    }
+  };
+
+  const p = parts[partNum];
+  const section = document.getElementById(p.id);
+  if (!section) return;
+
+  let html = '';
+  html += `<div class="part-intro" style="background:linear-gradient(135deg,${p.color},${p.color2});">
+    <div class="big-icon">${p.icon}</div>
+    <h2>${p.name}</h2>
+    <p>${p.range}</p>
+  </div>`;
+
+  if (partNum === 3) {
+    // Part 3: exercise cards
+    html += '<div class="part-grid">';
+    p.scenes.forEach((sc, i) => {
+      html += `<div class="page-card"><div class="card-header part-3"><span>${sc.title}</span><span class="num">صفحة ${25+i}</span></div>
+        <div class="card-body"><div class="exercise">
+          <div class="sound-circle" style="background:${p.color};">${p.sounds[i]}</div>
+          <div class="info">
+            <div class="title">${sc.title}</div>
+            <div class="scene">${sc.emoji} ${sc.place} — الصوت: /${p.sounds[i]}/ في آخر الكلمة</div>
+            <div class="words">
+              ${sc.words.map(w => `<span class="word correct">${w}</span>`).join('')}
+              ${sc.decoys.map(w => `<span class="word decoy">${w}</span>`).join('')}
+            </div>
+            <div class="goal">💬 <span>قل جملة كاملة</span> 🎯 الهدف: <span>تمييز صوت /${p.sounds[i]}/ في آخر الكلمة</span> 📊 <span>متوسط</span></div>
+          </div>
+        </div></div></div>`;
+    });
+    html += '</div>';
+    html += `<div class="certificate"><div class="icon">🏆</div>
+      <h2>أنا أتقنت الأصوات في الوسط والآخر!</h2>
+      <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+      <p style="font-weight:800;color:#92400e;">أنا بطل الأصوات!</p></div>`;
+  } else if (partNum === 4) {
+    html += '<div class="part-grid">';
+    p.activities.forEach((act, i) => {
+      html += `<div class="page-card"><div class="card-header part-4"><span>${act.title}</span><span class="num">صفحة ${35+i}</span></div>
+        <div class="card-body"><div class="activity-card"><h3>${act.title}</h3><p style="font-size:13px;color:var(--text-light);margin-bottom:12px;font-weight:600;">${act.desc}</p>`;
+      act.pairs.forEach(pair => {
+        html += `<div class="syllable-row">
+          <span class="syllable-box" style="background:${p.color};">${pair.a}</span>
+          ${pair.b ? `<span class="syllable-box" style="background:${p.color}80;">${pair.b}</span>` : ''}
+          ${pair.c ? `<span class="syllable-box" style="background:${p.color}60;">${pair.c}</span>` : ''}
+          <span class="eq">=</span>
+          <span style="font-weight:900;font-size:18px;">${pair.r}</span>
+        </div>`;
+      });
+      html += `</div></div></div>`;
+    });
+    html += '</div>';
+  } else if (partNum === 5) {
+    html += '<div class="part-grid">';
+    p.activities.forEach((act, i) => {
+      html += `<div class="page-card"><div class="card-header part-5"><span>${act.title}</span><span class="num">صفحة ${45+i}</span></div>
+        <div class="card-body"><div class="activity-card"><h3>${act.title}</h3><p style="font-size:13px;color:var(--text-light);margin-bottom:12px;font-weight:600;">${act.desc}</p>`;
+      act.pairs.forEach(pair => {
+        html += `<div class="syllable-row"><span style="font-weight:800;font-size:16px;flex:1;">${pair.a}</span><span class="eq" style="font-size:14px;">→</span><span style="font-weight:900;font-size:16px;color:${p.color};">${pair.r}</span></div>`;
+      });
+      html += `</div></div></div>`;
+    });
+    html += '</div>';
+    html += `<div class="certificate"><div class="icon">👑</div>
+      <h2>أنا خبير الأصوات!</h2>
+      <p style="font-size:16px;font-weight:700;color:#92400e;">أتقنت الوعي الصوتي كاملاً!</p>
+      <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐</div></div>`;
+  } else if (partNum === 6) {
+    html += '<div class="part-grid">';
+    p.situations.forEach((sit, i) => {
+      html += `<div class="page-card"><div class="card-header part-6"><span>${sit.title}</span><span class="num">صفحة ${55+i}</span></div>
+        <div class="card-body"><div class="situation">
+          <div class="scene-icon">${sit.icon}</div>
+          <div class="details">
+            <h3>${sit.icon} ${sit.title}</h3>
+            <ul>${sit.questions.map(q => `<li>${q}</li>`).join('')}</ul>
+            <div class="phrases">${sit.phrases.map(p => `<span>${p}</span>`).join('')}</div>
+          </div>
+        </div></div></div>`;
+    });
+    html += '</div>';
+    html += `<div class="certificate" style="border-color:#ea580c;">
+      <div class="icon">👑</div>
+      <h2 style="color:#9a3412;">شهادة البطل الأكبر</h2>
+      <p style="font-size:16px;font-weight:700;color:#9a3412;">أتممت برنامج "رحلتي مع الأصوات" — ٦٠ وضعية تدريبية</p>
+      <div style="margin:16px 0;">
+        <div style="display:inline-block;margin:0 12px;">
+          <div style="font-size:12px;font-weight:700;color:#9a3412;">اسم البطل</div>
+          <div class="line-field" style="border-color:#ea580c;"></div>
+        </div>
+        <div style="display:inline-block;margin:0 12px;">
+          <div style="font-size:12px;font-weight:700;color:#9a3412;">التاريخ</div>
+          <div class="line-field" style="border-color:#ea580c;"></div>
+        </div>
+      </div>
+      <div style="font-size:36px;letter-spacing:8px;">🌟 ⭐ 🌟 ⭐ 🌟</div>
+    </div>`;
+  }
+
+  // Hide loading, inject content
+  const loading = section.querySelector('.part-loading');
+  if (loading) loading.remove();
+  section.insertAdjacentHTML('beforeend', html);
+  
+  // Observe new elements
+  section.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+</script>
+
+<!-- Part 3-6 containers -->
+<section class="section fade-in" id="part3"><div class="part-loading" style="text-align:center;padding:40px;color:var(--text-light);font-weight:700;">جاري تحميل الجزء الثالث...</div></section>
+<section class="section fade-in" id="part4"><div class="part-loading" style="text-align:center;padding:40px;color:var(--text-light);font-weight:700;">جاري تحميل الجزء الرابع...</div></section>
+<section class="section fade-in" id="part5"><div class="part-loading" style="text-align:center;padding:40px;color:var(--text-light);font-weight:700;">جاري تحميل الجزء الخامس...</div></section>
+<section class="section fade-in" id="part6"><div class="part-loading" style="text-align:center;padding:40px;color:var(--text-light);font-weight:700;">جاري تحميل الجزء السادس...</div></section>
+
+</body>
+</html>

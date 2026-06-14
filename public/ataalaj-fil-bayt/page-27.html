@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أتعالج في البيت - صفحة 27</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f0ebe3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Noto Sans Arabic', sans-serif;
+    padding: 30px;
+  }
+  .page {
+    width: 595px; height: 842px;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.12);
+    border-radius: 8px;
+  }
+  .top-bar {
+    background: linear-gradient(135deg, #f57f17, #f57f17dd);
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+  }
+  .top-bar .title { font-size: 14px; font-weight: 900; }
+  .top-bar .badge {
+    background: #fff9c4; color: #f57f17;
+    padding: 3px 14px; border-radius: 20px;
+    font-size: 11px; font-weight: 800;
+  }
+  .top-bar .page-num {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+  }
+  .content { padding: 16px 20px; }
+  .header { text-align: center; margin-bottom: 14px; }
+  .header .target-sound {
+    display: inline-block; background: #fff9c4; color: #f57f17;
+    font-size: 28px; font-weight: 900; width: 48px; height: 48px;
+    line-height: 48px; text-align: center; border-radius: 50%;
+    margin-bottom: 4px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  .header .instruction { font-size: 15px; font-weight: 700; color: #333; line-height: 1.5; }
+  .header .instruction span { color: #f57f17; font-weight: 900; }
+  .scene {
+    width: 100%; height: 200px; border-radius: 14px; overflow: hidden;
+    position: relative; margin-bottom: 14px;
+    background: #fff8e1; border: 2.5px solid #f57f1744;
+  }
+  .scene-bg {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; padding: 10px;
+  }
+  .scene-bg .emoji { font-size: 44px; }
+  .scene-label {
+    text-align: center; color: #f57f17;
+    font-size: 14px; font-weight: 800; margin-top: 4px;
+  }
+  .phrase-box {
+    background: #fff8e1;
+    border-radius: 12px; padding: 10px 16px;
+    text-align: center; margin-bottom: 14px;
+    border-right: 4px solid #f57f17;
+  }
+  .phrase-box .phrase { font-size: 15px; font-weight: 800; color: #333; }
+  .phrase-box .phrase span { color: #f57f17; }
+  .items-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 14px;
+  }
+  .item-card {
+    aspect-ratio: 1; border-radius: 12px;
+    border: 2.5px dashed #ccc; background: #fafafa;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 4px; position: relative;
+  }
+  .item-card.correct { border: 2.5px solid #f57f17; background: #fff8e1; }
+  .item-card.decoy { border: 2.5px dashed #ddd; background: #fafafa; }
+  .item-card .icon { font-size: 30px; line-height: 1; margin-bottom: 2px; }
+  .item-card .word { font-size: 11px; font-weight: 700; color: #333; }
+  .item-card .check {
+    position: absolute; top: -5px; left: -5px;
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 12px; line-height: 20px; text-align: center;
+  }
+  .item-card.correct .check { background: #f57f17; color: #fff; display: block; }
+  .bottom-bar {
+    background: #f5f0eb; border-radius: 10px;
+    padding: 8px 14px; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .bottom-bar .goal { font-size: 10px; color: #666; font-weight: 600; line-height: 1.5; }
+  .bottom-bar .goal span { color: #f57f17; font-weight: 800; }
+  .bottom-bar .stars { color: #ffd700; font-size: 16px; letter-spacing: 1px; }
+  .bottom-bar .stars .empty { color: #ddd; }
+  .qrcode-box {
+    text-align: center; margin-top: 10px;
+    padding: 8px; background: #fafafa;
+    border-radius: 8px; border: 1px dashed #ccc;
+    font-size: 9px; color: #999; font-weight: 600;
+  }
+  .footer { text-align: center; margin-top: 14px; font-size: 10px; color: #bbb; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-bar">
+    <div class="title">🗣️ أتعالج في البيت</div>
+    <div class="badge">📍 الأصوات في آخر الكلمة</div>
+    <div class="page-num">27 / ٦٠</div>
+  </div>
+  <div class="content">
+    <div class="header">
+      <div class="target-sound">ب</div>
+      <div class="instruction">
+        في المزرعة <span>🐄 في المزرعة</span>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="scene-bg">
+        <span class="emoji">📌</span><span class="emoji">📍</span><span class="emoji">🔹</span><span class="emoji">🔸</span><span class="emoji">✨</span>
+      </div>
+    </div>
+    <div class="scene-label">📍 🐄 في المزرعة</div>
+    <div class="phrase-box">
+      <div class="phrase">💬 أنا في في المزرعة... <span>(كلمة 1، كلمة 2، كلمة 3، كلمة 4، كلمة 5)</span></div>
+    </div>
+    <div class="items-grid">
+      <div class="item-card correct">
+          <div class="check">✓</div>
+          <div class="icon">🎯</div>
+          <div class="word">كلمة 1</div>
+        </div><div class="item-card correct">
+          <div class="check">✓</div>
+          <div class="icon">🎨</div>
+          <div class="word">كلمة 2</div>
+        </div><div class="item-card correct">
+          <div class="check">✓</div>
+          <div class="icon">🎪</div>
+          <div class="word">كلمة 3</div>
+        </div><div class="item-card correct">
+          <div class="check">✓</div>
+          <div class="icon">🎠</div>
+          <div class="word">كلمة 4</div>
+        </div><div class="item-card correct">
+          <div class="check">✓</div>
+          <div class="icon">🎡</div>
+          <div class="word">كلمة 5</div>
+        </div><div class="item-card decoy">
+          <div class="check"></div>
+          <div class="icon">🎢</div>
+          <div class="word">كلمة 6</div>
+        </div><div class="item-card decoy">
+          <div class="check"></div>
+          <div class="icon">🎟️</div>
+          <div class="word">كلمة 7</div>
+        </div><div class="item-card decoy">
+          <div class="check"></div>
+          <div class="icon">🎗️</div>
+          <div class="word">كلمة 8</div>
+        </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="goal">
+        🎯 تمييز الصوت في آخر الكلمة<br>
+        📊 المستوى: <span>متوسط</span>
+      </div>
+      <div class="stars">
+        <span>★</span><span>★</span><span>★</span><span class="empty">★</span><span class="empty">★</span>
+      </div>
+    </div>
+    <div class="qrcode-box">
+      📱 [ QR Code ] → استمع إلى النطق الصحيح | شاهد الفيديو التوضيحي
+    </div>
+    <div class="footer">🗣️ أتعالج في البيت — برنامج النطق العربي المصوّر | www.ibishop-dz.com</div>
+  </div>
+</div>
+</body>
+</html>

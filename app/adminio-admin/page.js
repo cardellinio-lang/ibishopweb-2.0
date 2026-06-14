@@ -11,7 +11,7 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [wilayas, setWilayas] = useState([]);
   const [tab, setTab] = useState('products');
-  const [form, setForm] = useState({ name: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
+  const [form, setForm] = useState({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sheetUrl, setSheetUrl] = useState('');
@@ -98,7 +98,7 @@ export default function Admin() {
 
   const save = async () => {
     setLoading(true);
-    const body = { ...form, images: form.images.filter(i => i && (i.startsWith('http') || i.startsWith('data:'))), price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
+    const body = { ...form, slug: form.slug || undefined, images: form.images.filter(i => i && (i.startsWith('http') || i.startsWith('data:'))), price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
     const res = await fetch('/api/products' + (editId ? `/${editId}` : ''), {
       method: editId ? 'PUT' : 'POST',
       headers: authHeaders(),
@@ -111,7 +111,7 @@ export default function Admin() {
       setLoading(false);
       return;
     }
-    setForm({ name: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
+    setForm({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
     setEditId(null);
     setLoading(false);
     load();
@@ -119,7 +119,7 @@ export default function Admin() {
 
   const edit = (p) => {
     const imgs = (Array.isArray(p.images) ? p.images : JSON.parse(p.images || '[]')).filter(i => i && (i.startsWith('http') || i.startsWith('data:')));
-    setForm({ name: p.name, price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
+    setForm({ name: p.name, slug: p.slug || '', price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
     setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
       setEditingReviewId(null);
@@ -1186,7 +1186,11 @@ export default function Admin() {
         <div className="card" style={{ maxWidth: 500 }}>
           <h3 style={{ marginBottom: 12 }}>{editId ? '✏️ Modifier le produit' : '➕ Ajouter un produit'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div><label style={{ fontWeight: 700 }}>Nom du produit *</label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+            <div><label style={{ fontWeight: 700 }}>Nom du produit *</label><input value={form.name} onChange={e => {
+              const name = e.target.value;
+              setForm(f => ({ ...f, name, slug: f.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') }));
+            }} /></div>
+            <div><label style={{ fontWeight: 700 }}>Slug (URL)</label><input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder="Auto-généré depuis le nom" dir="ltr" style={{ fontFamily: 'monospace', fontSize: 13 }} /></div>
             <div><label style={{ fontWeight: 700 }}>Prix (DA) *</label><input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} /></div>
             <div><label style={{ fontWeight: 700 }}>Ancien prix (optionnel)</label><input type="number" value={form.oldPrice} onChange={e => setForm(f => ({ ...f, oldPrice: e.target.value }))} /></div>
             {form.images.map((url, i) => (

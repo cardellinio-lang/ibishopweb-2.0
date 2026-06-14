@@ -10,7 +10,7 @@ export async function PUT(req, { params }) {
   const data = await req.json();
   const product = await prisma.product.update({
     where: { id: params.id },
-    data: { name: data.name, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', category: data.category || '', sku: data.sku || null, stock: data.stock || 1, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
+    data: { name: data.name, slug: data.slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', category: data.category || '', sku: data.sku || null, stock: data.stock || 1, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
   });
   return Response.json(product);
 }

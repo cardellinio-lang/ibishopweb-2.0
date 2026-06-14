@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أتعالج في البيت - برنامج النطق العربي المصوّر</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Noto Sans Arabic', sans-serif;
+    padding: 40px 20px;
+    direction: rtl;
+    min-height: 100vh;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .hero {
+    background: rgba(255,255,255,0.95);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 900;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .hero .sub {
+    font-size: 18px; color: #666; font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .hero .desc {
+    font-size: 14px; color: #888; line-height: 1.7;
+    max-width: 600px; margin: 0 auto;
+  }
+  .hero .badge-row {
+    display: flex; justify-content: center; gap: 12px;
+    flex-wrap: wrap; margin-top: 16px;
+  }
+  .hero .badge {
+    padding: 6px 18px; border-radius: 20px;
+    font-size: 12px; font-weight: 800; color: #fff;
+  }
+  .parts-grid {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .part-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  .part-header {
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+  }
+  .part-header .part-name { font-size: 16px; font-weight: 900; color: #333; }
+  .part-header .part-count {
+    font-size: 12px; color: #888; font-weight: 600;
+  }
+  .part-pages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+    padding: 0 20px 16px;
+  }
+  .page-link {
+    display: flex; flex-direction: column; align-items: center;
+    text-decoration: none;
+    padding: 8px 4px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: transform 0.2s;
+    border: 1.5px solid transparent;
+  }
+  .page-link:hover {
+    transform: translateY(-2px);
+  }
+  .page-link .page-num {
+    font-size: 12px; font-weight: 800;
+  }
+  .page-link .page-icon { font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>🗣️ أتعالج في البيت</h1>
+    <div class="sub">برنامج النطق العربي المصوّر</div>
+    <div class="desc">
+      برنامج متكامل مكون من ٦٠ صفحة تدريبية لاختصاصيي النطق والأرطفوني<br>
+      تدرج من الصوت → المقطع → الكلمة → الجملة → القصة
+    </div>
+    <div class="badge-row">
+      <span class="badge" style="background:#1565c0;">🔵 ١٠ صفحات</span>
+      <span class="badge" style="background:#2e7d32;">🟢 ١٠ صفحات</span>
+      <span class="badge" style="background:#f57f17;">🟡 ١٠ صفحات</span>
+      <span class="badge" style="background:#7b1fa2;">🟣 ١٠ صفحات</span>
+      <span class="badge" style="background:#c62828;">🔴 ١٠ صفحات</span>
+      <span class="badge" style="background:#e65100;">🟠 ١٠ صفحات</span>
+    </div>
+  </div>
+
+  <div class="parts-grid">
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🔵 الأصوات في أول الكلمة</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-01.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #1565c0;">01</span>
+          </a><a href="page-02.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #1565c0;">02</span>
+          </a><a href="page-03.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #1565c0;">03</span>
+          </a><a href="page-04.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #1565c0;">04</span>
+          </a><a href="page-05.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #1565c0;">05</span>
+          </a><a href="page-06.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #1565c0;">06</span>
+          </a><a href="page-07.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #1565c0;">07</span>
+          </a><a href="page-08.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #1565c0;">08</span>
+          </a><a href="page-09.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #1565c0;">09</span>
+          </a><a href="page-10.html" class="page-link" style="border-color: #1565c033;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #1565c0;">10</span>
+          </a>
+      </div>
+    </div>
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🟢 الأصوات في وسط الكلمة</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-11.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #2e7d32;">11</span>
+          </a><a href="page-12.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #2e7d32;">12</span>
+          </a><a href="page-13.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #2e7d32;">13</span>
+          </a><a href="page-14.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #2e7d32;">14</span>
+          </a><a href="page-15.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #2e7d32;">15</span>
+          </a><a href="page-16.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #2e7d32;">16</span>
+          </a><a href="page-17.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #2e7d32;">17</span>
+          </a><a href="page-18.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #2e7d32;">18</span>
+          </a><a href="page-19.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #2e7d32;">19</span>
+          </a><a href="page-20.html" class="page-link" style="border-color: #2e7d3233;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #2e7d32;">20</span>
+          </a>
+      </div>
+    </div>
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🟡 الأصوات في آخر الكلمة</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-21.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #f57f17;">21</span>
+          </a><a href="page-22.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #f57f17;">22</span>
+          </a><a href="page-23.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #f57f17;">23</span>
+          </a><a href="page-24.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #f57f17;">24</span>
+          </a><a href="page-25.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #f57f17;">25</span>
+          </a><a href="page-26.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #f57f17;">26</span>
+          </a><a href="page-27.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #f57f17;">27</span>
+          </a><a href="page-28.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #f57f17;">28</span>
+          </a><a href="page-29.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #f57f17;">29</span>
+          </a><a href="page-30.html" class="page-link" style="border-color: #f57f1733;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #f57f17;">30</span>
+          </a>
+      </div>
+    </div>
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🟣 المقاطع الصوتية</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-31.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #7b1fa2;">31</span>
+          </a><a href="page-32.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #7b1fa2;">32</span>
+          </a><a href="page-33.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #7b1fa2;">33</span>
+          </a><a href="page-34.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #7b1fa2;">34</span>
+          </a><a href="page-35.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #7b1fa2;">35</span>
+          </a><a href="page-36.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #7b1fa2;">36</span>
+          </a><a href="page-37.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #7b1fa2;">37</span>
+          </a><a href="page-38.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #7b1fa2;">38</span>
+          </a><a href="page-39.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #7b1fa2;">39</span>
+          </a><a href="page-40.html" class="page-link" style="border-color: #7b1fa233;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #7b1fa2;">40</span>
+          </a>
+      </div>
+    </div>
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🔴 الوعي الصوتي</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-41.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #c62828;">41</span>
+          </a><a href="page-42.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #c62828;">42</span>
+          </a><a href="page-43.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #c62828;">43</span>
+          </a><a href="page-44.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #c62828;">44</span>
+          </a><a href="page-45.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #c62828;">45</span>
+          </a><a href="page-46.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #c62828;">46</span>
+          </a><a href="page-47.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #c62828;">47</span>
+          </a><a href="page-48.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #c62828;">48</span>
+          </a><a href="page-49.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #c62828;">49</span>
+          </a><a href="page-50.html" class="page-link" style="border-color: #c6282833;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #c62828;">50</span>
+          </a>
+      </div>
+    </div>
+    
+    <div class="part-card">
+      <div class="part-header">
+        <div class="part-name">🟠 المواقف التواصلية</div>
+        <div class="part-count">10 صفحات</div>
+      </div>
+      <div class="part-pages">
+        <a href="page-51.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎯</span>
+            <span class="page-num" style="color: #e65100;">51</span>
+          </a><a href="page-52.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎨</span>
+            <span class="page-num" style="color: #e65100;">52</span>
+          </a><a href="page-53.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎪</span>
+            <span class="page-num" style="color: #e65100;">53</span>
+          </a><a href="page-54.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎠</span>
+            <span class="page-num" style="color: #e65100;">54</span>
+          </a><a href="page-55.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎡</span>
+            <span class="page-num" style="color: #e65100;">55</span>
+          </a><a href="page-56.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎢</span>
+            <span class="page-num" style="color: #e65100;">56</span>
+          </a><a href="page-57.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎟️</span>
+            <span class="page-num" style="color: #e65100;">57</span>
+          </a><a href="page-58.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎗️</span>
+            <span class="page-num" style="color: #e65100;">58</span>
+          </a><a href="page-59.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎭</span>
+            <span class="page-num" style="color: #e65100;">59</span>
+          </a><a href="page-60.html" class="page-link" style="border-color: #e6510033;">
+            <span class="page-icon">🎀</span>
+            <span class="page-num" style="color: #e65100;">60</span>
+          </a>
+      </div>
+    </div>
+    
+  </div>
+  <div style="text-align: center; margin-top: 30px; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600;">
+    🗣️ أتعالج في البيت — برنامج النطق العربي المصوّر © 2026
+  </div>
+</div>
+</body>
+</html>
