@@ -20,6 +20,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const c = product.color || '#000000';
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
+  const wordColors = ['أحمر', 'وردي'];
+  const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
+  const realQty = product.slug === 'wordrope' ? colorQtys['أحمر'] + colorQtys['وردي'] : qty;
   const [customer, setCustomer] = useState('');
   const [phone, setPhone] = useState('');
   const [wilayaId, setWilayaId] = useState('');
@@ -64,6 +67,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   ] : product.slug === 'sijada-salat' ? [
     { label: 'سجادة ابنتي', price: 2400, desc: 'وردي', color: '#e91e63' },
     { label: 'سجادة ابني', price: 2400, desc: 'أزرق', color: '#1565c0' },
+  ] : product.slug === 'wordrope' ? [
+    { label: 'أحمر', price: 2900, desc: 'Rouge', color: '#dc2626' },
+    { label: 'وردي', price: 2900, desc: 'Rose', color: '#e91e63' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -77,6 +83,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
+  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
+  const whatsAppFreeDelivery = product.slug === 'word-box' && pack === 'باقة ثلاثية';
+  const whatsAppDiscount = isWhatsAppProduct && !whatsAppFreeDelivery ? 200 : 0;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -94,14 +103,14 @@ export default function ProductClient({ product, wilayas, communes}) {
   }, []);
 
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
-  const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && qty >= product.tierQty;
+  const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
   const delivery = selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0;
-  const subtotal = finalPrice * qty;
+  const subtotal = finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
   const savings = product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0;
@@ -167,22 +176,22 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const submitOrder = async () => {
     if (submittedRef.current) return;
-    if (!customer || !phone || !wilayaId || !communeId) {
+    if (!customer || !phone || !wilayaId || !communeId || realQty < 1) {
       setError('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
     submittedRef.current = true;
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
+
     try {
-      const alwaysLabel = product.slug === 'word-box';
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (variant && (alwaysLabel || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : '');
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : (variant && (variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          productId: product.id, qty, customer, phone,
+          productId: product.id, qty: realQty, customer, phone,
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
@@ -201,7 +210,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       submittingOrderRef.current = true;
       const merciParams = new URLSearchParams({
         order: orderData.number, name: product.name,
-        qty: qty.toString(), total: total.toString(),
+        qty: realQty.toString(), total: total.toString(),
         pid: product.id.toString(), capiEventId: orderData.capiEventId,
       });
       window.location.href = `/merci?${merciParams.toString()}`;
@@ -210,6 +219,56 @@ export default function ProductClient({ product, wilayas, communes}) {
       setError(e.message || 'حدث خطأ أثناء الطلب');
       submittedRef.current = false;
     }
+  };
+
+  const submitWhatsAppOrder = async () => {
+    if (submittedRef.current) return;
+    if (!customer || !phone || !wilayaId || !communeId || realQty < 1) {
+      setError('يرجى ملء جميع الحقول المطلوبة');
+      return;
+    }
+    submittedRef.current = true;
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+    setError('');
+    const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
+    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : '';
+    const waPrice = finalPrice - whatsAppDiscount;
+    const waTotal = whatsAppFreeDelivery ? subtotal - whatsAppDiscount : total - whatsAppDiscount;
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: product.id, qty: realQty, customer, phone,
+          wilayaId: Number(wilayaId), communeId: Number(communeId),
+          address, deliveryType, pageUrl: window.location.href,
+          variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
+          variantPrice: (variants || wordBoxPacks) ? waPrice : undefined,
+          source: 'whatsapp',
+        }),
+      });
+      if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
+      if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
+        window.fbq('track', 'Purchase', {
+          value: waTotal / 100, currency: 'DZD',
+          content_name: product.name, content_ids: [product.id],
+        });
+      }
+    } catch (e) {
+      setError(e.message || 'حدث خطأ أثناء الطلب');
+      submittedRef.current = false;
+      return;
+    }
+    const wilayaName = WILAYA_AR[Number(wilayaId)] || '';
+    const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
+    const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
+    const discountLine = whatsAppFreeDelivery
+      ? `%0A🎉 توصيل مجاني!`
+      : `%0A🎉 خصم واتساب: -${whatsAppDiscount.toLocaleString()} د.ج%0A💵 السعر بعد الخصم: ${(finalPrice - whatsAppDiscount).toLocaleString()} د.ج`;
+    const waDeliveryDisplay = whatsAppFreeDelivery ? 0 : delivery;
+    const msg = `🛒 تأكيد الطلبية - ${product.name}%0A%0A👤 الاسم: ${customer}%0A📞 الهاتف: ${phone}%0A📍 الولاية: ${wilayaName}%0A📍 البلدية: ${communeName}%0A📦 ${packLabel}%0A🔢 الكمية: ${realQty}%0A💰 السعر: ${finalPrice.toLocaleString()} د.ج${discountLine}%0A🚚 التوصيل: ${waDeliveryDisplay.toLocaleString()} د.ج%0A💵 المجموع: ${waTotal.toLocaleString()} د.ج`;
+    window.location.href = `https://wa.me/213552435702?text=${msg}`;
+    submittedRef.current = false;
   };
 
   return (
@@ -386,7 +445,30 @@ export default function ProductClient({ product, wilayas, communes}) {
               </div>
 
               {/* Variant selector (non word-box) */}
-              {variants && (
+              {variants && product.slug === 'wordrope' && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار الألوان</label>
+                  <div style={{ display: 'flex', gap: 16 }}>
+                    {variants.map(v => {
+                      const cq = colorQtys[v.label] || 0;
+                      return (
+                        <div key={v.label} style={{ flex: 1, textAlign: 'center', background: '#f8f9fa', borderRadius: 14, padding: '12px 8px' }}>
+                          <div style={{ width: 32, height: 32, borderRadius: '50%', background: v.color, border: '3px solid rgba(0,0,0,0.15)', margin: '0 auto 8px' }} />
+                          <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 8 }}>{v.label}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                            <button type="button" onClick={() => setColorQtys(prev => ({ ...prev, [v.label]: Math.max(0, (prev[v.label] || 0) - 1) }))}
+                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</button>
+                            <div style={{ fontSize: 20, fontWeight: 900, minWidth: 28, textAlign: 'center' }}>{cq}</div>
+                            <button type="button" onClick={() => setColorQtys(prev => ({ ...prev, [v.label]: (prev[v.label] || 0) + 1 }))}
+                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>+</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {variants && product.slug !== 'wordrope' && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار النوع</label>
                   <div style={{ display: 'flex', gap: 10 }}>
@@ -514,6 +596,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
 
               {/* Quantity - + */}
+              {product.slug !== 'wordrope' && (
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الكمية</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -529,12 +612,22 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#16a34a' : c }}>× {finalPrice.toLocaleString()} د.ج</div>
                 </div>
               </div>
+              )}
+              {product.slug === 'wordrope' && (
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>المجموع: {realQty} قطعة</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'center', padding: '8px 0' }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'center', color: '#1d1d1f' }}>{realQty}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#16a34a' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
+                </div>
+              </div>
+              )}
 
               {/* Tier message + Gift */}
-              {product.tierEnabled && product.tierQty && qty < product.tierQty && (
+              {product.tierEnabled && product.tierQty && realQty < product.tierQty && (
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
-                    {(product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - qty)}
+                    {(product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>
               )}
@@ -563,11 +656,33 @@ export default function ProductClient({ product, wilayas, communes}) {
 
               {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginBottom: 16 }}>{error}</div>}
 
-              {/* Submit button */}
+              {/* Submit buttons */}
               <button type="submit" className="order-btn"
                       style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
                 اطلب الآن
               </button>
+
+              {isWhatsAppProduct && (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#16a34a', background: '#f0fdf4', padding: '6px 14px', borderRadius: 20 }}>
+                      {whatsAppFreeDelivery ? '🎉 توصيل مجاني عند التأكيد عبر واتساب' : `🎉 وفر ${whatsAppDiscount.toLocaleString()} د.ج عند التأكيد عبر واتساب`}
+                    </span>
+                  </div>
+                  <button type="button" onClick={submitWhatsAppOrder}
+                          style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                          className="order-btn">
+                    📱 تأكيد عبر واتساب - {whatsAppFreeDelivery ? 'توصيل مجاني' : `وفر ${whatsAppDiscount.toLocaleString()} د.ج`}
+                  </button>
+                  {whatsAppFreeDelivery && (
+                    <div style={{ textAlign: 'center', marginTop: 8 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: '#128C7E' }}>
+                        🚚 التوصيل مجاني عند تأكيد الطلب عبر واتساب للباقة الثلاثية
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Order Summary */}
               <div style={{ marginTop: 20, background: '#f8f9fa', borderRadius: 14, padding: 16 }}>
@@ -582,7 +697,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>الكمية</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#6e6e73' }}>{qty}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#6e6e73' }}>{realQty}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>{deliveryType === 'home' ? 'سعر التوصيل للمنزل' : 'سعر التوصيل للمكتب'}</span>
@@ -639,7 +754,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                   <div>
                     <span style={{ fontWeight: 800, fontSize: 15, color: '#1d1d1f' }}>{review.name}</span>
-                    <span style={{ fontSize: 12, color: '#8e8e93', marginLeft: 8 }}>📍 {review.city}</span>
+                    {review.city && <span style={{ fontSize: 12, color: '#8e8e93', marginLeft: 8 }}>📍 {review.city}</span>}
                   </div>
                   <span style={{ fontSize: 12, color: '#8e8e93' }}>{review.date}</span>
                 </div>
@@ -656,18 +771,40 @@ export default function ProductClient({ product, wilayas, communes}) {
       {/* Sticky bottom button — scrolls to form OR submits if form is complete */}
       {scrolled && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: '#fff', borderTop: '1px solid #e8e8ed', zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+          {isWhatsAppProduct ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => {
+                  const allFilled = customer && phone && wilayaId && communeId;
+                  if (allFilled) { submitOrder(); }
+                  else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                }}
+                        style={{ flex: 1, padding: '14px 16px', background: c, color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        className="order-btn">
+                  اطلب الآن
+                </button>
+                <button onClick={() => {
+                  const allFilled = customer && phone && wilayaId && communeId;
+                  if (allFilled) { submitWhatsAppOrder(); }
+                  else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                }}
+                        style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        className="order-btn">
+                  📱 واتساب - {whatsAppFreeDelivery ? 'توصيل مجاني' : `${whatsAppDiscount.toLocaleString()} د.ج`}
+                </button>
+              </div>
+            </div>
+          ) : (
           <button onClick={() => {
             const allFilled = customer && phone && wilayaId && communeId;
-            if (allFilled) {
-              submitOrder();
-            } else {
-              formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (allFilled) { submitOrder(); }
+            else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
           }}
                   style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
-          className="order-btn">
+                  className="order-btn">
             اطلب الآن
           </button>
+          )}
         </div>
       )}
 
@@ -905,7 +1042,7 @@ function CelebrationOverlay({ data, onClose }) {
               backdropFilter: 'blur(4px)',
               border: '1px solid rgba(255,255,255,0.2)',
             }}>
-              ✅ تم تطبيق العرض الترويجي
+              ✅ تم تخفيض السعر
             </span>
           </div>
         </div>
