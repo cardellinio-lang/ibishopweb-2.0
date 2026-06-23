@@ -84,8 +84,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
   const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
-  const whatsAppFreeDelivery = product.slug === 'word-box' && pack === 'باقة ثلاثية';
-  const whatsAppDiscount = isWhatsAppProduct && !whatsAppFreeDelivery ? 200 : 0;
+  const whatsAppDiscount = isWhatsAppProduct ? (product.slug === 'word-box' && pack === 'باقة ثلاثية' ? 300 : 200) : 0;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -233,7 +232,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
     const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : '';
     const waPrice = finalPrice - whatsAppDiscount;
-    const waTotal = whatsAppFreeDelivery ? subtotal - whatsAppDiscount : total - whatsAppDiscount;
+    const waTotal = total - whatsAppDiscount;
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -262,12 +261,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     const wilayaName = WILAYA_AR[Number(wilayaId)] || '';
     const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
-    const discountLine = whatsAppFreeDelivery
-      ? `\n🎉 توصيل مجاني!`
-      : `\n🎉 خصم واتساب: -${whatsAppDiscount.toLocaleString()} د.ج\n💵 السعر بعد الخصم: ${(finalPrice - whatsAppDiscount).toLocaleString()} د.ج`;
-    const waDeliveryDisplay = whatsAppFreeDelivery ? 0 : delivery;
+    const discountLine = `\n🎉 خصم واتساب: -${whatsAppDiscount.toLocaleString()} د.ج\n💵 السعر بعد الخصم: ${(finalPrice - whatsAppDiscount).toLocaleString()} د.ج`;
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${finalPrice.toLocaleString()} د.ج${discountLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n🚚 سعر التوصيل: ${waDeliveryDisplay.toLocaleString()} د.ج\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${finalPrice.toLocaleString()} د.ج${discountLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n🚚 سعر التوصيل: ${delivery.toLocaleString()} د.ج\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -666,29 +662,14 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
                     <span style={{ fontSize: 13, fontWeight: 800, color: '#16a34a', background: '#f0fdf4', padding: '6px 14px', borderRadius: 20 }}>
-                      {whatsAppFreeDelivery ? '🎉 توصيل مجاني عند التأكيد عبر واتساب' : `🎉 وفر ${whatsAppDiscount.toLocaleString()} د.ج عند التأكيد عبر واتساب`}
+                      🎉 وفر {whatsAppDiscount.toLocaleString()} د.ج عند التأكيد عبر واتساب
                     </span>
                   </div>
                   <button type="button" onClick={submitWhatsAppOrder}
                           style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                           className="order-btn">
-                    📱 تأكيد عبر واتساب - {whatsAppFreeDelivery ? 'توصيل مجاني' : `وفر ${whatsAppDiscount.toLocaleString()} د.ج`}
+                    📱 تأكيد عبر واتساب - وفر {whatsAppDiscount.toLocaleString()} د.ج
                   </button>
-                  {whatsAppFreeDelivery && (
-                    <div style={{ textAlign: 'center', marginTop: 8 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#128C7E' }}>
-                        🚚 التوصيل مجاني عند تأكيد الطلب عبر واتساب للباقة الثلاثية
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {isWhatsAppProduct && !whatsAppFreeDelivery && product.slug === 'word-box' && (
-                <div style={{ textAlign: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: '#128C7E' }}>
-                    🚚 الباقة الثلاثية: توصيل مجاني عند التأكيد عبر واتساب
-                  </span>
                 </div>
               )}
 
@@ -798,7 +779,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  📱 واتساب - {whatsAppFreeDelivery ? 'توصيل مجاني' : `${whatsAppDiscount.toLocaleString()} د.ج`}
+                  📱 واتساب -{whatsAppDiscount.toLocaleString()} د.ج
                 </button>
               </div>
             </div>
