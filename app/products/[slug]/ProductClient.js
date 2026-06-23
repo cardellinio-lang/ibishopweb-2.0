@@ -84,7 +84,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
   const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
-  const whatsAppDiscount = isWhatsAppProduct ? (product.slug === 'word-box' && pack === 'باقة ثلاثية' ? 300 : 200) : 0;
+  const whatsAppFreeDelivery = isWhatsAppProduct;
+  const whatsAppDiscount = 0;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -231,8 +232,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     setError('');
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
     const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : '';
-    const waPrice = finalPrice - whatsAppDiscount;
-    const waTotal = total - whatsAppDiscount;
+    const waPrice = finalPrice;
+    const waDelivery = 0;
+    const waTotal = subtotal;
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -261,9 +263,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     const wilayaName = WILAYA_AR[Number(wilayaId)] || '';
     const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
-    const discountLine = `\n🎉 خصم واتساب: -${whatsAppDiscount.toLocaleString()} د.ج\n💵 السعر بعد الخصم: ${(finalPrice - whatsAppDiscount).toLocaleString()} د.ج`;
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${finalPrice.toLocaleString()} د.ج${discountLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n🚚 سعر التوصيل: ${delivery.toLocaleString()} د.ج\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${finalPrice.toLocaleString()} د.ج\n🎉 توصيل مجاني!\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -664,13 +665,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
                     <span style={{ fontSize: 13, fontWeight: 800, color: '#16a34a', background: '#f0fdf4', padding: '6px 14px', borderRadius: 20 }}>
-                      🎉 وفر {whatsAppDiscount.toLocaleString()} د.ج عند التأكيد عبر واتساب
+                      🎉 توصيل مجاني عند التأكيد عبر واتساب
                     </span>
                   </div>
                   <button type="button" onClick={submitWhatsAppOrder}
                           style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                           className="order-btn">
-                    📱 تأكيد عبر واتساب - وفر {whatsAppDiscount.toLocaleString()} د.ج
+                    📱 تأكيد عبر واتساب - توصيل مجاني
                   </button>
                 </div>
               )}
@@ -781,7 +782,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  📱 واتساب -{whatsAppDiscount.toLocaleString()} د.ج
+                  📱 واتساب - توصيل مجاني
                 </button>
               </div>
             </div>
