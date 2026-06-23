@@ -349,10 +349,32 @@ export default function Admin() {
                     <td>{p.stock}</td>
                     <td><span className="badge" style={{ background: p.active ? '#16a34a' : '#888' }}>{p.active ? 'Actif' : 'Inactif'}</span></td>
                     <td>
-                      <div className="flex" style={{ gap: 2 }}>
-                        <button className="btn btn-ghost" style={{ padding: '6px 8px', fontSize: 13 }} onClick={() => moveProduct(p.id, 'up')} disabled={i === 0} title="Monter">⬆️</button>
-                        <button className="btn btn-ghost" style={{ padding: '6px 8px', fontSize: 13 }} onClick={() => moveProduct(p.id, 'down')} disabled={i === products.length - 1} title="Descendre">⬇️</button>
-                      </div>
+                      <input type="number" min="1" max={products.length}
+                             defaultValue={i + 1}
+                             onKeyDown={async (e) => {
+                               if (e.key !== 'Enter') return;
+                               const val = parseInt(e.target.value);
+                               if (!val || val < 1 || val > products.length) return;
+                               const r = await fetch('/api/products', {
+                                 method: 'PATCH', headers: authHeaders(),
+                                 body: JSON.stringify({ id: p.id, position: val }),
+                               });
+                               if (r.status === 401) { alert('Session expirée.'); autoLogout(); return; }
+                               const d = await r.json();
+                               if (d.success) setProducts(d.products);
+                             }}
+                             onBlur={async (e) => {
+                               const val = parseInt(e.target.value);
+                               if (!val || val < 1 || val > products.length || val === i + 1) return;
+                               const r = await fetch('/api/products', {
+                                 method: 'PATCH', headers: authHeaders(),
+                                 body: JSON.stringify({ id: p.id, position: val }),
+                               });
+                               if (r.status === 401) { alert('Session expirée.'); autoLogout(); return; }
+                               const d = await r.json();
+                               if (d.success) setProducts(d.products);
+                             }}
+                             style={{ width: 58, padding: '6px 8px', borderRadius: 8, border: '1.5px solid #d2d2d7', fontSize: 14, fontWeight: 700, textAlign: 'center', background: '#fff' }} />
                     </td>
                     <td>
                       <div className="flex" style={{ gap: 4 }}>
@@ -1177,6 +1199,43 @@ export default function Admin() {
                   {ecotrackTestStatus.message}
                 </div>
               )}
+            </div>
+
+            <div style={{ borderTop: '1px solid #e5e5ea', margin: '8px 0' }} />
+
+            <div style={{ padding: '16px 20px', background: '#f8f9fa', borderRadius: 12 }}>
+              <h4 style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>🎨 Thème Orva</h4>
+              <p style={{ fontSize: 13, color: '#6e6e73', marginBottom: 12 }}>
+                Personnalise les couleurs du thème Orva. Format: <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>rgba(r,g,b,a)</code> ou <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>#hex</code>.
+              </p>
+              {[
+                { key: 'orva_primary', label: 'Couleur primaire', def: '#0066CC' },
+                { key: 'orva_primary_hover', label: 'Survol bouton', def: '#000000' },
+                { key: 'orva_gold_bg', label: 'Fond icônes', def: 'rgba(245,214,215,0.3)' },
+                { key: 'orva_text', label: 'Texte', def: '#000000' },
+                { key: 'orva_border', label: 'Bordure', def: '#F5D6D7' },
+                { key: 'orva_secondary', label: 'Bouton principal', def: '#800004' },
+              ].map(({ key, label, def }) => {
+                const val = settings[key] ?? def;
+                return (
+                  <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, background: val, border: '1px solid #d2d2d7', flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, fontWeight: 600, minWidth: 160, flexShrink: 0 }}>{label}</span>
+                    <input value={val}
+                           onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))}
+                           style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13, fontFamily: 'monospace' }} />
+                    <button className="btn btn-primary" style={{ padding: '8px 14px', fontSize: 13 }}
+                            onClick={async () => {
+                              await fetch('/api/settings', {
+                                method: 'PATCH', headers: authHeaders(),
+                                body: JSON.stringify({ key, value: settings[key] ?? def }),
+                              });
+                            }}>
+                      💾
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -14,7 +14,26 @@ export async function GET() {
 
 export async function PATCH(req) {
   const auth = requireAdmin(req); if (auth) return auth;
-  const { id, direction } = await req.json();
+  const body = await req.json();
+
+  // Direct position set — swap: { id, position: <1-based-index> }
+  if (body.id && body.position !== undefined) {
+    const products = await prisma.product.findMany({ orderBy: { position: 'asc' } });
+    const currentIdx = products.findIndex(p => p.id === body.id);
+    if (currentIdx === -1) return Response.json({ error: 'Produit introuvable' }, { status: 404 });
+    const targetIdx = Math.max(0, Math.min(products.length - 1, body.position - 1));
+    const target = products[targetIdx];
+    const current = products[currentIdx];
+    // Swap positions
+    await prisma.$transaction([
+      prisma.product.update({ where: { id: current.id }, data: { position: target.position } }),
+      prisma.product.update({ where: { id: target.id }, data: { position: current.position } }),
+    ]);
+    return Response.json({ success: true, products: await prisma.product.findMany({ orderBy: { position: 'asc' } }) });
+  }
+
+  // Legacy direction-based (up/down) — keep for compatibility
+  const { id, direction } = body;
   if (!id || !direction) return Response.json({ error: 'Paramètres manquants' }, { status: 400 });
 
   const current = await prisma.product.findUnique({ where: { id } });
