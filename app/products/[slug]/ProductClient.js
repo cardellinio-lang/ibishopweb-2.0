@@ -480,9 +480,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                                 cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
                               }}>
                         {v.color && (
+                          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
+                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
                           </div>
-                        </div>
-                      );
+                        )}
+                        <div style={{ fontSize: 16, fontWeight: 900 }}>{v.label}</div>
                         <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, opacity: 0.85 }}>{v.desc}</div>
                         <div style={{ fontSize: 15, fontWeight: 800, marginTop: 4 }}>{v.price.toLocaleString()} د.ج</div>
                       </button>
