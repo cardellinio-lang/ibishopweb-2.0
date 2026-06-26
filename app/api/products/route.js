@@ -6,7 +6,7 @@ function cleanImages(images) {
 }
 
 export async function GET() {
-  const products = await prisma.product.findMany({ orderBy: { position: 'asc' } });
+  const products = await prisma.product.findMany({ where: { category: { not: 'orva' } }, orderBy: { position: 'asc' } });
   return new Response(JSON.stringify(products), {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
   });
