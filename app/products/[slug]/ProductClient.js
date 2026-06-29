@@ -16,8 +16,18 @@ const WILAYA_AR = {
   53:'عين صالح',54:'عين قزام',55:'تقرت',56:'جانت',57:'المغير',58:'المنيعة',
 };
 
+function hexToRgba(hex, alpha = 1) {
+  if (!hex) return `rgba(0,0,0,${alpha})`;
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export default function ProductClient({ product, wilayas, communes}) {
   const c = product.color || '#000000';
+  const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
   const wordColors = ['أحمر', 'وردي'];
@@ -765,7 +775,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
       {/* Sticky bottom button — scrolls to form OR submits if form is complete */}
       {scrolled && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: '#fff', borderTop: '1px solid #e8e8ed', zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: lightBg, borderTop: `1px solid ${hexToRgba(c, 0.15)}`, zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
           {isWhatsAppProduct ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', gap: 8 }}>

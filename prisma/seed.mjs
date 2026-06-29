@@ -681,7 +681,7 @@ const PRODUCTS = [
   {
     name: 'إطار سنواتي المدرسية',
     slug: 'etar-sanaouati',
-    price: 1600,
+    price: 1950,
     color: '#C9A84C',
     images: [
       'https://placehold.co/600x600/C9A84C/white?text=إطار+سنواتي+المدرسية',
@@ -689,8 +689,8 @@ const PRODUCTS = [
     ],
     description: 'إطار "سنواتي المدرسية" الفاخر بلمسته الذهبية الراقية - <strong style="color:red">format A5</strong>. مصمم خصيصاً لمرافقة طفلك خطوة بخطوة في رحلته الابتدائية، من قسم التحضيري حتى السنة الخامسة.',
     category: 'إطارات',
-    tierEnabled: true, tierQty: 3, tierPrice: 1200,
-    tierMessage: '➕ أضف {remaining} فقط ووفر 400 د.ج لكل إطار!',
+    tierEnabled: true, tierQty: 5, tierPrice: 1650,
+    tierMessage: '➕ أضف {remaining} فقط ووفر 300 د.ج لكل إطار!',
     tierGift: '🎁 تغليف هدايا مجاني',
   },
   {
