@@ -151,7 +151,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   useEffect(() => {
     if (product.tierEnabled && tierActive && !prevTierRef.current) {
       prevTierRef.current = true;
-      setCelebration({ savings, tierQty: product.tierQty, tierPrice: product.tierPrice, price: product.price });
+      setCelebration({ savings, qty: realQty, tierQty: product.tierQty, tierPrice: product.tierPrice, price: product.price });
       const timer = setTimeout(() => setCelebration(null), 3500);
       return () => clearTimeout(timer);
     } else if (!tierActive) {
@@ -643,12 +643,6 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </span>
                 </div>
               )}
-              {tierActive && product.tierGift && (
-                <div style={{ background: '#f0fdf4', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center', animation: 'fadeInUp 0.5s ease-out' }}>
-                  <span style={{ fontSize: 15, fontWeight: 900, color: '#16a34a' }}>🎁 هدية: {product.tierGift}</span>
-                </div>
-              )}
-
               {/* Delivery type */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>نوع التوصيل</label>
@@ -823,7 +817,7 @@ function CelebrationOverlay({ data, onClose }) {
   const canvasRef = useRef(null);
   const audioCtxRef = useRef(null);
   const isPack = !!data.title;
-  const savingAmt = isPack ? data.savings : data.price - data.tierPrice;
+  const savingAmt = isPack ? data.savings : (data.price - data.tierPrice) * (data.qty || 1);
 
   useEffect(() => {
     if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
