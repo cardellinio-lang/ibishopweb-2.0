@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && node prisma/seed.mjs && next build",
+    "build": "prisma generate && (prisma db push || echo '⚠️ DB push skipped') && (node prisma/seed.mjs || echo '⚠️ seed skipped') && next build",
     "start": "next start",
     "seed": "node prisma/seed.mjs"
   },

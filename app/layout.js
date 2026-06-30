@@ -1,6 +1,8 @@
 import './globals.css';
 import prisma from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',

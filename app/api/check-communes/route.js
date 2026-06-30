@@ -1,5 +1,7 @@
 import prisma from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const total = await prisma.commune.count();
   const withAr = await prisma.commune.count({ where: { NOT: { name_ar: '' } } });
