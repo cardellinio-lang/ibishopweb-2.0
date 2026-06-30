@@ -60,7 +60,7 @@ export default async function RootLayout({ children }) {
               </div>
               {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: '#E54E19' }}>من نحن</a>}
             </div>
-            <a href="/"><img src="/logo-final.png" alt="ibishop" style={{ height: 90 }} /></a>
+            <a href="/"><img src="/logo-final.png" alt="ibishop" style={{ height: 90, width: 'auto', objectFit: 'contain' }} /></a>
           </div>
 
         </div>
