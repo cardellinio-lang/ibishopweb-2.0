@@ -16,6 +16,15 @@ const WILAYA_AR = {
   53:'عين صالح',54:'عين قزام',55:'تقرت',56:'جانت',57:'المغير',58:'المنيعة',
 };
 
+function darken(hex, amount = 30) {
+  if (!hex) return '#000';
+  hex = hex.replace('#', '');
+  const r = Math.max(0, parseInt(hex.substring(0, 2), 16) - amount);
+  const g = Math.max(0, parseInt(hex.substring(2, 4), 16) - amount);
+  const b = Math.max(0, parseInt(hex.substring(4, 6), 16) - amount);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
   hex = hex.replace('#', '');
@@ -807,6 +816,8 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
       )}
 
+      <OrderNotification productName={product.name} color={c} />
+
       {/* Celebration overlay */}
       {celebration && <CelebrationOverlay data={celebration} onClose={() => setCelebration(null)} />}
     </div>
@@ -1048,6 +1059,239 @@ function CelebrationOverlay({ data, onClose }) {
       </div>
     </div>
   );
+}
+
+function OrderNotification({ productName, color }) {
+  useEffect(() => {
+    const ORDERS = [
+      { name: 'محمد', city: 'الجزائر', product: productName, timeAgo: 'منذ دقيقتين', emoji: '📦' },
+      { name: 'أمينة', city: 'وهران', product: productName, timeAgo: 'منذ 3 دقائق', emoji: productName.includes('إطار')||productName.includes('سنواتي') ? '🖼️' : '📦' },
+      { name: 'سارة', city: 'قسنطينة', product: productName, timeAgo: 'منذ لحظات', emoji: productName.includes('map')||productName.includes('خريطة') ? '🗺️' : '📦' },
+      { name: 'أحمد', city: 'عنابة', product: productName, timeAgo: 'منذ 5 دقائق', emoji: '✨' },
+      { name: 'نورة', city: 'تيبازة', product: productName, timeAgo: 'منذ دقيقة', emoji: '💫' },
+      { name: 'كريم', city: 'البليدة', product: productName, timeAgo: 'منذ 4 دقائق', emoji: productName.includes('تعلم')||productName.includes('أتعلم') ? '📚' : '📦' },
+      { name: 'إيمان', city: 'سطيف', product: productName, timeAgo: 'منذ دقيقتين', emoji: '🌸' },
+      { name: 'يوسف', city: 'بجاية', product: productName, timeAgo: 'منذ 6 دقائق', emoji: '💎' },
+      { name: 'زهرة', city: 'باتنة', product: productName, timeAgo: 'منذ 3 دقائق', emoji: '⭐' },
+      { name: 'نوال', city: 'مستغانم', product: productName, timeAgo: 'منذ لحظات', emoji: '💫' },
+      { name: 'بلال', city: 'الشلف', product: productName, timeAgo: 'منذ دقيقة', emoji: '📍' },
+      { name: 'حورية', city: 'تلمسان', product: productName, timeAgo: 'منذ 7 دقائق', emoji: '🌟' },
+      { name: 'خديجة', city: 'سيدي بلعباس', product: productName, timeAgo: 'منذ دقيقتين', emoji: '💎' },
+      { name: 'عمر', city: 'الجلفة', product: productName, timeAgo: 'منذ 5 دقائق', emoji: '⚡' },
+      { name: 'آية', city: 'بسكرة', product: productName, timeAgo: 'منذ 4 دقائق', emoji: '⭐' },
+    ];
+
+    const style = document.createElement('style');
+    style.textContent = `
+#ibi-notif-container{position:fixed;z-index:99999;pointer-events:none;bottom:90px;left:20px}
+.ibi-notif-card{
+  position:relative;width:340px;max-width:calc(100vw - 40px);
+  background:linear-gradient(145deg,#fff 0%,#f5f5f7 50%,#eeeef0 100%);
+  border:1px solid ${color}22;
+  border-radius:20px;overflow:hidden;pointer-events:auto;cursor:default;
+  will-change:transform,opacity;font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  direction:rtl;text-align:right;
+  box-shadow:0 12px 40px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06),0 0 0 1px ${color}11;
+}
+.ibi-notif-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3.5px;
+  background:linear-gradient(90deg,${color} 0%,${hexToRgba(color,0.6)} 25%,${darken(color)} 50%,${hexToRgba(color,0.6)} 75%,${color} 100%);
+  background-size:300% 100%;animation:ibi-flow 4s ease-in-out infinite;z-index:2;
+}
+@keyframes ibi-flow{0%{background-position:100% 0}50%{background-position:0% 0}100%{background-position:100% 0}}
+.ibi-notif-header{
+  display:flex;align-items:center;gap:7px;padding:10px 16px 0;
+  font-size:11.5px;font-weight:700;color:${color};letter-spacing:0.2px;
+}
+.ibi-notif-header svg{width:14px;height:14px;flex-shrink:0;fill:${color}}
+.ibi-notif-header-text{opacity:0.85}
+.ibi-live-dot{
+  width:7px;height:7px;border-radius:50%;background:${color};margin-right:auto;position:relative;
+}
+.ibi-live-dot::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:${color};opacity:0.3;animation:ibi-ring 2s ease-in-out infinite;
+}
+@keyframes ibi-ring{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(2);opacity:0}}
+.ibi-notif-inner{display:flex;align-items:center;gap:14px;padding:12px 16px 14px}
+.ibi-notif-icon{
+  flex-shrink:0;width:54px;height:54px;border-radius:16px;
+  background:linear-gradient(145deg,${darken(color)},${color});
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px ${hexToRgba(color,0.35)},inset 0 1px 1px rgba(255,255,255,0.1);
+  font-size:26px;line-height:1;
+}
+.ibi-notif-body{flex:1;min-width:0}
+.ibi-notif-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 3px;font-size:14.5px;line-height:1.45;color:#1d1d1f}
+.ibi-notif-name{font-weight:800;white-space:nowrap}
+.ibi-notif-city{font-weight:500;color:#6e6e73;white-space:nowrap;font-size:13px}
+.ibi-notif-product{display:flex;align-items:center;gap:5px;margin:4px 0 0;font-size:13px;font-weight:700;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ibi-notif-product span{font-size:16px}
+.ibi-notif-meta{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:11.5px;color:#8e8e93;font-weight:500}
+.ibi-notif-verified{
+  display:inline-flex;align-items:center;gap:4px;padding:2.5px 8px;border-radius:8px;
+  background:linear-gradient(135deg,${hexToRgba(color,0.1)},${hexToRgba(color,0.06)});
+  font-size:10.5px;font-weight:800;color:${color};border:1px solid ${hexToRgba(color,0.12)};
+}
+.ibi-notif-close{
+  position:absolute;top:10px;left:10px;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;border:none;
+  background:${hexToRgba(color,0.05)};color:#8e8e93;font-size:14px;line-height:1;
+  cursor:pointer;border-radius:8px;opacity:0;transition:all 0.2s ease;padding:0;
+}
+.ibi-notif-card:hover .ibi-notif-close{opacity:1}
+.ibi-notif-close:hover{background:${hexToRgba(color,0.1)};color:${color}}
+.ibi-notif-progress{
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:${hexToRgba(color,0.05)};
+}
+.ibi-notif-bar{
+  height:100%;
+  background:linear-gradient(90deg,${hexToRgba(color,0.6)},${color},${darken(color)});
+  background-size:200% 100%;
+  animation:ibi-bar-shrink 5s linear forwards,ibi-bar-glow 2s ease-in-out infinite;
+}
+@keyframes ibi-bar-shrink{from{width:100%}to{width:0%}}
+@keyframes ibi-bar-glow{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.ibi-slide-in{animation:ibi-enter 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards}
+.ibi-slide-out{animation:ibi-exit 0.45s cubic-bezier(0.55,0,1,0.45) forwards}
+@keyframes ibi-enter{
+  0%{transform:translateY(110%) scale(0.88);opacity:0}
+  50%{transform:translateY(-4%) scale(1.01);opacity:1}
+  70%{transform:translateY(2%) scale(0.995)}
+  100%{transform:translateY(0) scale(1);opacity:1}
+}
+@keyframes ibi-exit{
+  0%{transform:translateY(0) scale(1);opacity:1}
+  100%{transform:translateY(110%) scale(0.88);opacity:0}
+}
+.ibi-notif-body>*{
+  opacity:0;transform:translateX(14px);
+  animation:ibi-reveal 0.45s ease forwards;
+}
+.ibi-notif-body>:nth-child(1){animation-delay:0.2s}
+.ibi-notif-body>:nth-child(2){animation-delay:0.32s}
+.ibi-notif-body>:nth-child(3){animation-delay:0.44s}
+@keyframes ibi-reveal{to{opacity:1;transform:translateX(0)}}
+@media(max-width:480px){
+  #ibi-notif-container{left:10px;right:10px;bottom:80px}
+  .ibi-notif-card{width:100%;max-width:100%;border-radius:16px}
+  .ibi-notif-icon{width:46px;height:46px;border-radius:13px;font-size:22px}
+  .ibi-notif-header{font-size:10.5px;padding:8px 14px 0}
+  .ibi-notif-inner{padding:10px 14px 12px;gap:10px}
+  .ibi-notif-title{font-size:13.5px}
+  .ibi-notif-product{font-size:12px}
+  .ibi-notif-meta{font-size:10.5px}
+  .ibi-notif-close{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .ibi-slide-in,.ibi-slide-out{animation-duration:.01ms!important}
+  .ibi-notif-card::before,.ibi-notif-bar,.ibi-live-dot::after{animation:none}
+  .ibi-notif-body>*{animation:none;opacity:1;transform:none}
+}
+`;
+    document.head.appendChild(style);
+
+    let container = document.getElementById('ibi-notif-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'ibi-notif-container';
+      document.body.appendChild(container);
+    }
+
+    let lastIndex = -1;
+    let currentCard = null;
+    let dismissTimer = null;
+
+    function pickOrder() {
+      if (ORDERS.length === 0) return null;
+      if (ORDERS.length === 1) return ORDERS[0];
+      let idx;
+      do { idx = Math.floor(Math.random() * ORDERS.length); } while (idx === lastIndex);
+      lastIndex = idx;
+      return ORDERS[idx];
+    }
+
+    function buildCard(order) {
+      const card = document.createElement('div');
+      card.className = 'ibi-notif-card ibi-slide-in';
+      card.setAttribute('role', 'status');
+      card.setAttribute('aria-live', 'polite');
+      card.innerHTML =
+        '<div class="ibi-notif-header">' +
+          '<svg viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 0-2.5 2.5V5h-.25A2.25 2.25 0 0 0 3 7.25v5.5A2.25 2.25 0 0 0 5.25 15h5.5A2.25 2.25 0 0 0 13 12.75v-5.5A2.25 2.25 0 0 0 10.75 5H10.5V3.5A2.5 2.5 0 0 0 8 1zm0 1a1.5 1.5 0 0 1 1.5 1.5V5h-3V3.5A1.5 1.5 0 0 1 8 2z"/></svg>' +
+          '<span class="ibi-notif-header-text">طلب جديد الآن</span>' +
+          '<span class="ibi-live-dot"></span>' +
+        '</div>' +
+        '<div class="ibi-notif-inner">' +
+          '<div class="ibi-notif-icon">' + order.emoji + '</div>' +
+          '<div class="ibi-notif-body">' +
+            '<p class="ibi-notif-title">' +
+              '<span class="ibi-notif-name">' + order.name + '</span>' +
+              '<span class="ibi-notif-city">من ' + order.city + '</span>' +
+            '</p>' +
+            '<span class="ibi-notif-product"><span>' + order.emoji + '</span> ' + order.product + '</span>' +
+            '<div class="ibi-notif-meta">' +
+              '<svg style="width:13px;height:13px;opacity:0.6" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.5 4.5v4l3.5 2.1-.5.8L7.5 9V4.5h1z"/></svg>' +
+              '<span>' + order.timeAgo + '</span>' +
+              '<span style="opacity:0.2;margin:0 2px">·</span>' +
+              '<span class="ibi-notif-verified">✓ طلب مؤكد</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="ibi-notif-close" aria-label="إغلاق">' +
+          '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>' +
+        '</button>' +
+        '<div class="ibi-notif-progress"><div class="ibi-notif-bar"></div></div>';
+      return card;
+    }
+
+    function dismissCurrent(cb) {
+      if (!currentCard) { if (cb) cb(); return; }
+      clearTimeout(dismissTimer);
+      currentCard.classList.remove('ibi-slide-in');
+      currentCard.classList.add('ibi-slide-out');
+      const card = currentCard;
+      currentCard = null;
+      let done = false;
+      function finish() { if (done) return; done = true; if (card.parentNode) card.parentNode.removeChild(card); if (cb) cb(); }
+      card.addEventListener('animationend', finish, { once: true });
+      setTimeout(finish, 500);
+    }
+
+    function showNotification() {
+      const order = pickOrder();
+      if (!order) return;
+      dismissCurrent(function () {
+        const card = buildCard(order);
+        container.appendChild(card);
+        currentCard = card;
+        card.querySelector('.ibi-notif-close').addEventListener('click', function (e) { e.stopPropagation(); dismissCurrent(); });
+        card.addEventListener('mouseenter', function () { clearTimeout(dismissTimer); });
+        card.addEventListener('mouseleave', function () { scheduleDismiss(); });
+        scheduleDismiss();
+      });
+    }
+
+    function scheduleDismiss() {
+      clearTimeout(dismissTimer);
+      dismissTimer = setTimeout(function () { dismissCurrent(); }, 5000);
+    }
+
+    const initialTimer = setTimeout(function () { showNotification(); }, 3000);
+    const cycleTimer = setInterval(function () { showNotification(); }, 10000);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(cycleTimer);
+      clearTimeout(dismissTimer);
+      if (currentCard && currentCard.parentNode) currentCard.parentNode.removeChild(currentCard);
+      if (container && container.parentNode) container.parentNode.removeChild(container);
+      if (style && style.parentNode) style.parentNode.removeChild(style);
+    };
+  }, [productName, color]);
+
+  return null;
 }
 
 
