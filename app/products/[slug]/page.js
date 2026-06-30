@@ -8,11 +8,16 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export default async function ProductPage({ params }) {
-  const product = await prisma.product.findUnique({ where: { slug: params.slug } });
+  let product = null;
+  let wilayas = [];
+  let communes = [];
+  try {
+    product = await prisma.product.findUnique({ where: { slug: params.slug } });
+    if (product) product.images = JSON.parse(product.images || '[]');
+    wilayas = await prisma.wilaya.findMany({ orderBy: { id: 'asc' } });
+    communes = await prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] });
+  } catch {}
   if (!product || !product.active) notFound();
-  product.images = JSON.parse(product.images || '[]');
-  const wilayas = await prisma.wilaya.findMany({ orderBy: { id: 'asc' } });
-  const communes = await prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] });
   const host = (await headers()).get('host') || '';
   const isOrva = host.includes('orva');
   const Client = isOrva ? OrvaProductClient : ProductClient;
