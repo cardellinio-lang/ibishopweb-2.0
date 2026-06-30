@@ -11,10 +11,14 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
-  const aboutSetting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
-  const aboutVisible = aboutSetting ? aboutSetting.value !== 'false' : true;
-  const blogSetting = await prisma.setting.findUnique({ where: { key: 'blog_visible' } });
-  const blogVisible = blogSetting ? blogSetting.value !== 'false' : true;
+  let aboutVisible = true;
+  let blogVisible = true;
+  try {
+    const aboutSetting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
+    aboutVisible = aboutSetting ? aboutSetting.value !== 'false' : true;
+    const blogSetting = await prisma.setting.findUnique({ where: { key: 'blog_visible' } });
+    blogVisible = blogSetting ? blogSetting.value !== 'false' : true;
+  } catch {};
 
   return (
     <html lang="ar" dir="rtl">
