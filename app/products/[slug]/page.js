@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import ProductClient from './ProductClient';
 import OrvaProductClient from './OrvaProductClient';
+import fallbackProducts from '@/data/products-fallback.json';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -17,7 +18,10 @@ export default async function ProductPage({ params }) {
     wilayas = await prisma.wilaya.findMany({ orderBy: { id: 'asc' } });
     communes = await prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] });
   } catch {}
-  if (!product || !product.active) notFound();
+  if (!product || !product.active) {
+    product = fallbackProducts.find(p => p.slug === params.slug) || null;
+  }
+  if (!product) notFound();
   const host = (await headers()).get('host') || '';
   const isOrva = host.includes('orva');
   const Client = isOrva ? OrvaProductClient : ProductClient;
