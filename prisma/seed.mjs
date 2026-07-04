@@ -696,8 +696,8 @@ const PRODUCTS = [
   {
     name: 'لعبة تعلم اللغات التفاعلية للأطفال',
     slug: 'l3ba-taalom-loughat',
-    price: 3500,
-    oldPrice: 4500,
+    price: 2900,
+    oldPrice: 3500,
     color: '#8B5E3C',
     images: [
       'https://images.pexels.com/photos/7334320/pexels-photo-7334320.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
