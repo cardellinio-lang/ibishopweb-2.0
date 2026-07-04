@@ -102,8 +102,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
-  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
+  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais' || product.slug === 'etar-sanaouati';
   const isWordBox = product.slug === 'word-box';
+  const isEtar = product.slug === 'etar-sanaouati';
   const whatsAppFreeDelivery = product.slug === 'scenarios-anglais';
   const whatsAppDiscount = isWordBox ? 200 : 0;
 
@@ -254,7 +255,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : '';
     const waPrice = finalPrice - (isWordBox ? whatsAppDiscount : 0);
     const waDelivery = isWordBox ? delivery : 0;
-    const waTotal = waPrice * realQty + waDelivery;
+    const waTotal = isEtar ? subtotal + delivery - 200 : waPrice * realQty + waDelivery;
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -264,8 +265,8 @@ export default function ProductClient({ product, wilayas, communes}) {
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
-          variantPrice: (variants || wordBoxPacks) ? waPrice : undefined,
-          source: 'whatsapp',
+          variantPrice: (variants || wordBoxPacks || isEtar) ? waPrice : undefined,
+          source: 'whatsapp', whatsAppDiscount: isEtar ? 200 : undefined,
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
@@ -284,8 +285,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
-    const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : '\n🎉 توصيل مجاني!';
-    const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString()} د.ج` : '';
+    const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : isEtar ? '\n🎉 خصم 200 د.ج على المجموع!' : '\n🎉 توصيل مجاني!';
+    const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString()} د.ج` : isEtar ? `\n🚚 التوصيل: ${delivery.toLocaleString()} د.ج` : '';
     const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPrice.toLocaleString()} د.ج${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
@@ -681,13 +682,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
                     <span style={{ fontSize: 13, fontWeight: 800, color: '#16a34a', background: '#f0fdf4', padding: '6px 14px', borderRadius: 20 }}>
-                      {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
+                      {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : isEtar ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
                     </span>
                   </div>
                   <button type="button" onClick={submitWhatsAppOrder}
                           style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                           className="order-btn">
-                    {isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني'}
+                    {isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : isEtar ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني'}
                   </button>
                 </div>
               )}
@@ -798,7 +799,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  {isWordBox ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني'}
+                  {isWordBox ? '📱 واتساب - خصم 200 د.ج' : isEtar ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني'}
                 </button>
               </div>
             </div>
