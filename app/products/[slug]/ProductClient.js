@@ -94,8 +94,8 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const wordBoxPacks = useMemo(() => product.slug === 'word-box' ? [
     { label: 'باقة اكتشاف', subtitle: '1 لوحة + لغة واحدة', price: 2700, originalPrice: 3500, icon: '📖', emoji: '🌟', saving: 0, desc: '' },
-    { label: 'باقة ثنائية', subtitle: '1 لوحة + اللغتين (عربية + فرنسية)', price: 3300, originalPrice: 5000, icon: '📚', emoji: '🔥', saving: 1700, desc: 'وفّر 1700 د.ج' },
-    { label: 'باقة ثلاثية', subtitle: '1 لوحة + 3 لغات (عربية + فرنسية + إنجليزية)', price: 3500, originalPrice: 6000, icon: '🏆', emoji: '💥', saving: 2500, desc: 'وفّر 2500 د.ج' },
+    { label: 'باقة ثنائية', subtitle: '1 لوحة + اللغتين (عربية + فرنسية)', price: 3300, originalPrice: 7000, icon: '📚', emoji: '🔥', saving: 3700, desc: 'وفّر 3700 د.ج' },
+    { label: 'باقة ثلاثية', subtitle: '1 لوحة + 3 لغات (عربية + فرنسية + إنجليزية)', price: 3500, originalPrice: 10500, icon: '🏆', emoji: '💥', saving: 7000, desc: 'وفّر 7000 د.ج' },
   ] : null, [product.slug]);
   const [pack, setPack] = useState(wordBoxPacks ? wordBoxPacks[0].label : null);
   const prevPackRef = useRef(null);
