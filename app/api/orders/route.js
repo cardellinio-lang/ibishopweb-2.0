@@ -47,8 +47,7 @@ export async function POST(req) {
 
   const itemName = data.variantName || product.name;
   const itemPrice = data.variantPrice || product.price;
-  const whatsAppDiscount = data.whatsAppDiscount ? Number(data.whatsAppDiscount) : 0;
-  const orderTotal = itemPrice * data.qty + deliveryPrice - whatsAppDiscount;
+  const orderTotal = itemPrice * data.qty + deliveryPrice;
 
   const order = await prisma.order.create({
     data: {
