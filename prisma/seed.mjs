@@ -711,6 +711,7 @@ const PRODUCTS = [
     tierEnabled: true, tierQty: 3, tierPrice: 2900,
     tierMessage: '➕ أضف {remaining} فقط ووفر 1800 د.ج على 3 قطع!',
     tierGift: '🎁 بطاقات إضافية مجانية',
+  },
   {
     name: 'جهاز تمارين الكتف المنزلي لمرونة أفضل وحركة أكثر راحة',
     slug: 'shoulder-exerciser',
