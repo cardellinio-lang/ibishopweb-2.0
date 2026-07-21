@@ -711,70 +711,118 @@ const PRODUCTS = [
     tierEnabled: true, tierQty: 3, tierPrice: 2900,
     tierMessage: '➕ أضف {remaining} فقط ووفر 1800 د.ج على 3 قطع!',
     tierGift: '🎁 بطاقات إضافية مجانية',
+  {
+    name: 'جهاز تمارين الكتف المنزلي لمرونة أفضل وحركة أكثر راحة',
+    slug: 'shoulder-exerciser',
+    price: 3900,
+    oldPrice: null,
+    color: '#1a73e8',
+    sku: 'IBI-SHDR-001',
+    images: [
+      'https://pb9d17-1q.myshopify.com/cdn/shop/files/ChatGPTImage11juil.2026_15_55_20.png?v=1783774573',
+      'https://cdn.shopify.com/s/files/1/0658/6748/1224/files/ChatGPT_Image_11_juil._2026_14_55_28.png?v=1783773757',
+      'https://cdn.shopify.com/s/files/1/0658/6748/1224/files/ChatGPT_Image_11_juil._2026_15_31_00.png?v=1783773199',
+    ],
+    description: 'جهاز تمارين الكتف المنزلي لمرونة أفضل وحركة أكثر راحة',
+    category: 'رياضة',
   },
 ];
 
 async function main() {
   const existing = await prisma.product.count();
   if (existing > 0) {
-    console.log('✅ Database already seeded — skipping');
-    await prisma.$disconnect();
-    process.exit(0);
+    console.log('✅ Database already seeded — checking for missing products...');
+  } else {
+    await prisma.wilaya.createMany({ data: WILAYAS });
+    await prisma.commune.createMany({ data: COMMUNES });
+
+    const products = PRODUCTS.map((p, i) => ({
+      slug: p.slug || p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i,
+      name: p.name, price: p.price, oldPrice: p.oldPrice,
+      color: p.color || '#000000', sku: p.sku,
+      images: JSON.stringify(p.images),
+      description: p.description,
+      stock: Math.floor(Math.random() * 20) + 2,
+      category: p.category || '',
+      tierEnabled: p.tierEnabled || false,
+      tierQty: p.tierQty || null,
+      tierPrice: p.tierPrice || null,
+      tierMessage: p.tierMessage || null,
+      tierGift: p.tierGift || null,
+    }));
+    await prisma.product.createMany({ data: products });
+
+    console.log(`✅ ${PRODUCTS.length} produits | ${WILAYAS.length} wilayas | ${COMMUNES.length} communes`);
+
+    // Upsert etar-sanaouati (update description if already exists, create if not)
+    const etarProduct = PRODUCTS.find(p => p.slug === 'etar-sanaouati');
+    if (etarProduct) {
+      await prisma.product.upsert({
+        where: { slug: 'etar-sanaouati' },
+        update: {
+          description: etarProduct.description,
+          name: etarProduct.name,
+          price: etarProduct.price,
+          color: etarProduct.color,
+          tierEnabled: etarProduct.tierEnabled,
+          tierQty: etarProduct.tierQty,
+          tierPrice: etarProduct.tierPrice,
+          tierMessage: etarProduct.tierMessage,
+          tierGift: etarProduct.tierGift,
+        },
+        create: {
+          slug: etarProduct.slug || 'etar-sanaouati',
+          name: etarProduct.name,
+          price: etarProduct.price,
+          color: etarProduct.color || '#C9A84C',
+          images: JSON.stringify(etarProduct.images || []),
+          description: etarProduct.description,
+          stock: 50,
+          category: etarProduct.category || '',
+          tierEnabled: etarProduct.tierEnabled || false,
+          tierQty: etarProduct.tierQty || null,
+          tierPrice: etarProduct.tierPrice || null,
+          tierMessage: etarProduct.tierMessage || null,
+          tierGift: etarProduct.tierGift || null,
+        },
+      });
+      console.log('✅ etar-sanaouati product updated/created');
+    }
   }
-  await prisma.wilaya.createMany({ data: WILAYAS });
-  await prisma.commune.createMany({ data: COMMUNES });
 
-  const products = PRODUCTS.map((p, i) => ({
-    slug: p.slug || p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i,
-    name: p.name, price: p.price, oldPrice: p.oldPrice,
-    color: p.color || '#000000', sku: p.sku,
-    images: JSON.stringify(p.images),
-    description: p.description,
-    stock: Math.floor(Math.random() * 20) + 2,
-    category: p.category || '',
-    tierEnabled: p.tierEnabled || false,
-    tierQty: p.tierQty || null,
-    tierPrice: p.tierPrice || null,
-    tierMessage: p.tierMessage || null,
-    tierGift: p.tierGift || null,
-  }));
-  await prisma.product.createMany({ data: products });
-
-  console.log(`✅ ${PRODUCTS.length} produits | ${WILAYAS.length} wilayas | ${COMMUNES.length} communes`);
-
-  // Upsert etar-sanaouati (update description if already exists, create if not)
-  const etarProduct = PRODUCTS.find(p => p.slug === 'etar-sanaouati');
-  if (etarProduct) {
+  // Upsert shoulder exerciser (always runs, even when skipping full seed)
+  const shoulderProduct = PRODUCTS.find(p => p.slug === 'shoulder-exerciser');
+  if (shoulderProduct) {
+    const maxPos = await prisma.product.findFirst({ orderBy: { position: 'desc' } });
+    const position = (maxPos?.position ?? -1) + 1;
     await prisma.product.upsert({
-      where: { slug: 'etar-sanaouati' },
+      where: { slug: 'shoulder-exerciser' },
       update: {
-        description: etarProduct.description,
-        name: etarProduct.name,
-        price: etarProduct.price,
-        color: etarProduct.color,
-        tierEnabled: etarProduct.tierEnabled,
-        tierQty: etarProduct.tierQty,
-        tierPrice: etarProduct.tierPrice,
-        tierMessage: etarProduct.tierMessage,
-        tierGift: etarProduct.tierGift,
+        name: shoulderProduct.name,
+        price: shoulderProduct.price,
+        color: shoulderProduct.color,
+        sku: shoulderProduct.sku,
+        images: JSON.stringify(shoulderProduct.images),
+        description: shoulderProduct.description,
+        category: shoulderProduct.category,
+        stock: 10,
+        active: true,
       },
       create: {
-        slug: etarProduct.slug || 'etar-sanaouati',
-        name: etarProduct.name,
-        price: etarProduct.price,
-        color: etarProduct.color || '#C9A84C',
-        images: JSON.stringify(etarProduct.images || []),
-        description: etarProduct.description,
-        stock: 50,
-        category: etarProduct.category || '',
-        tierEnabled: etarProduct.tierEnabled || false,
-        tierQty: etarProduct.tierQty || null,
-        tierPrice: etarProduct.tierPrice || null,
-        tierMessage: etarProduct.tierMessage || null,
-        tierGift: etarProduct.tierGift || null,
+        slug: 'shoulder-exerciser',
+        name: shoulderProduct.name,
+        price: shoulderProduct.price,
+        color: shoulderProduct.color || '#1a73e8',
+        sku: shoulderProduct.sku,
+        images: JSON.stringify(shoulderProduct.images),
+        description: shoulderProduct.description,
+        stock: 10,
+        category: shoulderProduct.category || 'رياضة',
+        active: true,
+        position,
       },
     });
-    console.log('✅ etar-sanaouati product updated/created');
+    console.log('✅ shoulder-exerciser product upserted');
   }
 }
 

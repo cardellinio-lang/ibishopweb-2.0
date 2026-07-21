@@ -37,6 +37,10 @@ export default function Admin() {
   const [ecotrackTestStatus, setEcotrackTestStatus] = useState(null);
   const [ecotrackTestLoading, setEcotrackTestLoading] = useState(false);
   const [ecotrackLabelLoading, setEcotrackLabelLoading] = useState({});
+  const [ecotrack48HrShipping, setEcotrack48HrShipping] = useState({});
+  const [ecotrack48HrTestStatus, setEcotrack48HrTestStatus] = useState(null);
+  const [ecotrack48HrTestLoading, setEcotrack48HrTestLoading] = useState(false);
+  const [ecotrack48HrLabelLoading, setEcotrack48HrLabelLoading] = useState({});
   const [syncPricesLoading, setSyncPricesLoading] = useState(false);
   const [syncPricesResult, setSyncPricesResult] = useState(null);
 
@@ -656,6 +660,54 @@ export default function Admin() {
                           </div>
                         )}
 
+                        {/* 48Hr info */}
+                        {o.ecoTrack48HrData && (
+                          <div style={{
+                            width: '100%', padding: '10px 12px', borderRadius: 10,
+                            background: '#fefce8', border: '1px solid #fde68a',
+                            fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4,
+                          }}>
+                            <div style={{ fontWeight: 700, color: '#d97706', marginBottom: 2 }}>📦 48Hr</div>
+                            {o.ecoTrack48HrData.trackingNumber && (
+                              <div style={{ fontWeight: 600 }}>
+                                Tracking: <span style={{ direction: 'ltr', display: 'inline-block' }}>{o.ecoTrack48HrData.trackingNumber}</span>
+                              </div>
+                            )}
+                            {o.ecoTrack48HrData.shipmentId && (
+                              <div style={{ color: '#6e6e73' }}>ID: {o.ecoTrack48HrData.shipmentId}</div>
+                            )}
+                            {o.ecoTrack48HrData.fellBackToHome && (
+                              <div style={{ color: '#d97706', fontSize: 11, fontWeight: 600 }}>
+                                ⚠️ Stopdesk indisponible, basculé en domicile
+                              </div>
+                            )}
+                            <button style={{
+                              padding: '6px 10px', borderRadius: 8, border: '1px solid #fde68a',
+                              background: '#fff', color: '#d97706',
+                              fontSize: 12, fontWeight: 700, cursor: ecotrack48HrLabelLoading[o.id] ? 'wait' : 'pointer',
+                              width: '100%', marginTop: 4,
+                            }} disabled={ecotrack48HrLabelLoading[o.id]}
+                            onClick={async () => {
+                              setEcotrack48HrLabelLoading(s => ({ ...s, [o.id]: true }));
+                              try {
+                                const r = await fetch('/api/orders/' + o.id + '/ecotrack-48hr/label');
+                                const d = await r.json();
+                                if (d.ok && d.url) {
+                                  window.open(d.url, '_blank');
+                                  load();
+                                } else {
+                                  alert(d.error || 'Étiquette non disponible');
+                                }
+                              } catch (e) {
+                                alert('Erreur: ' + e.message);
+                              }
+                              setEcotrack48HrLabelLoading(s => ({ ...s, [o.id]: false }));
+                            }}>
+                              {ecotrack48HrLabelLoading[o.id] ? '⏳...' : o.ecoTrack48HrData.labelUrl ? '🖨️ Bordereau' : '🖨️ Obtenir le bordereau'}
+                            </button>
+                          </div>
+                        )}
+
                         {/* EcoTrack send button */}
                         {(o.status === 'confirmed' || o.status === 'shipped') && !o.ecoTrackData && (
                           <button style={{
@@ -683,6 +735,36 @@ export default function Admin() {
                             }
                           }}>
                             {ecotrackShipping[o.id] ? '⏳ Envoi...' : '📦 Envoyer à Packers'}
+                          </button>
+                        )}
+
+                        {/* 48Hr send button */}
+                        {(o.status === 'confirmed' || o.status === 'shipped') && !o.ecoTrack48HrData && (
+                          <button style={{
+                            padding: '8px 12px', borderRadius: 10, border: 'none',
+                            background: ecotrack48HrShipping[o.id] ? '#a3a3a3' : '#d97706',
+                            color: '#fff', fontSize: 13, fontWeight: 700, cursor: ecotrack48HrShipping[o.id] ? 'wait' : 'pointer',
+                            width: '100%',
+                          }} disabled={ecotrack48HrShipping[o.id]} onClick={async () => {
+                            setEcotrack48HrShipping(s => ({ ...s, [o.id]: true }));
+                            try {
+                              const r = await fetch('/api/orders/' + o.id + '/ecotrack-48hr', {
+                                method: 'POST', headers: authHeaders(),
+                              });
+                              const d = await r.json();
+                              if (!d.ok) {
+                                alert('Erreur 48Hr: ' + (d.error || 'inconnue'));
+                              } else if (d.fellBackToHome) {
+                                alert('⚠️ Stopdesk non disponible pour cette commune. La livraison a été basculée en domicile automatiquement.');
+                              }
+                              load();
+                            } catch (e) {
+                              alert('Erreur réseau: ' + e.message);
+                            } finally {
+                              setEcotrack48HrShipping(s => ({ ...s, [o.id]: false }));
+                            }
+                          }}>
+                            {ecotrack48HrShipping[o.id] ? '⏳ Envoi...' : '📦 Envoyer à 48Hr'}
                           </button>
                         )}
 
@@ -1204,17 +1286,53 @@ export default function Admin() {
             <div style={{ borderTop: '1px solid #e5e5ea', margin: '8px 0' }} />
 
             <div style={{ padding: '16px 20px', background: '#f8f9fa', borderRadius: 12 }}>
-              <h4 style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>🎨 Thème Orva</h4>
+              <h4 style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>📦 Connexion 48Hr (EcoTrack)</h4>
               <p style={{ fontSize: 13, color: '#6e6e73', marginBottom: 12 }}>
-                Personnalise les couleurs du thème Orva. Format: <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>rgba(r,g,b,a)</code> ou <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>#hex</code>.
+                Teste la connexion avec l'API de 48Hr.
+                Le token doit être configuré dans <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>.env.local</code> via <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>ECOTRACK_48HR_API_TOKEN</code>.
+              </p>
+              <button className="btn btn-primary" disabled={ecotrack48HrTestLoading}
+                      onClick={async () => {
+                        setEcotrack48HrTestLoading(true);
+                        setEcotrack48HrTestStatus(null);
+                        try {
+                          const r = await fetch('/api/ecotrack-48hr/test', { headers: authHeaders() });
+                          const d = await r.json();
+                          setEcotrack48HrTestStatus(d);
+                        } catch (e) {
+                          setEcotrack48HrTestStatus({ ok: false, message: e.message });
+                        }
+                        setEcotrack48HrTestLoading(false);
+                      }}>
+                {ecotrack48HrTestLoading ? '⏳ Test en cours...' : '🔌 Tester la connexion 48Hr'}
+              </button>
+              {ecotrack48HrTestStatus && (
+                <div style={{
+                  marginTop: 12, padding: '10px 14px', borderRadius: 10,
+                  fontSize: 13, fontWeight: 600,
+                  background: ecotrack48HrTestStatus.ok ? '#fefce8' : '#fef2f2',
+                  color: ecotrack48HrTestStatus.ok ? '#d97706' : '#dc2626',
+                }}>
+                  {ecotrack48HrTestStatus.message}
+                </div>
+              )}
+            </div>
+
+            <div style={{ borderTop: '1px solid #e5e5ea', margin: '8px 0' }} />
+
+            <div style={{ padding: '16px 20px', background: '#f8f9fa', borderRadius: 12 }}>
+              <h4 style={{ fontSize: 15, fontWeight: 800, marginBottom: 12 }}>🎨 Thème</h4>
+
+              <p style={{ fontSize: 12, color: '#6e6e73', marginBottom: 16 }}>
+                Personnalise les couleurs du thème. Format: <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>rgba(r,g,b,a)</code> ou <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>#hex</code>.
               </p>
               {[
-                { key: 'orva_primary', label: 'Couleur primaire', def: '#0066CC' },
-                { key: 'orva_primary_hover', label: 'Survol bouton', def: '#000000' },
-                { key: 'orva_gold_bg', label: 'Fond icônes', def: 'rgba(245,214,215,0.3)' },
-                { key: 'orva_text', label: 'Texte', def: '#000000' },
-                { key: 'orva_border', label: 'Bordure', def: '#F5D6D7' },
-                { key: 'orva_secondary', label: 'Bouton principal', def: '#800004' },
+                { key: 'primary', label: 'Couleur primaire', def: '#0066CC' },
+                { key: 'primary_hover', label: 'Survol bouton', def: '#000000' },
+                { key: 'gold_bg', label: 'Fond icônes', def: 'rgba(245,214,215,0.3)' },
+                { key: 'text', label: 'Texte', def: '#000000' },
+                { key: 'border', label: 'Bordure', def: '#F5D6D7' },
+                { key: 'secondary', label: 'Bouton principal', def: '#800004' },
               ].map(({ key, label, def }) => {
                 const val = settings[key] ?? def;
                 return (

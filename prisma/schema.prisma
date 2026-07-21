@@ -87,8 +87,9 @@ model Order {
   status    String      @default("pending")
   token     String?     @unique
   confirmed     String      @default("pending")
-  ecoTrackData  Json?
-  items         OrderItem[]
+  ecoTrackData      Json?
+  ecoTrack48HrData  Json?
+  items             OrderItem[]
   createdAt     DateTime    @default(now())
 }
 
