@@ -730,14 +730,13 @@ const PRODUCTS = [
   {
     name: '🚗💥 أداة إصلاح صدمات السيارة',
     slug: 'car-dent-repair-tool',
-    price: 1900,
+    price: 2200,
     oldPrice: 3500,
     color: '#e74c3c',
     sku: 'IBI-DENT-001',
     images: [
       'https://www.el-afdale.shop/wp-content/uploads/2025/05/vontouse-pic.webp',
       'https://i0.wp.com/www.el-afdale.shop/wp-content/uploads/2025/05/ventouse-02-scaled.png',
-      'https://i0.wp.com/www.el-afdale.shop/wp-content/uploads/2025/05/ventous-scaled.png',
     ],
     description: 'أداة إصلاح صدمات السيارة - ضرورية في كل سيارة\nقم باصلاح سيارتك بسهولة\nوفر مال و جهد على نفسك',
     category: 'سيارة',
