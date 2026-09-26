@@ -102,10 +102,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
-  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais' || product.slug === 'etar-sanaouati';
+  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
   const isWordBox = product.slug === 'word-box';
-  const isEtar = product.slug === 'etar-sanaouati';
-  const whatsAppFreeDelivery = product.slug === 'scenarios-anglais' || product.slug === 'etar-sanaouati';
+  const whatsAppFreeDelivery = product.slug === 'scenarios-anglais';
   const whatsAppDiscount = isWordBox ? 200 : 0;
 
   useEffect(() => {
