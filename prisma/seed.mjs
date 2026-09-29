@@ -889,6 +889,35 @@ async function main() {
     });
     console.log('✅ car-dent-repair-tool product upserted');
   }
+
+  // Upsert sabourat-el-horouf (always runs; only fills in if missing, so admin edits win)
+  const sabouratSlug = 'sabourat-el-horouf';
+  const sabouratExists = await prisma.product.findUnique({ where: { slug: sabouratSlug } });
+  if (!sabouratExists) {
+    const maxPos = await prisma.product.findFirst({ orderBy: { position: 'desc' } });
+    const position = (maxPos?.position ?? -1) + 1;
+    await prisma.product.create({
+      data: {
+        slug: sabouratSlug,
+        name: 'سبورة الحروف العربية للسنة الأولى ابتدائي — 155 × 100 سم',
+        price: 2900,
+        color: '#E54E19',
+        images: JSON.stringify([
+          'https://i.ibb.co/MyjB5wXv/5048586df421.jpg',
+          'https://i.ibb.co/TxKsqFfZ/tgh.gif',
+        ]),
+        description: 'بعد تضاعف الطلب عليها بشكل رهيب من طرف الأساتذة وأولياء التلاميذ! 🔥 سبورة الحروف للسنة الأولى ابتدائي الأصلية، مثالية لتعليم الحروف والتشكيل، والدفع عند الاستلام مع توصيل 69 ولاية.',
+        stock: 1000,
+        category: 'ألعاب تعليمية',
+        active: true,
+        position,
+      },
+    });
+    console.log('✅ sabourat-el-horouf product created');
+  } else {
+    await prisma.product.update({ where: { slug: sabouratSlug }, data: { active: true } });
+    console.log('✅ sabourat-el-horouf already present (kept admin edits)');
+  }
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());

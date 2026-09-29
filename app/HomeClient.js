@@ -35,6 +35,7 @@ const TAGS = {
   'cartes-defi': ['نطق', 'عربية', '3-5'],
   'cadre-decor-orthophoniste': ['ديكور'],
   'l3ba-taalom-loughat': ['خشبية', 'عربية', '3-5'],
+  'sabourat-el-horouf': ['عربية', '3-5'],
 };
 
 const FILTERS = [
