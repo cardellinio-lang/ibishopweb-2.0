@@ -1,9 +1,6 @@
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/admin-auth';
-
-function cleanImages(images) {
-  return JSON.stringify((images || []).filter(i => i && (i.startsWith('http') || i.startsWith('data:'))));
-}
+import { cleanImages } from '@/lib/images';
 
 export async function PUT(req, { params }) {
   const auth = requireAdmin(req); if (auth) return auth;

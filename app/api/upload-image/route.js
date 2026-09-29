@@ -19,7 +19,13 @@ export async function POST(req) {
       body: new URLSearchParams({ key: apiKey, image: b64 }),
     });
     const data = await res.json();
-    if (!data.success) return Response.json({ error: 'Upload imgbb échoué' }, { status: 500 });
+    if (!data.success) {
+      console.error('[upload-image] imgbb error:', JSON.stringify(data));
+      return Response.json({
+        error: 'Upload imgbb échoué',
+        imgbb: data.error?.message || data.status_txt || `HTTP ${res.status}`,
+      }, { status: 500 });
+    }
 
     return Response.json({ url: data.data.url });
   } catch (e) {

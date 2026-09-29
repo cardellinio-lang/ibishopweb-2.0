@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { normalizeImageUrl } from '@/lib/images';
 
 export default function Admin() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -102,7 +103,10 @@ export default function Admin() {
 
   const save = async () => {
     setLoading(true);
-    const body = { ...form, slug: form.slug || undefined, images: form.images.filter(i => i && (i.startsWith('http') || i.startsWith('data:'))), price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
+    const images = form.images.map(normalizeImageUrl).filter(Boolean);
+    const dropped = form.images.filter(i => i.trim() && !normalizeImageUrl(i)).length;
+    if (dropped > 0) alert(`${dropped} image(s) ignorée(s) : l'URL n'est pas valide.`);
+    const body = { ...form, slug: form.slug || undefined, images, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
     const res = await fetch('/api/products' + (editId ? `/${editId}` : ''), {
       method: editId ? 'PUT' : 'POST',
       headers: authHeaders(),
@@ -122,7 +126,7 @@ export default function Admin() {
   };
 
   const edit = (p) => {
-    const imgs = (Array.isArray(p.images) ? p.images : JSON.parse(p.images || '[]')).filter(i => i && (i.startsWith('http') || i.startsWith('data:')));
+    const imgs = (Array.isArray(p.images) ? p.images : (() => { try { return JSON.parse(p.images || '[]'); } catch { return []; } })()).map(normalizeImageUrl).filter(Boolean);
     setForm({ name: p.name, slug: p.slug || '', price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
     setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
@@ -1386,7 +1390,7 @@ export default function Admin() {
                       else alert('Erreur upload: ' + (d.error || 'inconnue'));
                     }} />
                   </label>
-                  {form.images[i] && <img src={form.images[i]} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />}
+                  {form.images[i] && <img src={normalizeImageUrl(form.images[i])} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />}
                   <button onClick={() => setForm(f => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }))} style={{ background: '#fee2e2', border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 16, lineHeight: 1 }} title="Supprimer">✕</button>
                 </div>
               </div>
