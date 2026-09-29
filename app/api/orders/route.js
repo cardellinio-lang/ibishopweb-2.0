@@ -1,17 +1,29 @@
 import { randomBytes } from 'crypto';
-import prisma from '@/lib/db';
+import prisma, { withDbRetry } from '@/lib/db';
+import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
 
-export async function GET() {
-  const orders = await prisma.order.findMany({
+// Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
+// toutes les commandes (noms, téléphones, adresses, token de confirmation).
+export async function GET(req) {
+  const auth = requireAdmin(req);
+  if (auth) return auth;
+
+  const orders = await withDbRetry(() => prisma.order.findMany({
     orderBy: { createdAt: 'desc' }, include: { items: true },
-  });
-  const enriched = await Promise.all(orders.map(async o => {
-    const wilaya = await prisma.wilaya.findUnique({ where: { id: o.wilayaId } });
-    const commune = await prisma.commune.findUnique({ where: { id: o.communeId } });
-    return { ...o, wilayaName: wilaya?.name || '', communeName: commune?.name || '' };
+  }));
+  const [wilayas, communes] = await Promise.all([
+    withDbRetry(() => prisma.wilaya.findMany({ select: { id: true, name: true } })),
+    withDbRetry(() => prisma.commune.findMany({ select: { id: true, name: true } })),
+  ]);
+  const wMap = new Map(wilayas.map(w => [w.id, w.name]));
+  const cMap = new Map(communes.map(c => [c.id, c.name]));
+  const enriched = orders.map(o => ({
+    ...o,
+    wilayaName: wMap.get(o.wilayaId) || '',
+    communeName: cMap.get(o.communeId) || '',
   }));
   return Response.json(enriched);
 }

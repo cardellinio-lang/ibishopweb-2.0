@@ -80,14 +80,15 @@ export default function Admin() {
   const load = async () => {
     const r = await fetch('/api/products?t=' + Date.now());
     setProducts(await r.json());
-    const o = await fetch('/api/orders');
-    setOrders(await o.json());
+    const o = await fetch('/api/orders', { headers: authHeaders() });
+    if (o.ok) setOrders(await o.json());
+    else if (o.status === 401) { autoLogout(); return; }
     const w = await fetch('/api/wilayas');
     setWilayas(await w.json());
     const s = await fetch('/api/stats', { headers: authHeaders() });
     if (s.ok) setStats(await s.json());
     else if (s.status === 401) autoLogout();
-    const setRes = await fetch('/api/settings');
+    const setRes = await fetch('/api/settings', { headers: authHeaders() });
     if (setRes.ok) setSettings(await setRes.json());
   };
 

@@ -1,8 +1,9 @@
-import prisma from '@/lib/db';
+import prisma, { withDbRetry } from '@/lib/db';
 import { requireAdmin } from '@/lib/admin-auth';
 
-export async function GET() {
-  const settings = await prisma.setting.findMany();
+export async function GET(req) {
+  const auth = requireAdmin(req); if (auth) return auth;
+  const settings = await withDbRetry(() => prisma.setting.findMany());
   const map = {};
   settings.forEach(s => { map[s.key] = s.value; });
   return Response.json(map);

@@ -1,9 +1,9 @@
-import prisma from '@/lib/db';
+import prisma, { withDbRetry } from '@/lib/db';
 import { requireAdmin } from '@/lib/admin-auth';
 import { cleanImages } from '@/lib/images';
 
 export async function GET() {
-  const products = await prisma.product.findMany({ where: { category: { not: 'orva' } }, orderBy: { position: 'asc' } });
+  const products = await withDbRetry(() => prisma.product.findMany({ where: { category: { not: 'orva' } }, orderBy: { position: 'asc' } }));
   return new Response(JSON.stringify(products), {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
   });

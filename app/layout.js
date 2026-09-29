@@ -1,5 +1,5 @@
 import './globals.css';
-import prisma from '@/lib/db';
+import prisma, { withDbRetry } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,11 +14,13 @@ export default async function RootLayout({ children }) {
   let aboutVisible = true;
   let blogVisible = true;
   try {
-    const aboutSetting = await prisma.setting.findUnique({ where: { key: 'about_visible' } });
+    const aboutSetting = await withDbRetry(() => prisma.setting.findUnique({ where: { key: 'about_visible' } }));
     aboutVisible = aboutSetting ? aboutSetting.value !== 'false' : true;
-    const blogSetting = await prisma.setting.findUnique({ where: { key: 'blog_visible' } });
+    const blogSetting = await withDbRetry(() => prisma.setting.findUnique({ where: { key: 'blog_visible' } }));
     blogVisible = blogSetting ? blogSetting.value !== 'false' : true;
-  } catch {};
+  } catch (e) {
+    console.error('[layout] réglages illisibles, valeurs par défaut:', e?.message);
+  };
 
   return (
     <html lang="ar" dir="rtl">
