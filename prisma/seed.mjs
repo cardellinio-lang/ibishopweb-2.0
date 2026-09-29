@@ -903,7 +903,6 @@ async function main() {
         price: 2900,
         color: '#E54E19',
         images: JSON.stringify([
-          'https://i.ibb.co/MyjB5wXv/5048586df421.jpg',
           'https://i.ibb.co/TxKsqFfZ/tgh.gif',
         ]),
         description: 'بعد تضاعف الطلب عليها بشكل رهيب من طرف الأساتذة وأولياء التلاميذ! 🔥 سبورة الحروف للسنة الأولى ابتدائي الأصلية، مثالية لتعليم الحروف والتشكيل، والدفع عند الاستلام مع توصيل 69 ولاية.',

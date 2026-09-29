@@ -18,6 +18,10 @@ export async function PUT(req, { params }) {
 export async function PATCH(req, { params }) {
   const auth = requireAdmin(req); if (auth) return auth;
   const data = await req.json();
+  // `images` est une colonne String : accepter tableau, objet ou chaîne JSON
+  if (data.images !== undefined && typeof data.images !== 'string') {
+    data.images = cleanImages(data.images);
+  }
   const product = await prisma.product.update({ where: { id: params.id }, data });
   return Response.json(product);
 }
