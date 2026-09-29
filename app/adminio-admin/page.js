@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { normalizeImageUrl } from '@/lib/images';
+import { normalizeImageUrl, compressImageFile } from '@/lib/images';
 
 export default function Admin() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -13,6 +13,8 @@ export default function Admin() {
   const [wilayas, setWilayas] = useState([]);
   const [tab, setTab] = useState('products');
   const [form, setForm] = useState({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
+  const [uploading, setUploadingState] = useState({});
+  const setUploading = (i, v) => setUploadingState(u => ({ ...u, [i]: v }));
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sheetUrl, setSheetUrl] = useState('');
@@ -1379,15 +1381,26 @@ export default function Admin() {
                   <label style={{ fontWeight: 700 }}>Image {i + 1}</label>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   <input value={form.images[i]} onChange={e => setForm(f => { const im = [...f.images]; im[i] = e.target.value; return { ...f, images: im }; })} placeholder="URL ou upload" style={{ flex: 1 }} />
-                  <label style={{ background: '#e8e8ed', padding: '8px 12px', borderRadius: 8, cursor: 'pointer', fontSize: 13, whiteSpace: 'nowrap' }}>
-                    📁 Upload
+                  <label style={{ background: uploading[i] ? '#ffd60a' : '#e8e8ed', padding: '8px 12px', borderRadius: 8, cursor: uploading[i] ? 'progress' : 'pointer', fontSize: 13, whiteSpace: 'nowrap' }}>
+                    {uploading[i] ? '⏳ Envoi…' : '📁 Upload'}
                     <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
                       const file = e.target.files?.[0]; if (!file) return; e.target.value = '';
-                      const fd = new FormData(); fd.append('file', file);
-                      const r = await fetch('/api/upload-image', { method: 'POST', headers: { 'x-admin-password': password }, body: fd });
-                      const d = await r.json();
-                      if (d.url) setForm(f => { const im = [...f.images]; im[i] = d.url; return { ...f, images: im }; });
-                      else alert('Erreur upload: ' + (d.error || 'inconnue'));
+                      setUploading(i, true);
+                      try {
+                        const payload = (await compressImageFile(file)) || file;
+                        const fd = new FormData(); fd.append('file', payload);
+                        const r = await fetch('/api/upload-image', { method: 'POST', headers: { 'x-admin-password': password }, body: fd });
+                        const d = await r.json();
+                        if (d.url) {
+                          setForm(f => { const im = [...f.images]; im[i] = d.url; return { ...f, images: im }; });
+                        } else {
+                          alert('Erreur upload: ' + (d.imgbb ? `${d.error} — ${d.imgbb}` : d.error || 'inconnue'));
+                        }
+                      } catch (err) {
+                        alert('Erreur upload: ' + (err.message || 'inconnue'));
+                      } finally {
+                        setUploading(i, false);
+                      }
                     }} />
                   </label>
                   {form.images[i] && <img src={normalizeImageUrl(form.images[i])} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />}
