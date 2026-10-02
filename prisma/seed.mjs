@@ -712,39 +712,7 @@ const PRODUCTS = [
     tierMessage: '➕ أضف {remaining} فقط ووفر 1800 د.ج على 3 قطع!',
     tierGift: '🎁 بطاقات إضافية مجانية',
   },
-  {
-    name: 'جهاز تمارين الكتف المنزلي لمرونة أفضل وحركة أكثر راحة',
-    slug: 'shoulder-exerciser',
-    price: 3900,
-    oldPrice: null,
-    color: '#1a73e8',
-    sku: 'IBI-SHDR-001',
-    images: [
-      'https://pb9d17-1q.myshopify.com/cdn/shop/files/ChatGPTImage11juil.2026_15_55_20.png?v=1783774573',
-      'https://cdn.shopify.com/s/files/1/0658/6748/1224/files/ChatGPT_Image_11_juil._2026_14_55_28.png?v=1783773757',
-      'https://cdn.shopify.com/s/files/1/0658/6748/1224/files/ChatGPT_Image_11_juil._2026_15_31_00.png?v=1783773199',
-    ],
-    description: 'جهاز تمارين الكتف المنزلي لمرونة أفضل وحركة أكثر راحة',
-    category: 'رياضة',
-  },
-  {
-    name: '🚗💥 أداة إصلاح صدمات السيارة',
-    slug: 'car-dent-repair-tool',
-    price: 2200,
-    oldPrice: 3500,
-    color: '#e74c3c',
-    sku: 'IBI-DENT-001',
-    images: [
-      'https://www.el-afdale.shop/wp-content/uploads/2025/05/vontouse-pic.webp',
-      'https://i0.wp.com/www.el-afdale.shop/wp-content/uploads/2025/05/ventouse-02-scaled.png',
-    ],
-    description: 'أداة إصلاح صدمات السيارة - ضرورية في كل سيارة\nقم باصلاح سيارتك بسهولة\nوفر مال و جهد على نفسك',
-    category: 'سيارة',
-    tierEnabled: true, tierQty: 2, tierPrice: 3800,
-    tierMessage: '🎁 عند طلب 02 نعطوك 01 هدية مجانية!',
-    tierGift: '🎁 قطعة هدية مجانية',
-  },
-];
+  ];
 
 async function main() {
   const existing = await prisma.product.count();
@@ -806,88 +774,6 @@ async function main() {
       });
       console.log('✅ etar-sanaouati product updated/created');
     }
-  }
-
-  // Upsert shoulder exerciser (always runs, even when skipping full seed)
-  const shoulderProduct = PRODUCTS.find(p => p.slug === 'shoulder-exerciser');
-  if (shoulderProduct) {
-    const maxPos = await prisma.product.findFirst({ orderBy: { position: 'desc' } });
-    const position = (maxPos?.position ?? -1) + 1;
-    await prisma.product.upsert({
-      where: { slug: 'shoulder-exerciser' },
-      update: {
-        name: shoulderProduct.name,
-        price: shoulderProduct.price,
-        color: shoulderProduct.color,
-        sku: shoulderProduct.sku,
-        images: JSON.stringify(shoulderProduct.images),
-        description: shoulderProduct.description,
-        category: shoulderProduct.category,
-        stock: 10,
-        active: true,
-      },
-      create: {
-        slug: 'shoulder-exerciser',
-        name: shoulderProduct.name,
-        price: shoulderProduct.price,
-        color: shoulderProduct.color || '#1a73e8',
-        sku: shoulderProduct.sku,
-        images: JSON.stringify(shoulderProduct.images),
-        description: shoulderProduct.description,
-        stock: 10,
-        category: shoulderProduct.category || 'رياضة',
-        active: true,
-        position,
-      },
-    });
-    console.log('✅ shoulder-exerciser product upserted');
-  }
-
-  // Upsert car dent repair tool (always runs, even when skipping full seed)
-  const dentProduct = PRODUCTS.find(p => p.slug === 'car-dent-repair-tool');
-  if (dentProduct) {
-    const maxPos = await prisma.product.findFirst({ orderBy: { position: 'desc' } });
-    const position = (maxPos?.position ?? -1) + 1;
-    await prisma.product.upsert({
-      where: { slug: 'car-dent-repair-tool' },
-      update: {
-        name: dentProduct.name,
-        price: dentProduct.price,
-        oldPrice: dentProduct.oldPrice,
-        color: dentProduct.color,
-        sku: dentProduct.sku,
-        images: JSON.stringify(dentProduct.images),
-        description: dentProduct.description,
-        category: dentProduct.category,
-        stock: 20,
-        active: true,
-        tierEnabled: dentProduct.tierEnabled,
-        tierQty: dentProduct.tierQty,
-        tierPrice: dentProduct.tierPrice,
-        tierMessage: dentProduct.tierMessage,
-        tierGift: dentProduct.tierGift,
-      },
-      create: {
-        slug: 'car-dent-repair-tool',
-        name: dentProduct.name,
-        price: dentProduct.price,
-        oldPrice: dentProduct.oldPrice,
-        color: dentProduct.color || '#e74c3c',
-        sku: dentProduct.sku,
-        images: JSON.stringify(dentProduct.images),
-        description: dentProduct.description,
-        stock: 20,
-        category: dentProduct.category || 'سيارة',
-        active: true,
-        tierEnabled: dentProduct.tierEnabled,
-        tierQty: dentProduct.tierQty,
-        tierPrice: dentProduct.tierPrice,
-        tierMessage: dentProduct.tierMessage,
-        tierGift: dentProduct.tierGift,
-        position,
-      },
-    });
-    console.log('✅ car-dent-repair-tool product upserted');
   }
 
   // Upsert sabourat-el-horouf (always runs; only fills in if missing, so admin edits win)
