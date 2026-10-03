@@ -125,7 +125,7 @@ export default function BlogPost({ params }) {
           )}
 
           <h1 style={{
-            fontFamily: "'Cairo', sans-serif",
+            fontFamily: "'Thmanyah Sans', sans-serif",
             fontWeight: 900, fontSize: 32,
             color: '#1C1008', lineHeight: 1.2,
             marginBottom: 12,
@@ -166,7 +166,7 @@ export default function BlogPost({ params }) {
               {sections.map((section, i) => (
                 <div key={i}>
                   <h2 style={{
-                    fontFamily: "'Cairo', sans-serif",
+                    fontFamily: "'Thmanyah Sans', sans-serif",
                     fontSize: 18, fontWeight: 800, color: '#1C1008',
                     marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
                   }}>

@@ -214,13 +214,13 @@ function SectionCard({ section, index }) {
         </div>
         <h2 style={{
           fontSize: 22, fontWeight: 900, color: section.color, marginBottom: 10,
-          fontFamily: "'Tajawal', sans-serif",
+          fontFamily: "'Thmanyah Sans', sans-serif",
         }}>
           {section.title}
         </h2>
         <p style={{
           fontSize: 15, color: '#4a4a50', lineHeight: 1.8, margin: 0,
-          fontFamily: "'Tajawal', sans-serif",
+          fontFamily: "'Thmanyah Sans', sans-serif",
         }}>
           {section.text}
         </p>
@@ -339,7 +339,7 @@ export default function APropos() {
             </p>
             <h1 style={{
               fontSize: 32, fontWeight: 900, marginBottom: 6,
-              fontFamily: "'Tajawal', sans-serif",
+              fontFamily: "'Thmanyah Sans', sans-serif",
               background: 'linear-gradient(135deg, #E54E19, #d4a5e8, #a8d8ea)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
@@ -347,7 +347,7 @@ export default function APropos() {
             </h1>
             <p style={{
               fontSize: 15, color: '#6e6e73', marginBottom: 4,
-              fontFamily: "'Tajawal', sans-serif",
+              fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               رحلة مليئة بالضحك والتعلم والإبداع 🚀
             </p>
@@ -378,13 +378,13 @@ export default function APropos() {
             </div>
             <p style={{
               fontSize: 18, fontWeight: 800, color: '#E54E19', marginBottom: 4,
-              fontFamily: "'Tajawal', sans-serif",
+              fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               شكراً لأنك جزء من قصتنا
             </p>
             <p style={{
               fontSize: 14, color: '#8e8e93',
-              fontFamily: "'Tajawal', sans-serif",
+              fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               معاً نصنع ابتسامة كل طفل في الجزائر 🌟
             </p>

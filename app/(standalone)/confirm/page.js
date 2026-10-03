@@ -22,7 +22,7 @@ function ConfirmContent() {
   const s = {
     page: {
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#f5f5f7', fontFamily: "'Tajawal', sans-serif", padding: 20,
+      background: '#f5f5f7', fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
     },
     card: {
       background: '#fff', borderRadius: 24, padding: '40px 32px',
@@ -63,7 +63,7 @@ function ConfirmContent() {
 export default function ConfirmPage() {
   return (
     <Suspense fallback={
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7', fontFamily: "'Tajawal', sans-serif" }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7', fontFamily: "'Thmanyah Sans', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 64, marginBottom: 16 }}>⏳</div>
           <h1 style={{ fontSize: 24, fontWeight: 900, color: '#1d1d1f' }}>جاري التحميل...</h1>

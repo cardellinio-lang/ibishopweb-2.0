@@ -32,7 +32,7 @@ export default function ConfirmOrder({ params }) {
     page: {
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)',
-      fontFamily: "'Tajawal', sans-serif", padding: 20,
+      fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
     },
     card: {
       background: '#fff', borderRadius: 28, padding: '48px 36px',

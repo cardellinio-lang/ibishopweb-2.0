@@ -184,7 +184,7 @@ export default function BlogPage() {
   }
 
   return (
-    <div style={{ fontFamily: "'Tajawal', sans-serif" }}>
+    <div style={{ fontFamily: "'Thmanyah Sans', sans-serif" }}>
       <style>{`
         .blog-card { transition: all 0.3s ease; }
         .blog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(28,16,8,0.18); }
@@ -264,7 +264,7 @@ export default function BlogPage() {
                 🇩🇿 صنع في الجزائر
               </div>
               <h1 style={{
-                fontFamily: "'Cairo', sans-serif",
+                fontFamily: "'Thmanyah Sans', sans-serif",
                 fontWeight: 900, fontSize: 48,
                 color: '#1C1008', lineHeight: 1.1,
                 marginBottom: 16,
@@ -291,7 +291,7 @@ export default function BlogPage() {
                   style={{
                     flex: 1, border: 'none', padding: '16px 24px',
                     fontSize: 15, background: 'transparent',
-                    outline: 'none', fontFamily: "'Tajawal', sans-serif",
+                    outline: 'none', fontFamily: "'Thmanyah Sans', sans-serif",
                   }}
                 />
                 <button style={{
@@ -342,7 +342,7 @@ export default function BlogPage() {
         <GrainBg opacity={0.025} />
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <h2 style={{
-            fontFamily: "'Cairo', sans-serif", fontWeight: 700,
+            fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 700,
             fontSize: 26, color: '#1C1008', textAlign: 'center', marginBottom: 28,
           }}>
             تصفح حسب الفئة
@@ -417,7 +417,7 @@ export default function BlogPage() {
                 </div>
                 <div style={{ flex: 1, padding: 32, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <h3 style={{
-                    fontFamily: "'Cairo', sans-serif",
+                    fontFamily: "'Thmanyah Sans', sans-serif",
                     fontWeight: 800, fontSize: 28,
                     color: '#1C1008', lineHeight: 1.2,
                     marginBottom: 12,
@@ -460,7 +460,7 @@ export default function BlogPage() {
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <h2 style={{
-              fontFamily: "'Cairo', sans-serif", fontWeight: 900,
+              fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 900,
               fontSize: 36, color: '#1C1008', marginBottom: 8,
             }}>
               أحدث المقالات
@@ -484,7 +484,7 @@ export default function BlogPage() {
                   background: activeFilter === cat.id ? '#E54E19' : 'transparent',
                   color: activeFilter === cat.id ? '#fff' : '#1C1008',
                   fontWeight: 700, fontSize: 14,
-                  fontFamily: "'Tajawal', sans-serif",
+                  fontFamily: "'Thmanyah Sans', sans-serif",
                 }}>
                 {cat.label}
               </button>
@@ -541,7 +541,7 @@ export default function BlogPage() {
                         </div>
                       )}
                       <h3 style={{
-                        fontFamily: "'Cairo', sans-serif",
+                        fontFamily: "'Thmanyah Sans', sans-serif",
                         fontWeight: 700, fontSize: 17,
                         color: '#1C1008', lineHeight: 1.5,
                         marginBottom: 8,
@@ -601,7 +601,7 @@ export default function BlogPage() {
         </div>
         <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           <h2 style={{
-            fontFamily: "'Cairo', sans-serif", fontWeight: 900,
+            fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 900,
             fontSize: 32, color: '#fff', marginBottom: 8,
           }}>
             اشترك في نشرتنا التربوية
@@ -633,7 +633,7 @@ export default function BlogPage() {
                 style={{
                   flex: 1, border: 'none', borderRadius: 50,
                   padding: '14px 22px', fontSize: 14,
-                  outline: 'none', fontFamily: "'Tajawal', sans-serif",
+                  outline: 'none', fontFamily: "'Thmanyah Sans', sans-serif",
                 }}
               />
               <button type="submit" style={{
@@ -663,7 +663,7 @@ export default function BlogPage() {
             {/* Popular List */}
             <div>
               <h3 style={{
-                fontFamily: "'Cairo', sans-serif", fontWeight: 800,
+                fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 800,
                 fontSize: 22, color: '#1C1008', marginBottom: 20,
               }}>
                 📊 الأكثر قراءة
@@ -679,7 +679,7 @@ export default function BlogPage() {
                     onMouseEnter={e => e.currentTarget.style.background = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                       <div style={{
-                        fontFamily: "'Cairo', sans-serif",
+                        fontFamily: "'Thmanyah Sans', sans-serif",
                         fontWeight: 900, fontSize: 28,
                         color: '#E54E19', opacity: 0.3,
                         minWidth: 40, textAlign: 'center',
@@ -717,7 +717,7 @@ export default function BlogPage() {
               }}>
                 <p style={{ fontSize: 36, marginBottom: 8 }}>🛍️</p>
                 <h4 style={{
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'Thmanyah Sans', sans-serif",
                   fontWeight: 800, fontSize: 20, marginBottom: 8,
                 }}>
                   تسوق منتجاتنا
@@ -744,7 +744,7 @@ export default function BlogPage() {
                 boxShadow: '0 8px 32px rgba(28,16,8,0.10)',
               }}>
                 <h4 style={{
-                  fontFamily: "'Cairo', sans-serif",
+                  fontFamily: "'Thmanyah Sans', sans-serif",
                   fontWeight: 800, fontSize: 18, color: '#1C1008',
                   marginBottom: 16,
                 }}>
