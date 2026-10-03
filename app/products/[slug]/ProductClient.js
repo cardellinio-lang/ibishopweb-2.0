@@ -90,10 +90,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'أحمر', price: 2900, desc: 'Rouge', color: '#dc2626' },
     { label: 'وردي', price: 2900, desc: 'Rose', color: '#e91e63' },
   ] : product.slug === 'tbl-disjon' ? [
-    { label: 'موديل 1', price: 3300, desc: 'النموذج الأول', img: 0 },
-    { label: 'موديل 2', price: 3300, desc: 'النموذج الثاني', img: 1 },
-    { label: 'موديل 3', price: 3300, desc: 'النموذج الثالث', img: 2 },
-    { label: 'موديل 4', price: 3300, desc: 'النموذج الرابع', img: 3 },
+    { label: 'موديل 1', shortLabel: 'موديل 1', price: 3300, img: 0 },
+    { label: 'موديل 2', shortLabel: 'موديل 2', price: 3300, img: 1 },
+    { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
+    { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -500,30 +500,35 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {variants && product.slug !== 'wordrope' && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار النوع</label>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    {variants.map(v => (
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر الموديل</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                    {variants.map(v => {
+                        const isPhoto = v.img !== undefined && imgs[v.img];
+                        return (
                       <button key={v.label} type="button" onClick={() => { setVariant(v.label); if (typeof v.img === 'number') setImgIdx(v.img); }}
                               style={{
-                                flex: 1, padding: '12px 16px', borderRadius: 12,
-                                border: variant === v.label ? '2px solid ' + c : '1.5px solid #d2d2d7',
-                                background: variant === v.label ? c : '#fff',
-                                color: variant === v.label ? '#fff' : '#1d1d1f',
+                                flex: '1 1 calc(50% - 6px)', padding: 0, borderRadius: 14, overflow: 'hidden',
+                                border: variant === v.label ? '3px solid ' + c : '2px solid #d2d2d7',
+                                background: '#fff',
                                 cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
                               }}>
-                        {v.img !== undefined && imgs[v.img] && (
-                          <img src={imgs[v.img]} alt={v.label} style={{ width: '100%', height: 64, objectFit: 'contain', borderRadius: 8, marginBottom: 6, background: '#f5f5f7' }} />
-                        )}
-                        {v.color && (
-                          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
-                            <div style={{ width: 22, height: 22, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
+                        {isPhoto ? (
+                          <img src={imgs[v.img]} alt={v.label} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
+                        ) : (
+                          <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
+                            {v.color && <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />}
                           </div>
                         )}
-                        <div style={{ fontSize: 16, fontWeight: 900 }}>{v.label}</div>
-                        <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2, opacity: 0.85 }}>{v.desc}</div>
-                        <div style={{ fontSize: 15, fontWeight: 800, marginTop: 4 }}>{v.price.toLocaleString()} د.ج</div>
+                        <div style={{
+                          padding: '10px 8px', fontSize: 17, fontWeight: 900,
+                          background: variant === v.label ? c : '#fff',
+                          color: variant === v.label ? '#fff' : '#1d1d1f',
+                        }}>
+                          {v.shortLabel || v.label}
+                        </div>
                       </button>
-                    ))}
+                        );
+                      })}
                   </div>
                 </div>
               )}
