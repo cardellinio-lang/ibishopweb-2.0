@@ -89,6 +89,11 @@ export default function ProductClient({ product, wilayas, communes}) {
   ] : product.slug === 'wordrope' ? [
     { label: 'أحمر', price: 2900, desc: 'Rouge', color: '#dc2626' },
     { label: 'وردي', price: 2900, desc: 'Rose', color: '#e91e63' },
+  ] : product.slug === 'tbl-disjon' ? [
+    { label: 'موديل 1', price: 3300, desc: 'النموذج الأول', img: 0 },
+    { label: 'موديل 2', price: 3300, desc: 'النموذج الثاني', img: 1 },
+    { label: 'موديل 3', price: 3300, desc: 'النموذج الثالث', img: 2 },
+    { label: 'موديل 4', price: 3300, desc: 'النموذج الرابع', img: 3 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -129,7 +134,11 @@ export default function ProductClient({ product, wilayas, communes}) {
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
-  const delivery = selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0;
+  // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
+  const isTblDisjon = product.slug === 'tbl-disjon';
+  const delivery = isTblDisjon
+    ? (deliveryType === 'office' ? 0 : 400)
+    : (selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0);
   const subtotal = finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
@@ -206,7 +215,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
     try {
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : (variant && (variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : (variant && (isTblDisjon || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -494,7 +503,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>اختيار النوع</label>
                   <div style={{ display: 'flex', gap: 10 }}>
                     {variants.map(v => (
-                      <button key={v.label} type="button" onClick={() => setVariant(v.label)}
+                      <button key={v.label} type="button" onClick={() => { setVariant(v.label); if (typeof v.img === 'number') setImgIdx(v.img); }}
                               style={{
                                 flex: 1, padding: '12px 16px', borderRadius: 12,
                                 border: variant === v.label ? '2px solid ' + c : '1.5px solid #d2d2d7',
@@ -502,6 +511,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                                 color: variant === v.label ? '#fff' : '#1d1d1f',
                                 cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
                               }}>
+                        {v.img !== undefined && imgs[v.img] && (
+                          <img src={imgs[v.img]} alt={v.label} style={{ width: '100%', height: 64, objectFit: 'contain', borderRadius: 8, marginBottom: 6, background: '#f5f5f7' }} />
+                        )}
                         {v.color && (
                           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
                             <div style={{ width: 22, height: 22, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
@@ -709,7 +721,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>{deliveryType === 'home' ? 'سعر التوصيل للمنزل' : 'سعر التوصيل للمكتب'}</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#6e6e73' }}>{delivery > 0 ? `${delivery.toLocaleString()} د.ج` : 'اختر الولاية'}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: isTblDisjon && deliveryType === 'office' ? '#16a34a' : '#6e6e73' }}>
+                      {isTblDisjon
+                        ? (deliveryType === 'office' ? 'مجاني' : '400 د.ج')
+                        : (delivery > 0 ? `${delivery.toLocaleString()} د.ج` : 'اختر الولاية')}
+                    </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>السعر الإجمالي</span>
