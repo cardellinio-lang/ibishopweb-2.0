@@ -507,7 +507,7 @@ export default function Admin() {
                               onClick={() => copyPhone(o.phone)}
                               title="Cliquer pour copier le numéro"
                               style={{
-                                fontSize: 'clamp(30px, 8.5vw, 52px)',
+                                fontSize: 'clamp(19px, 4.6vw, 26px)',
                                 fontWeight: 900,
                                 color: '#2563eb',
                                 direction: 'ltr',
@@ -943,7 +943,7 @@ export default function Admin() {
                         title="Cliquer pour copier"
                         style={{
                           padding: '10px 12px', direction: 'ltr', color: '#2563eb',
-                          fontSize: 26, fontWeight: 900, cursor: 'pointer',
+                          fontSize: 17, fontWeight: 900, cursor: 'pointer',
                           whiteSpace: 'nowrap', letterSpacing: 0.5,
                         }}
                       >{o.phone}</td>
