@@ -27,9 +27,11 @@ export default async function RootLayout({ children }) {
       <head>
         <link rel="icon" href="/logo-final.png" sizes="48x48" />
         <link rel="shortcut icon" href="/logo-final.png" sizes="48x48" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+        {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
+            (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
+            ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}
+        <link rel="preload" href="/fonts/thmanyahsans-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/thmanyahsans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         {pixelId && (
           <script dangerouslySetInnerHTML={{
             __html: `

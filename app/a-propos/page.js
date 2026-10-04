@@ -333,7 +333,7 @@ export default function APropos() {
             </div>
             <p style={{
               fontSize: 13, color: '#8e8e93', letterSpacing: 3, fontWeight: 700,
-              marginBottom: 4, fontFamily: "'Montserrat', sans-serif",
+              marginBottom: 4, fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               BIENVENUE DANS NOTRE MONDE MAGIQUE
             </p>

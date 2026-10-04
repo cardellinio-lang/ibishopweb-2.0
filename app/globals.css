@@ -10,7 +10,7 @@
 /* Thmanyah n'a pas de 600 : on l'aligne sur Medium pour garder la finesse du design d'origine */
 @font-face{font-family:'Thmanyah Sans';src:url('/fonts/thmanyahsans-Medium.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 
-body{font-family:'Thmanyah Sans','Tajawal','Montserrat',-apple-system,sans-serif;direction:rtl;background:#f5f5f7;color:#1d1d1f}
+body{font-family:'Thmanyah Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Arabic','Geeza Pro',Tahoma,sans-serif;direction:rtl;background:#f5f5f7;color:#1d1d1f}
 a{color:inherit;text-decoration:none}
 img{max-width:100%}
 input,textarea,select{-webkit-user-select:auto;user-select:auto}
