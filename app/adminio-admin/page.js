@@ -46,6 +46,27 @@ export default function Admin() {
   const [ecotrack48HrLabelLoading, setEcotrack48HrLabelLoading] = useState({});
   const [syncPricesLoading, setSyncPricesLoading] = useState(false);
   const [syncPricesResult, setSyncPricesResult] = useState(null);
+  const [copiedPhone, setCopiedPhone] = useState(null);
+
+  const copyPhone = (phone) => {
+    const done = () => {
+      setCopiedPhone(phone);
+      setTimeout(() => setCopiedPhone(c => (c === phone ? null : c)), 1500);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(phone).then(done).catch(done);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = phone;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch {}
+      document.body.removeChild(ta);
+      done();
+    }
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
@@ -477,14 +498,47 @@ export default function Admin() {
                           </span>
                         </div>
 
+                        {/* Téléphone : pleine largeur, très gros, cliquable pour copier */}
+                        <div style={{ marginBottom: 10 }}>
+                          <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Téléphone</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                            <a
+                              href={'tel:+213' + String(o.phone || '').replace(/^(\+?213|0)/, '').replace(/[\s\-]/g, '')}
+                              onClick={() => copyPhone(o.phone)}
+                              title="Cliquer pour copier le numéro"
+                              style={{
+                                fontSize: 'clamp(30px, 8.5vw, 52px)',
+                                fontWeight: 900,
+                                color: '#2563eb',
+                                direction: 'ltr',
+                                textAlign: 'left',
+                                letterSpacing: 1,
+                                lineHeight: 1.15,
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                              }}
+                            >
+                              {o.phone}
+                            </a>
+                            <button
+                              onClick={() => copyPhone(o.phone)}
+                              style={{
+                                padding: '6px 12px', borderRadius: 8, cursor: 'pointer',
+                                border: '1px solid #2563eb',
+                                background: copiedPhone === o.phone ? '#2563eb' : '#fff',
+                                color: copiedPhone === o.phone ? '#fff' : '#2563eb',
+                                fontSize: 12, fontWeight: 800, whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {copiedPhone === o.phone ? '✓ Copié' : 'Copier'}
+                            </button>
+                          </div>
+                        </div>
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 13 }}>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Client</span>
                             <div style={{ fontWeight: 700, color: '#1d1d1f' }}>{o.customer}</div>
-                          </div>
-                          <div>
-                            <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Téléphone</span>
-                            <div style={{ fontWeight: 700, color: '#2563eb', direction: 'ltr' }}>{o.phone}</div>
                           </div>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Wilaya</span>
@@ -884,7 +938,15 @@ export default function Admin() {
                     }}>
                       <td style={{ padding: '10px 12px', fontWeight: 700 }}>#{o.number}</td>
                       <td style={{ padding: '10px 12px', fontWeight: 600 }}>{o.customer}</td>
-                      <td style={{ padding: '10px 12px', direction: 'ltr', color: '#2563eb' }}>{o.phone}</td>
+                      <td
+                        onClick={() => copyPhone(o.phone)}
+                        title="Cliquer pour copier"
+                        style={{
+                          padding: '10px 12px', direction: 'ltr', color: '#2563eb',
+                          fontSize: 26, fontWeight: 900, cursor: 'pointer',
+                          whiteSpace: 'nowrap', letterSpacing: 0.5,
+                        }}
+                      >{o.phone}</td>
                       <td style={{ padding: '10px 12px' }}>{o.wilayaName}</td>
                       <td style={{ padding: '10px 12px' }}>{o.communeName}</td>
                       <td style={{ padding: '10px 12px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.items?.[0]?.name || '-'}</td>
