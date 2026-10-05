@@ -54,10 +54,12 @@ export async function POST(req) {
   const wilaya = await prisma.wilaya.findUnique({ where: { id: data.wilayaId } });
   if (!wilaya) return Response.json({ error: 'Wilaya invalide' }, { status: 400 });
 
-  // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
+  // tbl-disjon : 400 DA a domicile. silsilat-hadaf : gratuit au bureau, tarif normal a domicile.
   const deliveryPrice = product.slug === 'tbl-disjon'
     ? (data.deliveryType === 'office' ? 0 : 400)
-    : (data.deliveryType === 'office' ? wilaya.priceOffice : wilaya.price);
+    : (data.deliveryType === 'office'
+        ? (product.slug === 'silsilat-hadaf' ? 0 : wilaya.priceOffice)
+        : wilaya.price);
   const total = product.price * data.qty + deliveryPrice;
 
   const itemName = data.variantName || product.name;

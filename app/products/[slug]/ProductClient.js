@@ -95,10 +95,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
   ] : product.slug === 'silsilat-hadaf' ? [
-    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2500 },
-    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2500 },
-    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2500 },
-    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2500 },
+    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2600 },
+    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2600 },
+    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2600 },
+    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2600 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -143,9 +143,11 @@ export default function ProductClient({ product, wilayas, communes}) {
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
   const alwaysRecordVariant = isTblDisjon || product.slug === 'silsilat-hadaf';
+  // livraison gratuite au bureau de retrait (tarif normal a domicile)
+  const freeOfficeDelivery = isTblDisjon || product.slug === 'silsilat-hadaf';
   const delivery = isTblDisjon
     ? (deliveryType === 'office' ? 0 : 400)
-    : (selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0);
+    : (selectedWilaya ? (deliveryType === 'office' ? (freeOfficeDelivery ? 0 : selectedWilaya.priceOffice) : selectedWilaya.price) : 0);
   const subtotal = finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
@@ -762,9 +764,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>{deliveryType === 'home' ? 'سعر التوصيل للمنزل' : 'سعر التوصيل للمكتب'}</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: isTblDisjon && deliveryType === 'office' ? '#16a34a' : '#6e6e73' }}>
-                      {isTblDisjon
-                        ? (deliveryType === 'office' ? 'مجاني' : '400 د.ج')
+                    <span style={{ fontSize: 14, fontWeight: 700, color: freeOfficeDelivery && deliveryType === 'office' ? '#16a34a' : '#6e6e73' }}>
+                      {freeOfficeDelivery && deliveryType === 'office'
+                        ? 'مجاني'
                         : (delivery > 0 ? `${delivery.toLocaleString()} د.ج` : 'اختر الولاية')}
                     </span>
                   </div>
