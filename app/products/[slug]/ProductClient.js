@@ -537,7 +537,10 @@ export default function ProductClient({ product, wilayas, communes}) {
                           color: '#fff', fontSize: 15, fontWeight: 900, lineHeight: 1,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>{on ? '✓' : ''}</span>
-                        <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f', lineHeight: 1.35 }}>{v.label}</span>
+                        <span style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ display: 'block', fontSize: 16, fontWeight: 900, color: '#1d1d1f', lineHeight: 1.35 }}>{v.shortLabel || v.label}</span>
+                          <span style={{ display: 'block', fontSize: 14, fontWeight: 900, color: c, marginTop: 3 }}>{v.price.toLocaleString()} د.ج</span>
+                        </span>
                       </button>
                         );
                       })}
