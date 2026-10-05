@@ -95,10 +95,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
   ] : product.slug === 'silsilat-hadaf' ? [
-    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2500, img: 0 },
-    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2500, img: 1 },
-    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2500, img: 2 },
-    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2500, img: 3 },
+    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2500 },
+    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2500 },
+    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2500 },
+    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2500 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -505,7 +505,35 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug !== 'wordrope' && (
+              {variants && product.slug === 'silsilat-hadaf' && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر المستوى الدراسي</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {variants.map(v => {
+                        const on = variant === v.label;
+                        return (
+                      <button key={v.label} type="button" onClick={() => setVariant(v.label)}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: 12, width: '100%',
+                                padding: '14px 16px', borderRadius: 12, textAlign: 'right',
+                                border: on ? '2px solid ' + c : '2px solid #d2d2d7',
+                                background: on ? '#f6f6f8' : '#fff',
+                                cursor: 'pointer', transition: 'all .2s',
+                              }}>
+                        <span style={{
+                          width: 26, height: 26, borderRadius: '50%', flex: '0 0 26px',
+                          border: on ? 'none' : '2px solid #c7c7cc', background: on ? c : '#fff',
+                          color: '#fff', fontSize: 15, fontWeight: 900, lineHeight: 1,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>{on ? '✓' : ''}</span>
+                        <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f', lineHeight: 1.35 }}>{v.label}</span>
+                      </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+              {variants && product.slug !== 'wordrope' && product.slug !== 'silsilat-hadaf' && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر الموديل</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
