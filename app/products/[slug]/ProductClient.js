@@ -95,14 +95,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
   ] : product.slug === 'silsilat-hadaf' ? [
-    { label: 'سلسلة الهدف 1 متوسط', price: 2200, img: 0 },
-    { label: 'سلسلة الهدف 2 متوسط', price: 2200, img: 1 },
-    { label: 'سلسلة الهدف 3 متوسط', price: 2200, img: 2 },
-    { label: 'سلسلة الهدف 4 متوسط', price: 2200, img: 3 },
-    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2900, img: 4 },
-    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2900, img: 5 },
-    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2900, img: 6 },
-    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2900, img: 7 },
+    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2500, img: 0 },
+    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2500, img: 1 },
+    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2500, img: 2 },
+    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2500, img: 3 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
