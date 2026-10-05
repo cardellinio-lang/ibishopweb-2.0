@@ -99,6 +99,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 2', shortLabel: 'موديل 2', price: 2200, img: 1 },
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 2200, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 2200, img: 3 },
+    { label: 'السنة 1', shortLabel: 'السنة 1', price: 2900, img: 4 },
+    { label: 'السنة 2', shortLabel: 'السنة 2', price: 2900, img: 5 },
+    { label: 'السنة 3', shortLabel: 'السنة 3', price: 2900, img: 6 },
+    { label: 'السنة 4', shortLabel: 'السنة 4', price: 2900, img: 7 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
