@@ -80,6 +80,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const submittedRef = useRef(false);
   const submittingOrderRef = useRef(false);
 
+  // produits dont les variantes s'affichent en liste texte (bouton a cocher, sans image)
+  const textVariantSlugs = ['silsilat-hadaf', 'baqat-obaqera-badr'];
+
   const variants = product.slug === 'cahier-magique' ? [
     { label: 'A5', price: 1700, desc: 'صغير' },
     { label: 'A4', price: 2400, desc: 'كبير' },
@@ -99,6 +102,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'سلسلة الهدف السنة 2 متوسط', price: 2600 },
     { label: 'سلسلة الهدف السنة 3 متوسط', price: 2600 },
     { label: 'سلسلة الهدف السنة 4 متوسط', price: 2600 },
+  ] : product.slug === 'baqat-obaqera-badr' ? [
+    { label: 'عباقرة البدر السنة 1 متوسط', price: 2900 },
+    { label: 'عباقرة البدر السنة 2 متوسط', price: 2900 },
+    { label: 'عباقرة البدر السنة 3 متوسط', price: 2900 },
+    { label: 'عباقرة البدر السنة 4 متوسط', price: 2900 },
+    { label: 'اريد سنتين مع بعض(سجل طلبيتك وعند الاتصال أخبرنا بالسنوات التي تريدها وشكرا', shortLabel: 'سنتين مع بعض', price: 5600 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -142,7 +151,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
-  const alwaysRecordVariant = isTblDisjon || product.slug === 'silsilat-hadaf';
+  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug);
   // livraison gratuite au bureau de retrait (tarif normal a domicile)
   const freeOfficeDelivery = isTblDisjon || product.slug === 'silsilat-hadaf';
   const delivery = isTblDisjon
@@ -507,9 +516,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug === 'silsilat-hadaf' && (
+              {variants && product.slug !== 'wordrope' && textVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر المستوى الدراسي</label>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'baqat-obaqera-badr' ? 'اختر الباقة' : 'اختر المستوى الدراسي'}</label>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {variants.map(v => {
                         const on = variant === v.label;
@@ -535,7 +544,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug !== 'wordrope' && product.slug !== 'silsilat-hadaf' && (
+              {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر الموديل</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
