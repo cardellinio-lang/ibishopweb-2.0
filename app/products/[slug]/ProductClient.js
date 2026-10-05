@@ -95,14 +95,14 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
   ] : product.slug === 'silsilat-hadaf' ? [
-    { label: 'موديل 1', shortLabel: 'موديل 1', price: 2200, img: 0 },
-    { label: 'موديل 2', shortLabel: 'موديل 2', price: 2200, img: 1 },
-    { label: 'موديل 3', shortLabel: 'موديل 3', price: 2200, img: 2 },
-    { label: 'موديل 4', shortLabel: 'موديل 4', price: 2200, img: 3 },
-    { label: 'السنة 1', shortLabel: 'السنة 1', price: 2900, img: 4 },
-    { label: 'السنة 2', shortLabel: 'السنة 2', price: 2900, img: 5 },
-    { label: 'السنة 3', shortLabel: 'السنة 3', price: 2900, img: 6 },
-    { label: 'السنة 4', shortLabel: 'السنة 4', price: 2900, img: 7 },
+    { label: 'سلسلة الهدف 1 متوسط', price: 2200, img: 0 },
+    { label: 'سلسلة الهدف 2 متوسط', price: 2200, img: 1 },
+    { label: 'سلسلة الهدف 3 متوسط', price: 2200, img: 2 },
+    { label: 'سلسلة الهدف 4 متوسط', price: 2200, img: 3 },
+    { label: 'سلسلة الهدف السنة 1 متوسط', price: 2900, img: 4 },
+    { label: 'سلسلة الهدف السنة 2 متوسط', price: 2900, img: 5 },
+    { label: 'سلسلة الهدف السنة 3 متوسط', price: 2900, img: 6 },
+    { label: 'سلسلة الهدف السنة 4 متوسط', price: 2900, img: 7 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -515,6 +515,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                     {variants.map(v => {
                         const isPhoto = v.img !== undefined && imgs[v.img];
+                        const longLabel = (v.shortLabel || v.label).length > 14;
                         return (
                       <button key={v.label} type="button" onClick={() => { setVariant(v.label); if (typeof v.img === 'number') setImgIdx(v.img); }}
                               style={{
@@ -531,7 +532,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           </div>
                         )}
                         <div style={{
-                          padding: '10px 8px', fontSize: 17, fontWeight: 900,
+                          padding: '10px 8px', fontSize: longLabel ? 14 : 17, lineHeight: 1.35, fontWeight: 900,
                           background: variant === v.label ? c : '#fff',
                           color: variant === v.label ? '#fff' : '#1d1d1f',
                         }}>
