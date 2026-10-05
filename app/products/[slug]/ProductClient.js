@@ -94,7 +94,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 2', shortLabel: 'موديل 2', price: 3300, img: 1 },
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
-  ] : product.slug === 'silsilat-dahf' ? [
+  ] : product.slug === 'silsilat-hadaf' ? [
     { label: 'موديل 1', shortLabel: 'موديل 1', price: 2200, img: 0 },
     { label: 'موديل 2', shortLabel: 'موديل 2', price: 2200, img: 1 },
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 2200, img: 2 },
@@ -142,7 +142,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
-  const alwaysRecordVariant = isTblDisjon || product.slug === 'silsilat-dahf';
+  const alwaysRecordVariant = isTblDisjon || product.slug === 'silsilat-hadaf';
   const delivery = isTblDisjon
     ? (deliveryType === 'office' ? 0 : 400)
     : (selectedWilaya ? (deliveryType === 'office' ? selectedWilaya.priceOffice : selectedWilaya.price) : 0);
