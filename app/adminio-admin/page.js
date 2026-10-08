@@ -99,7 +99,7 @@ export default function Admin() {
   };
 
   const load = async () => {
-    const r = await fetch('/api/products?t=' + Date.now());
+    const r = await fetch('/api/products?t=' + Date.now(), { headers: authHeaders() });
     setProducts(await r.json());
     const o = await fetch('/api/orders', { headers: authHeaders() });
     if (o.ok) setOrders(await o.json());

@@ -1,9 +1,17 @@
 import prisma, { withDbRetry } from '@/lib/db';
-import { requireAdmin } from '@/lib/admin-auth';
+import { requireAdmin, checkAdmin } from '@/lib/admin-auth';
 import { cleanImages } from '@/lib/images';
+import { getHiddenSlugs } from '@/lib/hidden-products';
 
-export async function GET() {
-  const products = await withDbRetry(() => prisma.product.findMany({ where: { category: { not: 'orva' } }, orderBy: { position: 'asc' } }));
+export async function GET(req) {
+  const where = { category: { not: 'orva' } };
+  // Les produits masqués restent visibles pour l'admin (édition) mais
+  // disparaissent du catalogue public.
+  if (!checkAdmin(req)) {
+    const hidden = await getHiddenSlugs();
+    if (hidden.length) where.slug = { notIn: hidden };
+  }
+  const products = await withDbRetry(() => prisma.product.findMany({ where, orderBy: { position: 'asc' } }));
   return new Response(JSON.stringify(products), {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
   });
