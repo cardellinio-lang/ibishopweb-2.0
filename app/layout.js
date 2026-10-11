@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
-  icons: { icon: '/logo-final.png' },
+  icons: { icon: '/favicon-b.png' },
 };
 
 export default async function RootLayout({ children }) {
@@ -25,8 +25,9 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/logo-final.png" sizes="48x48" />
-        <link rel="shortcut icon" href="/logo-final.png" sizes="48x48" />
+        <link rel="icon" href="/favicon-b.png" sizes="48x48" />
+        <link rel="apple-touch-icon" href="/favicon-b.png" />
+        <link rel="shortcut icon" href="/favicon-b.png" sizes="48x48" />
         {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
             (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
             ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}
@@ -51,7 +52,7 @@ export default async function RootLayout({ children }) {
       </head>
       <body>
         <div style={{ background: '#F03038', color: '#fff', textAlign: 'center', fontSize: 13, fontWeight: 700, padding: '4px 16px' }}>
-          ألعاب تعليمية و تربوية للأطفال
+          توصيل إلى جميع الولايات — الدفع عند الاستلام
         </div>
         <div style={{ background: '#f5f5f7', padding: '10px 16px 0', position: 'relative', borderBottom: '2px solid rgba(240,48,56,0.12)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
