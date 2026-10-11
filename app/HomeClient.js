@@ -60,7 +60,7 @@ export default function HomeClient({ products }) {
     <div>
       {/* Hero — dégradé Wildberries */}
       <div className="wb-grad-diag" style={{ marginTop: 16, borderRadius: 20, padding: '26px 24px', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: '0 16px 40px rgba(72,17,115,.22)' }}>
-        <div style={{ fontSize: 26, fontWeight: 900, lineHeight: 1.3 }}>أيبشوب 🛍️ تسوّق أونلاين</div>
+        <div style={{ fontSize: 26, fontWeight: 900, lineHeight: 1.3 }}>إيبي شوب 🛍️ تسوّق أونلاين</div>
         <div style={{ fontSize: 15, fontWeight: 600, opacity: 0.92, lineHeight: 1.6 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
       </div>
 
