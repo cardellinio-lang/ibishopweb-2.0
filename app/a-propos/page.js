@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 const COLORS = {
-  orange: '#E54E19',
+  orange: '#F03038',
   pink: '#f5a0b0',
   purple: '#d4a5e8',
   blue: '#a8d8ea',
@@ -324,7 +324,7 @@ export default function APropos() {
         }}>
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(229,78,25,0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(240,48,56,0.06) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
           <ScrollReveal>
@@ -340,7 +340,7 @@ export default function APropos() {
             <h1 style={{
               fontSize: 32, fontWeight: 900, marginBottom: 6,
               fontFamily: "'Thmanyah Sans', sans-serif",
-              background: 'linear-gradient(135deg, #E54E19, #d4a5e8, #a8d8ea)',
+              background: 'linear-gradient(135deg, #F03038, #d4a5e8, #a8d8ea)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
               عالم ibishop السحري
@@ -358,7 +358,7 @@ export default function APropos() {
 
         <div style={{
           height: 4,
-          background: 'linear-gradient(90deg, #E54E19, #d4a5e8, #a8d8ea, #b5e5cf, #f7e7a0, #E54E19)',
+          background: 'linear-gradient(90deg, #F03038, #d4a5e8, #a8d8ea, #b5e5cf, #f7e7a0, #F03038)',
           width: '60%', margin: '20px auto', borderRadius: 2,
         }} />
 
@@ -371,13 +371,13 @@ export default function APropos() {
         <ScrollReveal>
           <div style={{
             textAlign: 'center', padding: '24px 16px',
-            background: 'linear-gradient(135deg, rgba(229,78,25,0.04), rgba(212,165,232,0.04))',
+            background: 'linear-gradient(135deg, rgba(240,48,56,0.04), rgba(212,165,232,0.04))',
           }}>
             <div style={{ fontSize: 36, marginBottom: 8 }}>
               <span style={{ animation: 'bounceSlow 2.5s ease-in-out infinite', display: 'inline-block' }}>💛</span>
             </div>
             <p style={{
-              fontSize: 18, fontWeight: 800, color: '#E54E19', marginBottom: 4,
+              fontSize: 18, fontWeight: 800, color: '#F03038', marginBottom: 4,
               fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               شكراً لأنك جزء من قصتنا

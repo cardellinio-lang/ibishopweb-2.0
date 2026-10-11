@@ -122,7 +122,7 @@ export default function HomeClient({ products }) {
                     style={{
                       padding: '8px 18px', borderRadius: 20, fontSize: 14, fontWeight: 800,
                       border: 'none', cursor: 'pointer', transition: 'all .15s',
-                      background: active === f.key ? '#E54E19' : '#e8e8ed',
+                      background: active === f.key ? '#F03038' : '#e8e8ed',
                       color: active === f.key ? '#fff' : '#1d1d1f',
                     }}>
               {f.label}
@@ -144,7 +144,7 @@ export default function HomeClient({ products }) {
           <div style={{ textAlign: 'center', marginTop: 20 }}>
             <button onClick={() => setShowAll(true)}
               style={{
-                background: 'transparent', border: '2px solid #E54E19', color: '#E54E19',
+                background: 'transparent', border: '2px solid #F03038', color: '#F03038',
                 padding: '10px 28px', borderRadius: 12, fontWeight: 800, fontSize: 15,
                 cursor: 'pointer',
               }}>
@@ -160,7 +160,7 @@ export default function HomeClient({ products }) {
         marginBottom: 36, textAlign: 'center',
       }}>
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px 12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: '#E54E19' }}>{products.length}+</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#F03038' }}>{products.length}+</div>
           <div style={{ fontSize: 13, color: '#6e6e73', fontWeight: 600, marginTop: 4 }}>منتج و لعبة</div>
         </div>
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px 12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
@@ -168,7 +168,7 @@ export default function HomeClient({ products }) {
           <div style={{ fontSize: 13, color: '#6e6e73', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
         </div>
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px 12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: '#E54E19' }}>10</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#F03038' }}>10</div>
           <div style={{ fontSize: 13, color: '#6e6e73', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
         </div>
       </div>
