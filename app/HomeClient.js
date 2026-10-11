@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -46,7 +46,56 @@ function ProductCard({ p, now }) {
   );
 }
 
-export default function HomeClient({ products }) {
+function BannerCarousel({ images }) {
+  const slides = useMemo(
+    () => [{ type: 'hero' }, ...images.map(src => ({ type: 'image', src }))],
+    [images]
+  );
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
+    return () => clearInterval(t);
+  }, [slides.length]);
+
+  return (
+    <div className="wb-carousel" style={{ marginTop: 16 }}>
+      <div style={{
+        display: 'flex', height: '100%', direction: 'ltr',
+        transition: 'transform .65s cubic-bezier(.4,0,.2,1)',
+        transform: `translateX(${-idx * 100}%)`,
+      }}>
+        {slides.map((s, i) => (
+          <div key={i} style={{ minWidth: '100%', height: '100%', position: 'relative' }}>
+            {s.type === 'hero' ? (
+              <div dir="rtl" className="wb-grad-diag" style={{
+                width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: 24,
+              }}>
+                <div style={{ fontSize: 'clamp(22px, 3.6vw, 42px)', fontWeight: 900, lineHeight: 1.25 }}>إيبي شوب 🛍️ تسوّق أونلاين</div>
+                <div style={{ fontSize: 'clamp(13px, 1.7vw, 20px)', fontWeight: 600, opacity: 0.92 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
+              </div>
+            ) : (
+              <img src={s.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {slides.length > 1 && (
+        <div style={{ position: 'absolute', bottom: 12, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8, zIndex: 2 }}>
+          {slides.map((_, i) => (
+            <button key={i} type="button" className="wb-carousel-dot" data-on={idx === i ? '1' : '0'}
+                    onClick={() => setIdx(i)} aria-label={`banner ${i + 1}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function HomeClient({ products, banners = [] }) {
   const now = useMemo(() => Date.now(), []);
   const [showAll, setShowAll] = useState(false);
   const [q, setQ] = useState('');
@@ -58,11 +107,8 @@ export default function HomeClient({ products }) {
 
   return (
     <div>
-      {/* Hero — dégradé Wildberries */}
-      <div className="wb-grad-diag" style={{ marginTop: 16, borderRadius: 20, padding: '26px 24px', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: '0 16px 40px rgba(72,17,115,.22)' }}>
-        <div style={{ fontSize: 26, fontWeight: 900, lineHeight: 1.3 }}>إيبي شوب 🛍️ تسوّق أونلاين</div>
-        <div style={{ fontSize: 15, fontWeight: 600, opacity: 0.92, lineHeight: 1.6 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
-      </div>
+      {/* Bannières animées (style Wildberries) */}
+      <BannerCarousel images={banners} />
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
