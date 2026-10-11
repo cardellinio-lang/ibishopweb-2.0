@@ -52,7 +52,7 @@ function ConfirmContent() {
         {(status === 'missing' || status === 'invalid') && (
           <><div style={s.emoji}>⚠️</div><h1 style={s.title}>رابط غير صالح</h1><p style={s.text}>عذراً، الرابط الذي استخدمته غير صالح. يرجى التحقق من الرابط والمحاولة مرة أخرى.</p></>
         )}
-        <a href="/" style={{ display: 'inline-block', marginTop: 24, padding: '12px 28px', background: '#F03038', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+        <a href="/" style={{ display: 'inline-block', marginTop: 24, padding: '12px 28px', background: '#CB11AB', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
           العودة للمتجر
         </a>
       </div>

@@ -35,7 +35,7 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 export default function ProductClient({ product, wilayas, communes}) {
-  const c = product.color || '#000000';
+  const c = '#CB11AB'; // Accent unique « Wildberries » (magenta) pour toute la boutique
   const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);

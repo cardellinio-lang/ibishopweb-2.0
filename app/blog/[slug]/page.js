@@ -42,7 +42,7 @@ export default function BlogPost({ params }) {
       <div style={{ padding: '60px 0', textAlign: 'center' }}>
         <div style={{
           width: 60, height: 60, borderRadius: '50%',
-          border: '4px solid #f0f0f0', borderTopColor: '#F03038',
+          border: '4px solid #f0f0f0', borderTopColor: '#CB11AB',
           animation: 'spin 0.8s linear infinite',
           margin: '0 auto',
         }} />
@@ -57,7 +57,7 @@ export default function BlogPost({ params }) {
         <p style={{ fontSize: 64, marginBottom: 12 }}>📭</p>
         <p style={{ fontSize: 18, color: '#8e8e93', marginBottom: 20 }}>هذه المقالة غير موجودة</p>
         <Link href="/blog" style={{
-          background: '#F03038', color: '#fff', padding: '12px 28px',
+          background: '#CB11AB', color: '#fff', padding: '12px 28px',
           borderRadius: 50, fontWeight: 700, fontSize: 14,
           textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6,
         }}>
@@ -96,7 +96,7 @@ export default function BlogPost({ params }) {
         <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <Link href="/blog" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            color: '#F03038', fontWeight: 700, fontSize: 14, marginBottom: 20,
+            color: '#CB11AB', fontWeight: 700, fontSize: 14, marginBottom: 20,
             textDecoration: 'none', transition: 'gap 0.2s',
           }}
           onMouseEnter={e => e.currentTarget.style.gap = '10px'}
@@ -173,7 +173,7 @@ export default function BlogPost({ params }) {
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       width: 28, height: 28, borderRadius: '50%',
-                      background: '#F03038', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0,
+                      background: '#CB11AB', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0,
                     }}>
                       {i + 1}
                     </span>
@@ -190,7 +190,7 @@ export default function BlogPost({ params }) {
 
         <div style={{
           marginTop: 24, padding: '28px 24px',
-          background: 'linear-gradient(135deg, #F03038, #FF6B35)',
+          background: 'linear-gradient(135deg, #CB11AB, #FF6B35)',
           borderRadius: 24, textAlign: 'center',
           position: 'relative', overflow: 'hidden',
         }}>
@@ -216,7 +216,7 @@ export default function BlogPost({ params }) {
               borderRadius: 50, fontWeight: 800, fontSize: 14,
               textDecoration: 'none', transition: 'background 0.2s',
             }}
-            onMouseEnter={e => e.target.style.background = '#F03038'}
+            onMouseEnter={e => e.target.style.background = '#CB11AB'}
             onMouseLeave={e => e.target.style.background = '#1C1008'}>
               تسوق الآن ←
             </Link>
