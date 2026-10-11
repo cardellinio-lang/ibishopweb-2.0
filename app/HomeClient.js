@@ -2,53 +2,6 @@
 
 import { useState, useMemo } from 'react';
 
-const TAGS = {
-  'word-box': ['خشبية', 'عربية'],
-  'plateau-lettres': ['خشبية', 'عربية'],
-  'lettres-arabes': ['خشبية', 'عربية'],
-  'echecs-bois-xo': ['خشبية'],
-  'jeu-emotions-bois': ['خشبية'],
-  'tracing-board': ['خشبية', '3-5'],
-  'planche-developpement-cerebral-neuro': ['خشبية'],
-  'tangram-mosaique-bois-120-pieces': ['خشبية'],
-  '20-pochoirs-en-bois-montessori-pour-dessin-1779287853247': ['خشبية', '3-5'],
-  'scenarios-anglais': ['إنجليزية'],
-  'cartes-anglais-100': ['إنجليزية'],
-  'jeu-apprendre-anglais-10-jeux-cartes': ['إنجليزية'],
-  'puzzles-educatifs': ['ألغاز'],
-  'jeu-differences-32': ['ألغاز', '3-5'],
-  'jeu-tri-animaux': ['ألغاز', '3-5'],
-  'quisuisje': ['ألغاز'],
-  'spelling-cubes': ['ألغاز', 'إنجليزية'],
-  'jeu-multiplication-montessori-tableau': ['ألغاز'],
-  'cartes-questions-wh': ['ألغاز'],
-  'flashcards-questions': ['ألغاز', '3-5'],
-  'cadre-magnetique-a4': [],
-  'cadre-dessin-enfant-a4': [],
-  'cahier-magique': ['3-5'],
-  'cadre': [],
-  'wiklo': [],
-  'tableau-pliable-reglable-hauteur-oxybul': [],
-  'coffret-perles-fleuries-oxybul': [],
-  'cartes-masculin-feminin-couleurs': ['نطق', 'عربية', '3-5'],
-  'cartes-association': ['نطق', 'عربية', '3-5'],
-  'cartes-defi': ['نطق', 'عربية', '3-5'],
-  'cadre-decor-orthophoniste': ['ديكور'],
-  'l3ba-taalom-loughat': ['خشبية', 'عربية', '3-5'],
-  'sabourat-el-horouf': ['عربية', '3-5'],
-};
-
-const FILTERS = [
-  { key: 'all', label: 'الكل' },
-  { key: 'نطق', label: 'نطق' },
-  { key: 'خشبية', label: 'خشبية' },
-  { key: 'إنجليزية', label: 'إنجليزية' },
-  { key: 'عربية', label: 'عربية' },
-  { key: 'ألغاز', label: 'ألغاز' },
-  { key: '3-5', label: '3-5 سنوات' },
-  { key: 'ديكور', label: 'ديكور' },
-];
-
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
 function ProductCard({ p, now }) {
@@ -104,31 +57,15 @@ function ProductCard({ p, now }) {
 }
 
 export default function HomeClient({ products }) {
-  const [active, setActive] = useState('all');
   const now = useMemo(() => Date.now(), []);
   const [showAll, setShowAll] = useState(false);
 
-  const filtered = active === 'all'
-    ? products
-    : products.filter(p => (TAGS[p.slug] || []).includes(active));
+  const filtered = products;
 
   return (
     <div>
       {/* Products Section */}
-      <div style={{ marginBottom: 36 }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 20, marginTop: 32 }}>
-          {FILTERS.map(f => (
-            <button key={f.key} onClick={() => { setActive(f.key); setShowAll(false); }}
-                    style={{
-                      padding: '8px 18px', borderRadius: 20, fontSize: 14, fontWeight: 800,
-                      border: 'none', cursor: 'pointer', transition: 'all .15s',
-                      background: active === f.key ? '#F03038' : '#e8e8ed',
-                      color: active === f.key ? '#fff' : '#1d1d1f',
-                    }}>
-              {f.label}
-            </button>
-          ))}
-        </div>
+      <div style={{ marginBottom: 36, marginTop: 32 }}>
 
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60, color: '#8e8e93' }}>
