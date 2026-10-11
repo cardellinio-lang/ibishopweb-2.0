@@ -17,7 +17,7 @@ function ProductCard({ p, now }) {
              alt={p.name}
              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {discount > 0 && (
-          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-grad)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(203,17,171,.35)' }}>
+          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-red)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(245,34,45,.35)' }}>
             -{discount}%
           </span>
         )}

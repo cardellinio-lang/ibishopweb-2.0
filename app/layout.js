@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
-  icons: { icon: '/favicon-b.png' },
+  icons: { icon: '/favicon-ibi.png' },
 };
 
 export default async function RootLayout({ children }) {
@@ -25,9 +25,9 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/favicon-b.png" sizes="48x48" />
-        <link rel="apple-touch-icon" href="/favicon-b.png" />
-        <link rel="shortcut icon" href="/favicon-b.png" sizes="48x48" />
+        <link rel="icon" href="/favicon-ibi.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-ibi.png" />
+        <link rel="shortcut icon" href="/favicon-ibi.png" />
         {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
             (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
             ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}
@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '1px solid var(--wb-border)', boxShadow: '0 2px 14px rgba(72,17,115,0.06)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '10px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="/logo-final.png" alt="ibishop" style={{ height: 58, width: 'auto', objectFit: 'contain', display: 'block' }} />
+              <img src="/logo-ibi.png" alt="ibishop" style={{ height: 72, width: 'auto', objectFit: 'contain', display: 'block' }} />
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 16, color: 'var(--wb-text)' }}>المنتجات</a>
