@@ -1183,10 +1183,10 @@ function OrderNotification({ productName, color }) {
     style.textContent = `
 #ibi-notif-container{position:fixed;z-index:99999;pointer-events:none;bottom:90px;left:20px}
 .ibi-notif-card{
-  position:relative;width:270px;max-width:calc(100vw - 40px);
+  position:relative;width:230px;max-width:calc(100vw - 40px);
   background:linear-gradient(145deg,#fff 0%,#f5f5f7 50%,#eeeef0 100%);
   border:1px solid ${color}22;
-  border-radius:16px;overflow:hidden;pointer-events:auto;cursor:default;
+  border-radius:13px;overflow:hidden;pointer-events:auto;cursor:default;
   will-change:transform,opacity;font-family:-apple-system,BlinkMacSystemFont,sans-serif;
   direction:rtl;text-align:right;
   box-shadow:0 12px 40px rgba(0,0,0,0.12),0 4px 12px rgba(0,0,0,0.06),0 0 0 1px ${color}11;
@@ -1198,10 +1198,10 @@ function OrderNotification({ productName, color }) {
 }
 @keyframes ibi-flow{0%{background-position:100% 0}50%{background-position:0% 0}100%{background-position:100% 0}}
 .ibi-notif-header{
-  display:flex;align-items:center;gap:6px;padding:8px 12px 0;
-  font-size:10px;font-weight:700;color:${color};letter-spacing:0.2px;
+  display:flex;align-items:center;gap:5px;padding:6px 10px 0;
+  font-size:9px;font-weight:700;color:${color};letter-spacing:0.2px;
 }
-.ibi-notif-header svg{width:12px;height:12px;flex-shrink:0;fill:${color}}
+.ibi-notif-header svg{width:10px;height:10px;flex-shrink:0;fill:${color}}
 .ibi-notif-header-text{opacity:0.85}
 .ibi-live-dot{
   width:7px;height:7px;border-radius:50%;background:${color};margin-right:auto;position:relative;
@@ -1211,31 +1211,31 @@ function OrderNotification({ productName, color }) {
   background:${color};opacity:0.3;animation:ibi-ring 2s ease-in-out infinite;
 }
 @keyframes ibi-ring{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(2);opacity:0}}
-.ibi-notif-inner{display:flex;align-items:center;gap:10px;padding:9px 12px 11px}
+.ibi-notif-inner{display:flex;align-items:center;gap:8px;padding:7px 10px 9px}
 .ibi-notif-icon{
-  flex-shrink:0;width:40px;height:40px;border-radius:12px;
+  flex-shrink:0;width:32px;height:32px;border-radius:10px;
   background:linear-gradient(145deg,${darken(color)},${color});
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 20px ${hexToRgba(color,0.35)},inset 0 1px 1px rgba(255,255,255,0.1);
-  font-size:19px;line-height:1;
+  font-size:15px;line-height:1;
 }
 .ibi-notif-body{flex:1;min-width:0}
-.ibi-notif-title{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:0 0 2px;font-size:12.5px;line-height:1.4;color:#1d1d1f}
+.ibi-notif-title{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0 0 2px;font-size:11.5px;line-height:1.35;color:#1d1d1f}
 .ibi-notif-name{font-weight:800;white-space:nowrap}
-.ibi-notif-city{font-weight:500;color:#6e6e73;white-space:nowrap;font-size:11.5px}
-.ibi-notif-product{display:flex;align-items:center;gap:4px;margin:3px 0 0;font-size:11.5px;font-weight:700;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ibi-notif-product span{font-size:13px}
-.ibi-notif-meta{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:10px;color:#8e8e93;font-weight:500}
+.ibi-notif-city{font-weight:500;color:#6e6e73;white-space:nowrap;font-size:10.5px}
+.ibi-notif-product{display:flex;align-items:center;gap:4px;margin:2px 0 0;font-size:10.5px;font-weight:700;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ibi-notif-product span{font-size:11px}
+.ibi-notif-meta{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:9px;color:#8e8e93;font-weight:500}
 .ibi-notif-verified{
-  display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:7px;
+  display:inline-flex;align-items:center;gap:3px;padding:1.5px 5px;border-radius:6px;
   background:linear-gradient(135deg,${hexToRgba(color,0.1)},${hexToRgba(color,0.06)});
-  font-size:9px;font-weight:800;color:${color};border:1px solid ${hexToRgba(color,0.12)};
+  font-size:8.5px;font-weight:800;color:${color};border:1px solid ${hexToRgba(color,0.12)};
 }
 .ibi-notif-close{
-  position:absolute;top:7px;left:7px;width:20px;height:20px;
+  position:absolute;top:5px;left:5px;width:17px;height:17px;
   display:flex;align-items:center;justify-content:center;border:none;
-  background:${hexToRgba(color,0.05)};color:#8e8e93;font-size:12px;line-height:1;
-  cursor:pointer;border-radius:7px;opacity:0;transition:all 0.2s ease;padding:0;
+  background:${hexToRgba(color,0.05)};color:#8e8e93;font-size:10px;line-height:1;
+  cursor:pointer;border-radius:6px;opacity:0;transition:all 0.2s ease;padding:0;
 }
 .ibi-notif-card:hover .ibi-notif-close{opacity:1}
 .ibi-notif-close:hover{background:${hexToRgba(color,0.1)};color:${color}}
@@ -1273,13 +1273,13 @@ function OrderNotification({ productName, color }) {
 @keyframes ibi-reveal{to{opacity:1;transform:translateX(0)}}
 @media(max-width:480px){
   #ibi-notif-container{left:10px;right:10px;bottom:80px}
-  .ibi-notif-card{width:100%;max-width:100%;border-radius:14px}
-  .ibi-notif-icon{width:36px;height:36px;border-radius:11px;font-size:17px}
-  .ibi-notif-header{font-size:9.5px;padding:6px 10px 0}
-  .ibi-notif-inner{padding:8px 10px 10px;gap:8px}
-  .ibi-notif-title{font-size:12px}
-  .ibi-notif-product{font-size:11px}
-  .ibi-notif-meta{font-size:9.5px}
+  .ibi-notif-card{width:100%;max-width:100%;border-radius:12px}
+  .ibi-notif-icon{width:28px;height:28px;border-radius:9px;font-size:13px}
+  .ibi-notif-header{font-size:9px;padding:5px 9px 0}
+  .ibi-notif-inner{padding:6px 9px 8px;gap:7px}
+  .ibi-notif-title{font-size:11px}
+  .ibi-notif-product{font-size:10px}
+  .ibi-notif-meta{font-size:8.5px}
   .ibi-notif-close{opacity:1}
 }
 @media(prefers-reduced-motion:reduce){
@@ -1330,7 +1330,7 @@ function OrderNotification({ productName, color }) {
             '</p>' +
             '<span class="ibi-notif-product"><span>' + order.emoji + '</span> ' + order.product + '</span>' +
             '<div class="ibi-notif-meta">' +
-              '<svg style="width:11px;height:11px;opacity:0.6" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.5 4.5v4l3.5 2.1-.5.8L7.5 9V4.5h1z"/></svg>' +
+              '<svg style="width:9px;height:9px;opacity:0.6" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.5 4.5v4l3.5 2.1-.5.8L7.5 9V4.5h1z"/></svg>' +
               '<span>' + order.timeAgo + '</span>' +
               '<span style="opacity:0.2;margin:0 2px">·</span>' +
               '<span class="ibi-notif-verified">✓ طلب مؤكد</span>' +
