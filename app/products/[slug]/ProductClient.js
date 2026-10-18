@@ -764,14 +764,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>نوع التوصيل</label>
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button type="button" onClick={() => setDeliveryType('home')}
-                          style={{ flex: 1, padding: '14px 8px', borderRadius: 14, border: deliveryType === 'home' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'home' ? c : '#fff', color: deliveryType === 'home' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                    <img src="/home-icon.svg" alt="" style={{ width: 22, height: 22 }} />
-                    <span style={{ fontSize: 13, fontWeight: 800 }}>التوصيل إلى المنزل</span>
+                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'home' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'home' ? c : '#fff', color: deliveryType === 'home' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: 17, fontWeight: 500 }}>التوصيل إلى المنزل</span>
                   </button>
                   <button type="button" onClick={() => setDeliveryType('office')}
-                          style={{ flex: 1, padding: '14px 8px', borderRadius: 14, border: deliveryType === 'office' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'office' ? c : '#fff', color: deliveryType === 'office' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                    <img src="/office-icon.svg" alt="" style={{ width: 22, height: 22 }} />
-                    <span style={{ fontSize: 13, fontWeight: 800 }}>التوصيل إلى المكتب</span>
+                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'office' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'office' ? c : '#fff', color: deliveryType === 'office' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: 17, fontWeight: 500 }}>التوصيل إلى المكتب</span>
                   </button>
                 </div>
               </div>
