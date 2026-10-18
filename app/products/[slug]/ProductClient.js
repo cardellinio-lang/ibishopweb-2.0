@@ -82,6 +82,8 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   // produits dont les variantes s'affichent en liste texte (bouton a cocher, sans image)
   const textVariantSlugs = ['silsilat-hadaf', 'baqat-obaqera-badr'];
+  // produits avec sélecteur de pointures (chips horizontaux)
+  const sizeVariantSlugs = ['chaussure-cuir-marron'];
 
   const variants = product.slug === 'cahier-magique' ? [
     { label: 'A5', price: 1700, desc: 'صغير' },
@@ -108,6 +110,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'عباقرة البدر السنة 3 متوسط', price: 2900 },
     { label: 'عباقرة البدر السنة 4 متوسط', price: 2900 },
     { label: 'اريد سنتين مع بعض(سجل طلبيتك وعند الاتصال أخبرنا بالسنوات التي تريدها وشكرا', shortLabel: 'سنتين مع بعض', price: 5600 },
+  ] : product.slug === 'chaussure-cuir-marron' ? [
+    { label: '40', price: 3900 },
+    { label: '41', price: 3900 },
+    { label: '42', price: 3900 },
+    { label: '43', price: 3900 },
+    { label: '44', price: 3900 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -151,7 +159,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
-  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug);
+  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug);
   // livraison gratuite au bureau de retrait (tarif normal a domicile)
   const freeOfficeDelivery = isTblDisjon || product.slug === 'silsilat-hadaf';
   const delivery = isTblDisjon
@@ -516,6 +524,27 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
+              {variants && sizeVariantSlugs.includes(product.slug) && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر المقاس / Choisir la pointure</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                    {variants.map(v => {
+                      const on = variant === v.label;
+                      return (
+                        <button key={v.label} type="button" onClick={() => setVariant(v.label)}
+                                style={{
+                                  minWidth: 62, padding: '12px 18px', borderRadius: 12,
+                                  fontSize: 17, fontWeight: 900,
+                                  border: on ? '2px solid ' + c : '2px solid #d2d2d7',
+                                  background: on ? c : '#fff',
+                                  color: on ? '#fff' : '#1d1d1f',
+                                  cursor: 'pointer', transition: 'all .2s',
+                                }}>{v.label}</button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {variants && product.slug !== 'wordrope' && textVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'baqat-obaqera-badr' ? 'اختر الباقة' : 'اختر المستوى الدراسي'}</label>
@@ -547,7 +576,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && (
+              {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && !sizeVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر الموديل</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
