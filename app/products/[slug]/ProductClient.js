@@ -389,14 +389,16 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
 
       {/* Social proof : blinking green dot */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
-        <span style={{
-          width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block',
-          animation: 'blinkPulse 1.5s ease-in-out infinite',
-          boxShadow: '0 0 8px rgba(34,197,94,0.6)',
-        }} />
-        <span style={{ fontSize: 15, fontWeight: 800, color: '#16a34a' }}>{liveCount} شخص يشترون الآن</span>
-      </div>
+      {product.slug !== 'chaussure-cuir-marron' && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
+          <span style={{
+            width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block',
+            animation: 'blinkPulse 1.5s ease-in-out infinite',
+            boxShadow: '0 0 8px rgba(34,197,94,0.6)',
+          }} />
+          <span style={{ fontSize: 15, fontWeight: 800, color: '#16a34a' }}>{liveCount} شخص يشترون الآن</span>
+        </div>
+      )}
 
       <div className="lg-flex-row" style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
         {/* Left column - Image */}
@@ -925,7 +927,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
       )}
 
-      <OrderNotification productName={product.name} color={c} />
+      {product.slug !== 'chaussure-cuir-marron' && <OrderNotification productName={product.name} color={c} />}
 
       {/* Celebration overlay */}
       {celebration && <CelebrationOverlay data={celebration} onClose={() => setCelebration(null)} />}
