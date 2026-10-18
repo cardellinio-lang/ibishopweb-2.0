@@ -61,8 +61,7 @@ export default async function RootLayout({ children }) {
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 16, color: 'var(--wb-text)' }}>المنتجات</a>
-              {aboutVisible && <a href="/a-propos" style={{ fontWeight: 700, fontSize: 16, color: 'var(--wb-text)' }}>من نحن</a>}
-              {blogVisible && <a href="/blog" style={{ fontWeight: 700, fontSize: 16, color: 'var(--wb-text)' }}>المدونة</a>}
+
             </nav>
           </div>
         </header>
@@ -80,7 +79,7 @@ export default async function RootLayout({ children }) {
               Instagram
             </a>
           </div>
-          {blogVisible && <div style={{ marginTop: 10 }}><a href="/blog" style={{ color: '#4CAF50', fontWeight: 700, fontSize: 14 }}>المدونة</a></div>}
+
           ibishop-2026
         </footer>
         <style>{`img{-webkit-user-drag:none;pointer-events:none}`}</style>
