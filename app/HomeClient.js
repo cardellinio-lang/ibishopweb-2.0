@@ -118,7 +118,7 @@ export default function HomeClient({ products, banners = [] }) {
           </svg>
         </button>
         <input value={q} onChange={e => { setQ(e.target.value); setShowAll(false); }}
-               placeholder="ابحث عن لعبة أو كتاب..."
+               placeholder="ابحث عن منتج..."
                style={{ flex: 1, border: 'none', background: 'transparent', padding: '0 16px', height: 50, fontSize: 16, fontFamily: 'inherit' }} />
       </div>
 
@@ -143,7 +143,7 @@ export default function HomeClient({ products, banners = [] }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 36, textAlign: 'center' }}>
         <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(72,17,115,.08)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-magenta)' }}>{products.length}+</div>
-          <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>منتج و لعبة</div>
+          <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>منتج</div>
         </div>
         <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(72,17,115,.08)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-purple)' }}>58</div>
