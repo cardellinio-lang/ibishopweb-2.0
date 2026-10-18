@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '1px solid var(--wb-border)', boxShadow: '0 2px 14px rgba(72,17,115,0.06)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '10px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <span role="img" aria-label="ibishop" style={{ height: 72, width: 64, display: 'block', background: 'linear-gradient(90deg,#481173 0%,#CB11AB 100%)', WebkitMaskImage: 'url(/logo-ibi.png)', maskImage: 'url(/logo-ibi.png)', WebkitMaskSize: 'contain', maskSize: 'contain', WebkitMaskRepeat: 'no-repeat', maskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskPosition: 'center' }} />
+              <img src="/logo-ibi.png" alt="ibishop" style={{ height: 72, width: 'auto', display: 'block' }} />
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 16, color: 'var(--wb-text)' }}>المنتجات</a>
