@@ -35,7 +35,18 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 export default function ProductClient({ product, wilayas, communes}) {
-  const c = '#CB11AB'; // Accent unique « Wildberries » (magenta) pour toute la boutique
+  // Thème par défaut = couleur choisie pour le produit (picker admin).
+  // Fallback violet Wildberries si pas de couleur / noir / hex invalide.
+  // Couleur trop claire → assombrie automatiquement pour garder le texte lisible.
+  const pickColor = (product.color && /^#[0-9a-f]{6}$/i.test(product.color) && product.color.toLowerCase() !== '#000000')
+    ? product.color
+    : '#CB11AB';
+  const lum = (() => {
+    const h = pickColor.replace('#', '');
+    const r = parseInt(h.substring(0, 2), 16) / 255, g = parseInt(h.substring(2, 4), 16) / 255, b = parseInt(h.substring(4, 6), 16) / 255;
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  })();
+  const c = lum > 0.68 ? darken(pickColor, 70) : pickColor;
   const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
