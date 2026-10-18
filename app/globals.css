@@ -2,16 +2,16 @@
 
 :root{
   /* ===== Charte "Wildberries" ===== */
-  --wb-magenta:#CB11AB;
-  --wb-magenta-dark:#B30F96;
-  --wb-magenta-darker:#980D80;
-  --wb-purple:#481173;
-  --wb-fuchsia:#990099;
+  --wb-magenta:#111111;
+  --wb-magenta-dark:#000000;
+  --wb-magenta-darker:#000000;
+  --wb-purple:#000000;
+  --wb-fuchsia:#000000;
   /* Rouge promo dédié aux badges de réduction (style Wildberries) */
   --wb-red:#F5222D;
   --wb-red-dark:#D91A24;
-  --wb-grad:linear-gradient(90deg,#481173 0%,#CB11AB 100%);
-  --wb-grad-diag:linear-gradient(135deg,#481173 0%,#CB11AB 60%,#E227C6 100%);
+  --wb-grad:linear-gradient(90deg,#000000 0%,#111111 100%);
+  --wb-grad-diag:linear-gradient(135deg,#000000 0%,#111111 60%,#333333 100%);
   --wb-text:#1a1a1a;
   --wb-muted:#868695;
   --wb-border:#ececef;
@@ -49,7 +49,7 @@ th{background:var(--wb-bg);font-weight:700;color:var(--wb-muted);font-size:15px}
 .text-center{text-align:center}
 .text-muted{color:var(--wb-muted);font-size:14px}
 @media(min-width:1024px){.lg-flex-row{flex-direction:row!important}}
-input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;box-shadow:0 0 0 3px rgba(203,17,171,.15)!important}
+input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;box-shadow:0 0 0 3px rgba(0,0,0,.08)!important}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;font-weight:800;font-size:16px;border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--wb-magenta);color:#fff}
 .btn-primary:hover{background:var(--wb-magenta-dark)}
@@ -74,6 +74,6 @@ input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;b
 .wb-badge-discount{background:var(--wb-red);color:#fff;font-weight:900}
 .wb-grad-diag{background:var(--wb-grad-diag);color:#fff}
 .wb-search{display:flex;align-items:center;background:#fff;border:1.5px solid var(--wb-border);border-radius:14px;overflow:hidden;transition:border-color .15s}
-.wb-search:focus-within{border-color:var(--wb-magenta);box-shadow:0 0 0 3px rgba(203,17,171,.12)}
+.wb-search:focus-within{border-color:var(--wb-magenta);box-shadow:0 0 0 3px rgba(0,0,0,.08)}
 .wb-search-btn{background:var(--wb-magenta);border:none;width:56px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s}
 .wb-search-btn:hover{background:var(--wb-magenta-dark)}
