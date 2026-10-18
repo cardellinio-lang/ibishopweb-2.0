@@ -765,11 +765,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button type="button" onClick={() => setDeliveryType('home')}
                           style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'home' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'home' ? c : '#fff', color: deliveryType === 'home' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: 17, fontWeight: 500 }}>التوصيل إلى المنزل</span>
+                    <span style={{ fontSize: 17, fontWeight: 900 }}>التوصيل إلى المنزل</span>
                   </button>
                   <button type="button" onClick={() => setDeliveryType('office')}
                           style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'office' ? '2px solid ' + c : '2px solid #e8e8ed', background: deliveryType === 'office' ? c : '#fff', color: deliveryType === 'office' ? '#fff' : '#1d1d1f', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: 17, fontWeight: 500 }}>التوصيل إلى المكتب</span>
+                    <span style={{ fontSize: 17, fontWeight: 900 }}>التوصيل إلى المكتب</span>
                   </button>
                 </div>
               </div>
@@ -1377,7 +1377,7 @@ function OrderNotification({ productName, color }) {
     }
 
     const initialTimer = setTimeout(function () { showNotification(); }, 6000);
-    const cycleTimer = setInterval(function () { showNotification(); }, 25000);
+    const cycleTimer = setInterval(function () { showNotification(); }, 7000);
 
     return () => {
       clearTimeout(initialTimer);
