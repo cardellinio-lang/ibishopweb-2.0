@@ -1174,22 +1174,11 @@ function CelebrationOverlay({ data, onClose }) {
 
 function OrderNotification({ productName, color }) {
   useEffect(() => {
+    // 3 commandes fictives (hommes uniquement), espacées
     const ORDERS = [
       { name: 'محمد', city: 'الجزائر', product: productName, timeAgo: 'منذ دقيقتين', emoji: '📦' },
-      { name: 'أمينة', city: 'وهران', product: productName, timeAgo: 'منذ 3 دقائق', emoji: productName.includes('إطار')||productName.includes('سنواتي') ? '🖼️' : '📦' },
-      { name: 'سارة', city: 'قسنطينة', product: productName, timeAgo: 'منذ لحظات', emoji: productName.includes('map')||productName.includes('خريطة') ? '🗺️' : '📦' },
-      { name: 'أحمد', city: 'عنابة', product: productName, timeAgo: 'منذ 5 دقائق', emoji: '✨' },
-      { name: 'نورة', city: 'تيبازة', product: productName, timeAgo: 'منذ دقيقة', emoji: '💫' },
-      { name: 'كريم', city: 'البليدة', product: productName, timeAgo: 'منذ 4 دقائق', emoji: productName.includes('تعلم')||productName.includes('أتعلم') ? '📚' : '📦' },
-      { name: 'إيمان', city: 'سطيف', product: productName, timeAgo: 'منذ دقيقتين', emoji: '🌸' },
-      { name: 'يوسف', city: 'بجاية', product: productName, timeAgo: 'منذ 6 دقائق', emoji: '💎' },
-      { name: 'زهرة', city: 'باتنة', product: productName, timeAgo: 'منذ 3 دقائق', emoji: '⭐' },
-      { name: 'نوال', city: 'مستغانم', product: productName, timeAgo: 'منذ لحظات', emoji: '💫' },
-      { name: 'بلال', city: 'الشلف', product: productName, timeAgo: 'منذ دقيقة', emoji: '📍' },
-      { name: 'حورية', city: 'تلمسان', product: productName, timeAgo: 'منذ 7 دقائق', emoji: '🌟' },
-      { name: 'خديجة', city: 'سيدي بلعباس', product: productName, timeAgo: 'منذ دقيقتين', emoji: '💎' },
-      { name: 'عمر', city: 'الجلفة', product: productName, timeAgo: 'منذ 5 دقائق', emoji: '⚡' },
-      { name: 'آية', city: 'بسكرة', product: productName, timeAgo: 'منذ 4 دقائق', emoji: '⭐' },
+      { name: 'أمين', city: 'وهران', product: productName, timeAgo: 'منذ لحظات', emoji: '✨' },
+      { name: 'كريم', city: 'قسنطينة', product: productName, timeAgo: 'منذ دقيقة', emoji: '💎' },
     ];
 
     const style = document.createElement('style');
@@ -1389,8 +1378,8 @@ function OrderNotification({ productName, color }) {
       dismissTimer = setTimeout(function () { dismissCurrent(); }, 5000);
     }
 
-    const initialTimer = setTimeout(function () { showNotification(); }, 3000);
-    const cycleTimer = setInterval(function () { showNotification(); }, 10000);
+    const initialTimer = setTimeout(function () { showNotification(); }, 6000);
+    const cycleTimer = setInterval(function () { showNotification(); }, 25000);
 
     return () => {
       clearTimeout(initialTimer);
