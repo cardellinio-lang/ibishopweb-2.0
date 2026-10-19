@@ -127,6 +127,17 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: '42', price: 3900 },
     { label: '43', price: 3900 },
     { label: '44', price: 3900 },
+  ] : product.slug === 'ghilaf-lagna-tathbeet' ? [
+    { label: 'غلاف وردي', price: 3600, color: '#ec4899', img: 0 },
+    { label: 'غلاف بنفسجي', price: 3600, color: '#7c3aed', img: 1 },
+    { label: 'غلاف أزرق', price: 3600, color: '#2563eb', img: 2 },
+    { label: 'غلاف ذهبي', price: 3600, color: '#b45309', img: 3 },
+    { label: 'غلاف أخضر', price: 3600, color: '#16a34a', img: 4 },
+    { label: 'باك كامل بنفسجي', price: 4600, color: '#7c3aed', img: 5 },
+    { label: 'باك كامل وردي', price: 4600, color: '#ec4899', img: 6 },
+    { label: 'باك كامل أزرق', price: 4600, color: '#2563eb', img: 7 },
+    { label: 'باك كامل ذهبي', price: 4600, color: '#b45309', img: 8 },
+    { label: 'باك كامل أخضر', price: 4600, color: '#16a34a', img: 9 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -170,7 +181,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
-  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug);
+  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug) || product.slug === 'ghilaf-lagna-tathbeet';
   // livraison gratuite au bureau de retrait (tarif normal a domicile)
   const freeOfficeDelivery = isTblDisjon || product.slug === 'silsilat-hadaf';
   const delivery = isTblDisjon
@@ -591,7 +602,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && !sizeVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر الموديل</label>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'ghilaf-lagna-tathbeet' ? 'اختر اللون / الباقة' : 'اختر الموديل'}</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                     {variants.map(v => {
                         const isPhoto = v.img !== undefined && imgs[v.img];
@@ -617,6 +628,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                           color: variant === v.label ? '#fff' : '#1d1d1f',
                         }}>
                           {v.shortLabel || v.label}
+                          {product.slug === 'ghilaf-lagna-tathbeet' && (
+                            <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{v.price.toLocaleString()} د.ج</div>
+                          )}
                         </div>
                       </button>
                         );
