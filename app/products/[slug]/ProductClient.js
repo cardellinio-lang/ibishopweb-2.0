@@ -178,15 +178,15 @@ export default function ProductClient({ product, wilayas, communes}) {
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
-  // tbl-disjon : livraison gratuite au bureau de retrait, 400 DA à domicile
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
   const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug) || product.slug === 'ghilaf-lagna-tathbeet';
   // livraison gratuite au bureau de retrait (tarif normal a domicile)
-  const freeOfficeDelivery = isTblDisjon || product.slug === 'silsilat-hadaf';
-  const delivery = isTblDisjon
-    ? (deliveryType === 'office' ? 0 : 400)
-    : (selectedWilaya ? (deliveryType === 'office' ? (freeOfficeDelivery ? 0 : selectedWilaya.priceOffice) : selectedWilaya.price) : 0);
+  const freeOfficeDelivery = product.slug === 'silsilat-hadaf';
+  // tarif normal par wilaya (bureau ou domicile) pour tous les produits sauf silsilat-hadaf
+  const delivery = selectedWilaya
+    ? (deliveryType === 'office' ? (freeOfficeDelivery ? 0 : selectedWilaya.priceOffice) : selectedWilaya.price)
+    : 0;
   const subtotal = finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
