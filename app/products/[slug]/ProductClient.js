@@ -110,6 +110,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'موديل 2', shortLabel: 'موديل 2', price: 2900, img: 1 },
     { label: 'موديل 3', shortLabel: 'موديل 3', price: 2900, img: 2 },
     { label: 'موديل 4', shortLabel: 'موديل 4', price: 2900, img: 3 },
+    { label: 'موديل 5', shortLabel: 'موديل 5', price: 2900, img: 6 },
+    { label: 'موديل 6', shortLabel: 'موديل 6', price: 2900, img: 5 },
   ] : product.slug === 'silsilat-hadaf' ? [
     { label: 'سلسلة الهدف السنة 1 متوسط', price: 2600 },
     { label: 'سلسلة الهدف السنة 2 متوسط', price: 2600 },
