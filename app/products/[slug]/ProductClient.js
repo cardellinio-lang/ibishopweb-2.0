@@ -106,10 +106,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'أحمر', price: 2900, desc: 'Rouge', color: '#dc2626' },
     { label: 'وردي', price: 2900, desc: 'Rose', color: '#e91e63' },
   ] : product.slug === 'tbl-disjon' ? [
-    { label: 'موديل 1', shortLabel: 'موديل 1', price: 3300, img: 0 },
-    { label: 'موديل 2', shortLabel: 'موديل 2', price: 3300, img: 1 },
-    { label: 'موديل 3', shortLabel: 'موديل 3', price: 3300, img: 2 },
-    { label: 'موديل 4', shortLabel: 'موديل 4', price: 3300, img: 3 },
+    { label: 'موديل 1', shortLabel: 'موديل 1', price: 2900, img: 0 },
+    { label: 'موديل 2', shortLabel: 'موديل 2', price: 2900, img: 1 },
+    { label: 'موديل 3', shortLabel: 'موديل 3', price: 2900, img: 2 },
+    { label: 'موديل 4', shortLabel: 'موديل 4', price: 2900, img: 3 },
   ] : product.slug === 'silsilat-hadaf' ? [
     { label: 'سلسلة الهدف السنة 1 متوسط', price: 2600 },
     { label: 'سلسلة الهدف السنة 2 متوسط', price: 2600 },
