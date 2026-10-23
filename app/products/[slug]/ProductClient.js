@@ -943,7 +943,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
       )}
 
-      {product.slug !== 'chaussure-cuir-marron' && <OrderNotification productName={product.name} color={c} />}
+      {product.slug !== 'chaussure-cuir-marron' && <OrderNotification productName={product.name} color={c} productSlug={product.slug} />}
 
       {/* Celebration overlay */}
       {celebration && <CelebrationOverlay data={celebration} onClose={() => setCelebration(null)} />}
@@ -1188,13 +1188,15 @@ function CelebrationOverlay({ data, onClose }) {
   );
 }
 
-function OrderNotification({ productName, color }) {
+function OrderNotification({ productName, color, productSlug }) {
   useEffect(() => {
+    const isTblDisjon = productSlug === 'tbl-disjon';
+    const model = isTblDisjon ? ('موديل ' + (Math.floor(Math.random() * 3) + 1)) : productName;
     // 3 commandes fictives (hommes uniquement), espacées
     const ORDERS = [
-      { name: 'محمد', city: 'الجزائر', product: productName, timeAgo: 'منذ دقيقتين', emoji: '📦' },
-      { name: 'أمين', city: 'وهران', product: productName, timeAgo: 'منذ لحظات', emoji: '✨' },
-      { name: 'كريم', city: 'قسنطينة', product: productName, timeAgo: 'منذ دقيقة', emoji: '💎' },
+      { name: 'محمد', city: 'الجزائر', product: model, timeAgo: 'منذ دقيقتين', emoji: '📦' },
+      { name: 'أمين', city: 'وهران', product: model, timeAgo: 'منذ لحظات', emoji: '✨' },
+      { name: 'كريم', city: 'قسنطينة', product: model, timeAgo: 'منذ دقيقة', emoji: '💎' },
     ];
 
     const style = document.createElement('style');
@@ -1346,7 +1348,7 @@ function OrderNotification({ productName, color }) {
               '<span class="ibi-notif-name">' + order.name + '</span>' +
               '<span class="ibi-notif-city">من ' + order.city + '</span>' +
             '</p>' +
-            '<span class="ibi-notif-product"><span>' + order.emoji + '</span> ' + order.product + '</span>' +
+            '<span class="ibi-notif-product"><span>' + order.emoji + '</span> <span style="font-weight:800">' + order.product.replace(/\*\*/g,'') + '</span></span>' +
             '<div class="ibi-notif-meta">' +
               '<svg style="width:9px;height:9px;opacity:0.6" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.5 4.5v4l3.5 2.1-.5.8L7.5 9V4.5h1z"/></svg>' +
               '<span>' + order.timeAgo + '</span>' +
