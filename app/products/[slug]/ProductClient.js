@@ -1191,13 +1191,18 @@ function CelebrationOverlay({ data, onClose }) {
 function OrderNotification({ productName, color, productSlug }) {
   useEffect(() => {
     const isTblDisjon = productSlug === 'tbl-disjon';
-    const model = isTblDisjon ? ('موديل ' + (Math.floor(Math.random() * 3) + 1)) : productName;
-    // 3 commandes fictives (hommes uniquement), espacées
-    const ORDERS = [
-      { name: 'محمد', city: 'الجزائر', product: model, timeAgo: 'منذ دقيقتين', emoji: '📦' },
-      { name: 'أمين', city: 'وهران', product: model, timeAgo: 'منذ لحظات', emoji: '✨' },
-      { name: 'كريم', city: 'قسنطينة', product: model, timeAgo: 'منذ دقيقة', emoji: '💎' },
-    ];
+    // 3 commandes fictives (hommes uniquement), espacées - موديل 3, 2, 1
+    const ORDERS = isTblDisjon
+      ? [
+          { name: 'محمد', city: 'الجزائر', product: 'موديل 3', timeAgo: 'منذ دقيقتين', emoji: '📦' },
+          { name: 'أمين', city: 'وهران', product: 'موديل 2', timeAgo: 'منذ لحظات', emoji: '✨' },
+          { name: 'كريم', city: 'قسنطينة', product: 'موديل 1', timeAgo: 'منذ دقيقة', emoji: '💎' },
+        ]
+      : [
+          { name: 'محمد', city: 'الجزائر', product: productName, timeAgo: 'منذ دقيقتين', emoji: '📦' },
+          { name: 'أمين', city: 'وهران', product: productName, timeAgo: 'منذ لحظات', emoji: '✨' },
+          { name: 'كريم', city: 'قسنطينة', product: productName, timeAgo: 'منذ دقيقة', emoji: '💎' },
+        ];
 
     const style = document.createElement('style');
     style.textContent = `
