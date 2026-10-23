@@ -106,10 +106,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'أحمر', price: 2900, desc: 'Rouge', color: '#dc2626' },
     { label: 'وردي', price: 2900, desc: 'Rose', color: '#e91e63' },
   ] : product.slug === 'tbl-disjon' ? [
-    { label: 'موديل 1', shortLabel: 'موديل 1', price: 2900, img: 0 },
-    { label: 'موديل 2', shortLabel: 'موديل 2', price: 2900, img: 1 },
-    { label: 'موديل 3', shortLabel: 'موديل 3', price: 2900, img: 2 },
-    { label: 'موديل 4', shortLabel: 'موديل 4', price: 2900, img: 3 },
+    { label: 'موديل 1', shortLabel: 'موديل 1', price: 2900, imgUrl: 'https://i.ibb.co/20bmXr2k/e5f26502d015.jpg' },
+    { label: 'موديل 2', shortLabel: 'موديل 2', price: 2900, imgUrl: 'https://i.ibb.co/v4qWvZv8/984104a48e3d.jpg' },
+    { label: 'موديل 3', shortLabel: 'موديل 3', price: 2900, imgUrl: 'https://i.ibb.co/JFCpSvBJ/aca7e436ac2b.jpg' },
+    { label: 'موديل 4', shortLabel: 'موديل 4', price: 2900, imgUrl: 'https://i.ibb.co/x8DQL97W/34a3bf837736.jpg' },
     { label: 'موديل 5', shortLabel: 'موديل 5', price: 2900, img: 6 },
     { label: 'موديل 6', shortLabel: 'موديل 6', price: 2900, img: 5 },
   ] : product.slug === 'silsilat-hadaf' ? [
@@ -607,10 +607,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'ghilaf-lagna-tathbeet' ? 'اختر اللون / الباقة' : 'اختر الموديل'}</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                     {variants.map(v => {
-                        const isPhoto = v.img !== undefined && imgs[v.img];
+                        const photoSrc = v.imgUrl || (typeof v.img === 'number' ? imgs[v.img] : null);
+                        const isPhoto = Boolean(photoSrc);
                         const longLabel = (v.shortLabel || v.label).length > 14;
                         return (
-                      <button key={v.label} type="button" onClick={() => { setVariant(v.label); if (typeof v.img === 'number') setImgIdx(v.img); }}
+                      <button key={v.label} type="button" onClick={() => { setVariant(v.label); if (!v.imgUrl && typeof v.img === 'number' && imgs[v.img]) setImgIdx(v.img); }}
                               style={{
                                 flex: '1 1 calc(50% - 6px)', padding: 0, borderRadius: 14, overflow: 'hidden',
                                 border: variant === v.label ? '3px solid ' + c : '2px solid #d2d2d7',
@@ -618,7 +619,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                                 cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
                               }}>
                         {isPhoto ? (
-                          <img src={imgs[v.img]} alt={v.label} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
+                          <img src={photoSrc} alt={v.label} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
                         ) : (
                           <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
                             {v.color && <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />}
