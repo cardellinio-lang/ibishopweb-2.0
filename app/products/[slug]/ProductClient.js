@@ -52,7 +52,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [qty, setQty] = useState(1);
   const wordColors = ['أحمر', 'وردي'];
   const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
-  const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'خشب': 0 });
+  const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'بني': 0 });
   const realQty = product.slug === 'wordrope' ? colorQtys['أحمر'] + colorQtys['وردي'] : product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : qty;
   const [customer, setCustomer] = useState('');
   const [phone, setPhone] = useState('');
@@ -143,7 +143,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل أخضر', price: 3950, color: '#16a34a', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
     { label: 'أسود', price: 2200, color: '#000000' },
-    { label: 'خشب', price: 2200, color: '#B9A07E' },
+    { label: 'بني', price: 2200, color: '#B9A07E' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -177,8 +177,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
-  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) : 0;
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['بني'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['بني'] * 4000) : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
@@ -271,7 +271,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
     try {
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, خشب: ${frameQtys['خشب']||0})` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0})` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -316,7 +316,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, خشب: ${frameQtys['خشب']||0})` : '');
+    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0})` : '');
     const waPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreAvgPrice / Math.max(1, realQty)) - (isWordBox ? whatsAppDiscount : 0) : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
@@ -560,7 +560,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر كمية كل لون إطار</label>
                   <div style={{ display: 'flex', gap: 12 }}>
-                    {['أسود', 'خشب'].map(lbl => {
+                    {['أسود', 'بني'].map(lbl => {
                       const fq = frameQtys[lbl] || 0;
                       const v = variants?.find(x => x.label === lbl);
                       const color = v?.color || '#000';
