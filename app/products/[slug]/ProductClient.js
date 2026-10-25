@@ -142,7 +142,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل أخضر', price: 3950, color: '#16a34a', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
     { label: 'أسود', price: null, color: '#000000' },
-    { label: 'خشب', price: null, color: '#8B7355' },
+    { label: 'خشب', price: null, color: '#B9A07E' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -625,7 +625,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                           <img src={photoSrc} alt={v.label} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
                         ) : (
                           <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
-                            {v.color && <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />}
+                            {v.color && (
+                              product.slug === 'cadre-dessin-enfant-a4' ? (
+                                <div style={{ width: '70%', height: 70, borderRadius: 8, background: v.color, border: variant === v.label ? '3px solid ' + c : '2px solid #d2d2d7' }} />
+                              ) : (
+                                <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
+                              )
+                            )}
                           </div>
                         )}
                         <div style={{
