@@ -177,9 +177,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0)) || 2200 : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) : 0;
-  const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty;
+  const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
@@ -197,7 +197,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const subtotal = product.slug === 'cadre-dessin-enfant-a4' ? cadreAvgPrice : finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
-  const savings = product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0;
+  const savings = (product.slug === 'cadre-dessin-enfant-a4') ? 0 : (product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0);
   const imgs = Array.isArray(product.images) ? product.images : [];
 
   const filteredCommunes = wilayaId ? communes.filter(c => c.wilayaId === Number(wilayaId)) : [];
@@ -222,6 +222,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   // Celebration overlay — palier atteint ou pack Duo/Trio sélectionné
   useEffect(() => {
+    if (product.slug === 'cadre-dessin-enfant-a4') return;
     if (product.tierEnabled && tierActive && !prevTierRef.current) {
       prevTierRef.current = true;
       setCelebration({ savings, qty: realQty, tierQty: product.tierQty, tierPrice: product.tierPrice, price: product.price });
@@ -230,7 +231,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     } else if (!tierActive) {
       prevTierRef.current = false;
     }
-  }, [tierActive, product.tierEnabled, savings, product.tierQty, product.tierPrice, product.price]);
+  }, [tierActive, product.tierEnabled, savings, product.tierQty, product.tierPrice, product.price, product.slug]);
 
   // Wow effect when upgrading to Duo/Trio pack
   useEffect(() => {
@@ -564,19 +565,25 @@ export default function ProductClient({ product, wilayas, communes}) {
                       const v = variants?.find(x => x.label === lbl);
                       const color = v?.color || '#000';
                       const price = lbl === 'أسود' ? 2200 : 4000;
+                      const isSel = fq > 0;
                       return (
-                        <div key={lbl} style={{ flex: 1, textAlign: 'center', background: '#f8f9fa', borderRadius: 14, padding: '12px 8px' }}>
+                        <button
+                          key={lbl}
+                          type="button"
+                          onClick={() => setFrameQtys(prev => ({ ...prev, [lbl]: (prev[lbl] || 0) + 1 }))}
+                          style={{ flex: 1, textAlign: 'center', background: '#f8f9fa', borderRadius: 14, padding: '12px 8px', border: isSel ? `2px solid ${color}` : '1.5px solid #e8e8ed', cursor: 'pointer', boxShadow: isSel ? `0 0 0 2px ${color}20` : 'none' }}
+                        >
                           <div style={{ width: 38, height: 52, borderRadius: 0, border: `3px solid ${color}`, margin: '0 auto 8px', background: 'transparent' }} />
                           <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2 }}>{lbl}</div>
                           <div style={{ fontSize: 13, fontWeight: 800, color: c, marginBottom: 8 }}>{price.toLocaleString()} د.ج</div>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                            <button type="button" onClick={() => setFrameQtys(prev => ({ ...prev, [lbl]: Math.max(0, (prev[lbl] || 0) - 1) }))}
-                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</button>
+                            <span onClick={(e) => { e.stopPropagation(); setFrameQtys(prev => ({ ...prev, [lbl]: Math.max(0, (prev[lbl] || 0) - 1) })); }}
+                                  style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</span>
                             <div style={{ fontSize: 20, fontWeight: 900, minWidth: 28, textAlign: 'center' }}>{fq}</div>
-                            <button type="button" onClick={() => setFrameQtys(prev => ({ ...prev, [lbl]: (prev[lbl] || 0) + 1 }))}
-                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>+</button>
+                            <span onClick={(e) => { e.stopPropagation(); setFrameQtys(prev => ({ ...prev, [lbl]: (prev[lbl] || 0) + 1 })); }}
+                                  style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>+</span>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
