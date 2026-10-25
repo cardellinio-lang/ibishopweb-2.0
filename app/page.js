@@ -11,7 +11,7 @@ function getBanners() {
   const dir = path.join(process.cwd(), 'public');
   const out = [];
   // Ordre souhaité: cadre dessin, puis produit edu, puis 3ème au choix
-  const preferred = ['ban-cadre', 'ban-edu', 'ban-orthophonie', 'ban3', 'ban4'];
+  const preferred = ['ban1', 'ban2', 'ban3', 'ban4', 'ban-cadre', 'ban-edu', 'ban-orthophonie'];
   for (const name of preferred) {
     for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
       const file = `${name}.${ext}`;
