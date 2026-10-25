@@ -10,20 +10,20 @@ export const dynamic = 'force-dynamic';
 function getBanners() {
   const dir = path.join(process.cwd(), 'public');
   const out = [];
-  // Ordre souhaité: cadre dessin, puis produit edu, puis 3ème au choix
-  const preferred = ['ban1', 'ban2', 'ban3', 'ban4', 'ban-cadre', 'ban-edu', 'ban-orthophonie'];
+  // Ordre forcé: cadre dessin, puis produit edu, puis 3ème au choix
+  const preferred = ['ban1', 'ban2', 'ban3'];
   for (const name of preferred) {
     for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
       const file = `${name}.${ext}`;
-      if (fs.existsSync(path.join(dir, file))) { out.push('/' + file); break; }
+      if (fs.existsSync(path.join(dir, file))) { out.push('/' + file + '?v=' + Date.now()); break; }
     }
   }
-  // Fallback si aucun bannière spécifique n'existe
   if (out.length === 0) {
-    for (const name of ['ban1', 'ban2', 'ban3', 'ban4']) {
+    const fallback = ['ban-cadre', 'ban-edu', 'ban-orthophonie'];
+    for (const name of fallback) {
       for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
         const file = `${name}.${ext}`;
-        if (fs.existsSync(path.join(dir, file))) { out.push('/' + file); break; }
+        if (fs.existsSync(path.join(dir, file))) { out.push('/' + file + '?v=' + Date.now()); break; }
       }
     }
   }
