@@ -177,8 +177,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['بني'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
-  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['بني'] * 4000) : 0;
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['بني'] * 2200) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['بني'] * 2200) : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
@@ -564,7 +564,6 @@ export default function ProductClient({ product, wilayas, communes}) {
                       const fq = frameQtys[lbl] || 0;
                       const v = variants?.find(x => x.label === lbl);
                       const color = v?.color || '#000';
-                      const price = lbl === 'أسود' ? 2200 : 4000;
                       const isSel = fq > 0;
                       return (
                         <button
@@ -575,7 +574,6 @@ export default function ProductClient({ product, wilayas, communes}) {
                         >
                           <div style={{ width: 38, height: 52, borderRadius: 0, border: `3px solid ${color}`, margin: '0 auto 8px', background: 'transparent' }} />
                           <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2 }}>{lbl}</div>
-                          <div style={{ fontSize: 13, fontWeight: 800, color: c, marginBottom: 8 }}>{price.toLocaleString()} د.ج</div>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                             <span onClick={(e) => { e.stopPropagation(); setFrameQtys(prev => ({ ...prev, [lbl]: Math.max(0, (prev[lbl] || 0) - 1) })); }}
                                   style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</span>
