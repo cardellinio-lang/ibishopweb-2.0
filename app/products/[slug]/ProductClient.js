@@ -627,7 +627,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
                             {v.color && (
                               product.slug === 'cadre-dessin-enfant-a4' ? (
-                                <div style={{ width: '70%', height: 70, borderRadius: 8, background: 'transparent', border: variant === v.label ? '3px solid ' + v.color : '2px solid ' + v.color }} />
+                                <div style={{ width: 52, height: 72, borderRadius: 6, background: 'transparent', border: variant === v.label ? '3px solid ' + v.color : '2px solid ' + v.color }} />
                               ) : (
                                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
                               )
