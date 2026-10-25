@@ -6,17 +6,28 @@ import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
-// Bannières animées : détecte ban1/ban2/... dans /public (png, jpg, jpeg, webp)
+// Bannières animées : priorise les visuels éducatifs/orthophonie
 function getBanners() {
   const dir = path.join(process.cwd(), 'public');
   const out = [];
-  for (const name of ['ban1', 'ban2', 'ban3', 'ban4']) {
-    for (const ext of ['png', 'jpg', 'jpeg', 'webp']) {
+  // Ordre souhaité: cadre dessin, puis produit edu, puis 3ème au choix
+  const preferred = ['ban-cadre', 'ban-edu', 'ban-orthophonie', 'ban2', 'ban1'];
+  for (const name of preferred) {
+    for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
       const file = `${name}.${ext}`;
       if (fs.existsSync(path.join(dir, file))) { out.push('/' + file); break; }
     }
   }
-  return out;
+  // Fallback si aucun bannière spécifique n'existe
+  if (out.length === 0) {
+    for (const name of ['ban1', 'ban2', 'ban3', 'ban4']) {
+      for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
+        const file = `${name}.${ext}`;
+        if (fs.existsSync(path.join(dir, file))) { out.push('/' + file); break; }
+      }
+    }
+  }
+  return out.slice(0, 3);
 }
 
 export default async function Home() {
