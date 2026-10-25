@@ -824,7 +824,9 @@ export default function ProductClient({ product, wilayas, communes}) {
               {product.tierEnabled && product.tierQty && realQty < product.tierQty && (
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
-                    {(product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
+                    {product.slug === 'cadre-dessin-enfant-a4'
+                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر 400 د.ج إجمالاً!`
+                      : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>
               )}
