@@ -52,7 +52,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [qty, setQty] = useState(1);
   const wordColors = ['أحمر', 'وردي'];
   const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
-  const realQty = product.slug === 'wordrope' ? colorQtys['أحمر'] + colorQtys['وردي'] : qty;
+  const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'خشب': 0 });
+  const realQty = product.slug === 'wordrope' ? colorQtys['أحمر'] + colorQtys['وردي'] : product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : qty;
   const [customer, setCustomer] = useState('');
   const [phone, setPhone] = useState('');
   const [wilayaId, setWilayaId] = useState('');
@@ -141,8 +142,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
     { label: 'باك كامل أخضر', price: 3950, color: '#16a34a', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
-    { label: 'أسود', price: null, color: '#000000' },
-    { label: 'خشب', price: null, color: '#B9A07E' },
+    { label: 'أسود', price: 2200, color: '#000000' },
+    { label: 'خشب', price: 2200, color: '#B9A07E' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -176,7 +177,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price);
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0)) || 2200 : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['خشب'] * 4000) : 0;
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
@@ -192,7 +194,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const delivery = selectedWilaya
     ? (deliveryType === 'office' ? (freeOfficeDelivery ? 0 : selectedWilaya.priceOffice) : selectedWilaya.price)
     : 0;
-  const subtotal = finalPrice * realQty;
+  const subtotal = product.slug === 'cadre-dessin-enfant-a4' ? cadreAvgPrice : finalPrice * realQty;
   const total = subtotal + delivery;
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
   const savings = product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0;
@@ -268,7 +270,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
     try {
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, خشب: ${frameQtys['خشب']||0})` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -313,8 +315,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : '';
-    const waPrice = finalPrice - (isWordBox ? whatsAppDiscount : 0);
+    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, خشب: ${frameQtys['خشب']||0})` : '');
+    const waPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreAvgPrice / Math.max(1, realQty)) - (isWordBox ? whatsAppDiscount : 0) : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
     try {
@@ -326,7 +328,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
-          variantPrice: (variants || wordBoxPacks || (whatsAppFreeDelivery && !isWordBox)) ? waPrice : undefined,
+          variantPrice: (variants || wordBoxPacks || (whatsAppFreeDelivery && !isWordBox) || product.slug === 'cadre-dessin-enfant-a4') ? waPrice : undefined,
           source: 'whatsapp',
         }),
       });
@@ -553,7 +555,35 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && sizeVariantSlugs.includes(product.slug) && (
+              {product.slug === 'cadre-dessin-enfant-a4' && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر كمية كل لون إطار</label>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    {['أسود', 'خشب'].map(lbl => {
+                      const fq = frameQtys[lbl] || 0;
+                      const v = variants?.find(x => x.label === lbl);
+                      const color = v?.color || '#000';
+                      const price = lbl === 'أسود' ? 2200 : 4000;
+                      return (
+                        <div key={lbl} style={{ flex: 1, textAlign: 'center', background: '#f8f9fa', borderRadius: 14, padding: '12px 8px' }}>
+                          <div style={{ width: 38, height: 52, borderRadius: 0, border: `3px solid ${color}`, margin: '0 auto 8px', background: 'transparent' }} />
+                          <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2 }}>{lbl}</div>
+                          <div style={{ fontSize: 13, fontWeight: 800, color: c, marginBottom: 8 }}>{price.toLocaleString()} د.ج</div>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                            <button type="button" onClick={() => setFrameQtys(prev => ({ ...prev, [lbl]: Math.max(0, (prev[lbl] || 0) - 1) }))}
+                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</button>
+                            <div style={{ fontSize: 20, fontWeight: 900, minWidth: 28, textAlign: 'center' }}>{fq}</div>
+                            <button type="button" onClick={() => setFrameQtys(prev => ({ ...prev, [lbl]: (prev[lbl] || 0) + 1 }))}
+                                    style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>+</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {realQty < 1 && <div style={{ color: '#dc2626', fontSize: 13, marginTop: 6, fontWeight: 700 }}>يرجى إضافة كمية على الأقل</div>}
+                </div>
+              )}
+              {product.slug !== 'cadre-dessin-enfant-a4' && variants && sizeVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر المقاس / Choisir la pointure</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
@@ -574,7 +604,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug !== 'wordrope' && textVariantSlugs.includes(product.slug) && (
+              {product.slug !== 'cadre-dessin-enfant-a4' && variants && product.slug !== 'wordrope' && textVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'baqat-obaqera-badr' ? 'اختر الباقة' : 'اختر المستوى الدراسي'}</label>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -605,7 +635,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && !sizeVariantSlugs.includes(product.slug) && (
+              {product.slug !== 'cadre-dessin-enfant-a4' && variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && !sizeVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'ghilaf-lagna-tathbeet' ? 'اختر اللون / الباقة' : product.slug === 'cadre-dessin-enfant-a4' ? 'اختر لون الإطار' : 'اختر الموديل'}</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
@@ -627,7 +657,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
                             {v.color && (
                               product.slug === 'cadre-dessin-enfant-a4' ? (
-                                <div style={{ width: 52, height: 72, borderRadius: 6, background: 'transparent', border: variant === v.label ? '3px solid ' + v.color : '2px solid ' + v.color }} />
+                                <div style={{ width: 52, height: 72, borderRadius: 0, background: 'transparent', border: variant === v.label ? '4px solid ' + v.color : '3px solid ' + v.color }} />
                               ) : (
                                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: v.color, border: '2px solid rgba(0,0,0,0.15)' }} />
                               )
@@ -752,7 +782,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
 
               {/* Quantity - + */}
-              {product.slug !== 'wordrope' && (
+              {product.slug !== 'wordrope' && product.slug !== 'cadre-dessin-enfant-a4' && (
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الكمية</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -769,12 +799,16 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </div>
               </div>
               )}
-              {product.slug === 'wordrope' && (
+              {(product.slug === 'wordrope' || product.slug === 'cadre-dessin-enfant-a4') && (
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>المجموع: {realQty} قطعة</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'center', padding: '8px 0' }}>
                   <div style={{ fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'center', color: '#1d1d1f' }}>{realQty}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#16a34a' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
+                  {product.slug === 'cadre-dessin-enfant-a4' ? (
+                    <div style={{ fontSize: 16, fontWeight: 700, color: c }}>{cadreAvgPrice.toLocaleString()} د.ج</div>
+                  ) : (
+                    <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#16a34a' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
+                  )}
                 </div>
               </div>
               )}
