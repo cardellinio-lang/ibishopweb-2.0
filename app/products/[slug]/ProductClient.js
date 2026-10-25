@@ -177,8 +177,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? ((frameQtys['أسود'] * 2200 + frameQtys['بني'] * 2200) / Math.max(1, Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0))) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
-  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? (frameQtys['أسود'] * 2200 + frameQtys['بني'] * 2200) : 0;
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? 2200 : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
+  const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreQty <= 1 ? cadreQty * 2200 : cadreQty === 2 ? 4000 : cadreQty * 2000) : 0;
+  const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
