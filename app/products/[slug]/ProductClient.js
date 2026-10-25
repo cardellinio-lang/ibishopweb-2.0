@@ -140,6 +140,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل أزرق', price: 3950, color: '#2563eb', img: 7 },
     { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
     { label: 'باك كامل أخضر', price: 3950, color: '#16a34a', img: 9 },
+  ] : product.slug === 'cadre-dessin-enfant-a4' ? [
+    { label: 'أسود', price: null, color: '#000000' },
+    { label: 'خشب', price: null, color: '#8B7355' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -173,7 +176,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? variants.find(v => v.label === variant).price : product.price);
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price);
   const tierActive = product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty;
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
   const finalPrice = effectivePrice;
@@ -182,7 +185,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
   const isTblDisjon = product.slug === 'tbl-disjon';
   // produits ou chaque modele doit etre note dans la commande, meme le premier
-  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug) || product.slug === 'ghilaf-lagna-tathbeet';
+  const alwaysRecordVariant = isTblDisjon || textVariantSlugs.includes(product.slug) || sizeVariantSlugs.includes(product.slug) || product.slug === 'ghilaf-lagna-tathbeet' || product.slug === 'cadre-dessin-enfant-a4';
   // livraison gratuite au bureau de retrait (tarif normal a domicile)
   const freeOfficeDelivery = product.slug === 'silsilat-hadaf';
   // tarif normal par wilaya (bureau ou domicile) pour tous les produits sauf silsilat-hadaf
@@ -604,7 +607,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {variants && product.slug !== 'wordrope' && !textVariantSlugs.includes(product.slug) && !sizeVariantSlugs.includes(product.slug) && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'ghilaf-lagna-tathbeet' ? 'اختر اللون / الباقة' : 'اختر الموديل'}</label>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>{product.slug === 'ghilaf-lagna-tathbeet' ? 'اختر اللون / الباقة' : product.slug === 'cadre-dessin-enfant-a4' ? 'اختر لون الإطار' : 'اختر الموديل'}</label>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                     {variants.map(v => {
                         const photoSrc = v.imgUrl || (typeof v.img === 'number' ? imgs[v.img] : null);
@@ -631,7 +634,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           color: variant === v.label ? '#fff' : '#1d1d1f',
                         }}>
                           {v.shortLabel || v.label}
-                          {product.slug === 'ghilaf-lagna-tathbeet' && (
+                          {(product.slug === 'ghilaf-lagna-tathbeet' || product.slug === 'cadre-dessin-enfant-a4') && v.price && (
                             <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{v.price.toLocaleString()} د.ج</div>
                           )}
                         </div>
