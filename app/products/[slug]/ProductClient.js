@@ -130,16 +130,16 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: '43', price: 3900 },
     { label: '44', price: 3900 },
   ] : product.slug === 'ghilaf-lagna-tathbeet' ? [
-    { label: 'غلاف وردي', price: 3600, color: '#ec4899', img: 0 },
-    { label: 'غلاف بنفسجي', price: 3600, color: '#7c3aed', img: 1 },
-    { label: 'غلاف أزرق', price: 3600, color: '#2563eb', img: 2 },
-    { label: 'غلاف ذهبي', price: 3600, color: '#b45309', img: 3 },
-    { label: 'غلاف أخضر', price: 3600, color: '#16a34a', img: 4 },
-    { label: 'باك كامل بنفسجي', price: 4600, color: '#7c3aed', img: 5 },
-    { label: 'باك كامل وردي', price: 4600, color: '#ec4899', img: 6 },
-    { label: 'باك كامل أزرق', price: 4600, color: '#2563eb', img: 7 },
-    { label: 'باك كامل ذهبي', price: 4600, color: '#b45309', img: 8 },
-    { label: 'باك كامل أخضر', price: 4600, color: '#16a34a', img: 9 },
+    { label: 'غلاف وردي', price: 3950, color: '#ec4899', img: 0 },
+    { label: 'غلاف بنفسجي', price: 3950, color: '#7c3aed', img: 1 },
+    { label: 'غلاف أزرق', price: 3950, color: '#2563eb', img: 2 },
+    { label: 'غلاف ذهبي', price: 3950, color: '#b45309', img: 3 },
+    { label: 'غلاف أخضر', price: 3950, color: '#16a34a', img: 4 },
+    { label: 'باك كامل بنفسجي', price: 3950, color: '#7c3aed', img: 5 },
+    { label: 'باك كامل وردي', price: 3950, color: '#ec4899', img: 6 },
+    { label: 'باك كامل أزرق', price: 3950, color: '#2563eb', img: 7 },
+    { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
+    { label: 'باك كامل أخضر', price: 3950, color: '#16a34a', img: 9 },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
