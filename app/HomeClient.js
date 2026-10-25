@@ -35,8 +35,8 @@ function ProductCard({ p, now }) {
       <div style={{ padding: '12px 12px 16px', display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right', flex: 1 }}>
         <h3 style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.5, color: 'var(--wb-text)' }}>{p.name}</h3>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 'auto' }}>
-          <span className="wb-price" style={{ fontSize: 22 }}>{p.price.toLocaleString()} <span style={{ fontSize: 13 }}>د.ج</span></span>
-          {p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>}
+          <span className="wb-price" style={{ fontSize: 22 }}>{(p.slug === 'cadre-dessin-enfant-a4' ? 2200 : p.price).toLocaleString()} <span style={{ fontSize: 13 }}>د.ج</span></span>
+          {p.slug === 'cadre-dessin-enfant-a4' ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>)}
         </div>
         {p.tierEnabled && p.tierQty && p.tierPrice && (
           <span style={{ fontSize: 12, color: '#16a34a', fontWeight: 700 }}>أقل سعر {p.tierPrice.toLocaleString()} د.ج عند شراء {p.tierQty}+</span>
