@@ -10,8 +10,8 @@ export const dynamic = 'force-dynamic';
 function getBanners() {
   const dir = path.join(process.cwd(), 'public');
   const out = [];
-  // Ordre forcé: cadre dessin, puis produit edu, puis 3ème au choix
-  const preferred = ['ban1', 'ban2', 'ban3'];
+  // Ordre forcé: cadre dessin, puis produit edu
+  const preferred = ['ban1', 'ban2'];
   for (const name of preferred) {
     for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
       const file = `${name}.${ext}`;
@@ -19,7 +19,7 @@ function getBanners() {
     }
   }
   if (out.length === 0) {
-    const fallback = ['ban-cadre', 'ban-edu', 'ban-orthophonie'];
+    const fallback = ['ban-cadre', 'ban-edu'];
     for (const name of fallback) {
       for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
         const file = `${name}.${ext}`;
@@ -27,7 +27,7 @@ function getBanners() {
       }
     }
   }
-  return out.slice(0, 3);
+  return out.slice(0, 2);
 }
 
 export default async function Home() {
