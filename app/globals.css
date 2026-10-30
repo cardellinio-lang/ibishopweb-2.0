@@ -1,17 +1,17 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none}
 
 :root{
-  /* ===== Charte "Wildberries" ===== */
-  --wb-magenta:#111111;
-  --wb-magenta-dark:#000000;
-  --wb-magenta-darker:#000000;
-  --wb-purple:#000000;
-  --wb-fuchsia:#000000;
+  /* ===== Charte basée sur logo ibishop ===== */
+  --wb-magenta:#00756F;
+  --wb-magenta-dark:#005f5a;
+  --wb-magenta-darker:#004a46;
+  --wb-purple:#00756F;
+  --wb-fuchsia:#009b94;
   /* Rouge promo dédié aux badges de réduction (style Wildberries) */
   --wb-red:#F5222D;
   --wb-red-dark:#D91A24;
-  --wb-grad:linear-gradient(90deg,#000000 0%,#111111 100%);
-  --wb-grad-diag:linear-gradient(135deg,#000000 0%,#111111 60%,#333333 100%);
+  --wb-grad:linear-gradient(90deg,#00756F 0%,#009b94 100%);
+  --wb-grad-diag:linear-gradient(135deg,#00756F 0%,#009b94 60%,#00b3ab 100%);
   --wb-text:#1a1a1a;
   --wb-muted:#868695;
   --wb-border:#ececef;
