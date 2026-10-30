@@ -107,8 +107,6 @@ export default function HomeClient({ products, banners = [] }) {
 
   return (
     <div>
-      {/* Bannières animées (style Wildberries) */}
-      <BannerCarousel images={banners} />
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
