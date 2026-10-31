@@ -70,7 +70,7 @@ export default function Admin() {
       note: o.note || ''
     });
   };
-   const saveOrderEdit = async () => {
+  const saveOrderEdit = async () => {
     if (!editingOrder) return;
     setSavingOrder(true);
     try {
