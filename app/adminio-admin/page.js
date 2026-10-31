@@ -57,58 +57,55 @@ export default function Admin() {
       setTimeout(() => setCopiedPhone(c => (c === phone ? null : c)), 1500);
     };
 
-    const openEditOrder = (o) => {
-      setEditingOrder(o);
-      setEditOrderForm({
-        firstName: o.firstName || '',
-        lastName: o.lastName || '',
-        phone: o.phone || '',
-        wilaya: o.wilaya || '',
-        commune: o.commune || '',
-        address: o.address || '',
-        total: o.total || 0,
-        note: o.note || ''
+  const openEditOrder = (o) => {
+    setEditingOrder(o);
+    setEditOrderForm({
+      firstName: o.firstName || '',
+      lastName: o.lastName || '',
+      phone: o.phone || '',
+      wilaya: o.wilaya || '',
+      commune: o.commune || '',
+      address: o.address || '',
+      total: o.total || 0,
+      note: o.note || ''
+    });
+  };
+   const saveOrderEdit = async () => {
+    if (!editingOrder) return;
+    setSavingOrder(true);
+    try {
+      const res = await fetch('/api/orders/' + editingOrder.id, {
+        method: 'PATCH',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(editOrderForm)
       });
-    };
-
-    const saveOrderEdit = async () => {
-      if (!editingOrder) return;
-      setSavingOrder(true);
-      try {
-        const res = await fetch('/api/orders/' + editingOrder.id, {
-          method: 'PATCH',
-          headers: authHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify(editOrderForm)
-        });
-        if (res.ok) {
-          setOrders(prev => prev.map(x => x.id === editingOrder.id ? { ...x, ...editOrderForm, total: Number(editOrderForm.total) } : x));
-          setEditingOrder(null);
-        } else {
-          alert('Erreur');
-        }
-      } catch (e) {
+      if (res.ok) {
+        setOrders(prev => prev.map(x => x.id === editingOrder.id ? { ...x, ...editOrderForm, total: Number(editOrderForm.total) } : x));
+        setEditingOrder(null);
+      } else {
         alert('Erreur');
-      } finally {
-        setSavingOrder(false);
       }
-    };
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(phone).then(done).catch(done);
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = phone;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch {}
-      document.body.removeChild(ta);
-      done();
+    } catch (e) {
+      alert('Erreur');
+    } finally {
+      setSavingOrder(false);
     }
   };
-
-
-
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(phone).then(done).catch(done);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = phone;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch {}
+    document.body.removeChild(ta);
+    done();
+  }
+  };
+  
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
