@@ -56,6 +56,20 @@ export default function Admin() {
       setCopiedPhone(phone);
       setTimeout(() => setCopiedPhone(c => (c === phone ? null : c)), 1500);
     };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(phone).then(done).catch(done);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = phone;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch {}
+      document.body.removeChild(ta);
+      done();
+    }
+  };
 
   const openEditOrder = (o) => {
     setEditingOrder(o);
@@ -91,21 +105,8 @@ export default function Admin() {
       setSavingOrder(false);
     }
   };
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(phone).then(done).catch(done);
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = phone;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch {}
-    document.body.removeChild(ta);
-    done();
-  }
-  };
-  
+
+
 
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
