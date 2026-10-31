@@ -904,31 +904,6 @@ export default function Admin() {
         </div>
       )}
 
-      {editingOrder && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#fff', borderRadius: 16, padding: 24, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 800 }}>Modifier la commande</h3>
-              <button onClick={() => setEditingOrder(null)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }}>×</button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <input placeholder="Prénom" value={editOrderForm.firstName} onChange={e => setEditOrderForm(f => ({ ...f, firstName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
-              <input placeholder="Nom" value={editOrderForm.lastName} onChange={e => setEditOrderForm(f => ({ ...f, lastName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
-              <input placeholder="Téléphone" value={editOrderForm.phone} onChange={e => setEditOrderForm(f => ({ ...f, phone: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
-              <input placeholder="Wilaya" value={editOrderForm.wilaya} onChange={e => setEditOrderForm(f => ({ ...f, wilaya: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
-              <input placeholder="Commune" value={editOrderForm.commune} onChange={e => setEditOrderForm(f => ({ ...f, commune: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
-              <input placeholder="Adresse" value={editOrderForm.address} onChange={e => setEditOrderForm(f => ({ ...f, address: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
-              <input type="number" placeholder="Total (DA)" value={editOrderForm.total} onChange={e => setEditOrderForm(f => ({ ...f, total: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
-              <textarea placeholder="Note" value={editOrderForm.note} onChange={e => setEditOrderForm(f => ({ ...f, note: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1', minHeight: 60, fontFamily: 'inherit' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-              <button onClick={() => setEditingOrder(null)} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #e5e7eb', background: '#fff', fontWeight: 700, cursor: 'pointer' }}>Annuler</button>
-              <button onClick={saveOrderEdit} disabled={savingOrder} style={{ flex: 1, padding: 12, borderRadius: 10, border: 'none', background: '#2563eb', color: '#fff', fontWeight: 700, cursor: savingOrder ? 'not-allowed' : 'pointer' }}>{savingOrder ? 'Enregistrement...' : 'Enregistrer'}</button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {tab === 'ordertable' && (
         <div className="card" style={{ overflowX: 'auto' }}>
           <h3 style={{ marginBottom: 16 }}>📊 Tableau des commandes</h3>
@@ -1638,6 +1613,31 @@ export default function Admin() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {editingOrder && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: 24, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800 }}>Modifier la commande</h3>
+              <button onClick={() => setEditingOrder(null)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }}>×</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <input placeholder="Prénom" value={editOrderForm.firstName} onChange={e => setEditOrderForm(f => ({ ...f, firstName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Nom" value={editOrderForm.lastName} onChange={e => setEditOrderForm(f => ({ ...f, lastName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Téléphone" value={editOrderForm.phone} onChange={e => setEditOrderForm(f => ({ ...f, phone: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <input placeholder="Wilaya" value={editOrderForm.wilaya} onChange={e => setEditOrderForm(f => ({ ...f, wilaya: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Commune" value={editOrderForm.commune} onChange={e => setEditOrderForm(f => ({ ...f, commune: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Adresse" value={editOrderForm.address} onChange={e => setEditOrderForm(f => ({ ...f, address: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <input type="number" placeholder="Total (DA)" value={editOrderForm.total} onChange={e => setEditOrderForm(f => ({ ...f, total: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <textarea placeholder="Note" value={editOrderForm.note} onChange={e => setEditOrderForm(f => ({ ...f, note: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1', minHeight: 60, fontFamily: 'inherit' }} />
+            </div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <button onClick={() => setEditingOrder(null)} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #e5e7eb', background: '#fff', fontWeight: 700, cursor: 'pointer' }}>Annuler</button>
+              <button onClick={saveOrderEdit} disabled={savingOrder} style={{ flex: 1, padding: 12, borderRadius: 10, border: 'none', background: '#2563eb', color: '#fff', fontWeight: 700, cursor: savingOrder ? 'not-allowed' : 'pointer' }}>{savingOrder ? 'Enregistrement...' : 'Enregistrer'}</button>
+            </div>
           </div>
         </div>
       )}
