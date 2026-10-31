@@ -107,6 +107,9 @@ export default function Admin() {
     }
   };
 
+
+
+
   useEffect(() => {
     if (sessionStorage.getItem('admin_auth') === '1') {
       setPassword(sessionStorage.getItem('admin_pwd') || '');
