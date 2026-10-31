@@ -47,11 +47,50 @@ export default function Admin() {
   const [syncPricesLoading, setSyncPricesLoading] = useState(false);
   const [syncPricesResult, setSyncPricesResult] = useState(null);
   const [copiedPhone, setCopiedPhone] = useState(null);
+  const [editingOrder, setEditingOrder] = useState(null);
+  const [editOrderForm, setEditOrderForm] = useState({ firstName: '', lastName: '', phone: '', wilaya: '', commune: '', address: '', total: 0, note: '' });
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const copyPhone = (phone) => {
     const done = () => {
       setCopiedPhone(phone);
       setTimeout(() => setCopiedPhone(c => (c === phone ? null : c)), 1500);
+    };
+
+    const openEditOrder = (o) => {
+      setEditingOrder(o);
+      setEditOrderForm({
+        firstName: o.firstName || '',
+        lastName: o.lastName || '',
+        phone: o.phone || '',
+        wilaya: o.wilaya || '',
+        commune: o.commune || '',
+        address: o.address || '',
+        total: o.total || 0,
+        note: o.note || ''
+      });
+    };
+
+    const saveOrderEdit = async () => {
+      if (!editingOrder) return;
+      setSavingOrder(true);
+      try {
+        const res = await fetch('/api/orders/' + editingOrder.id, {
+          method: 'PATCH',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify(editOrderForm)
+        });
+        if (res.ok) {
+          setOrders(prev => prev.map(x => x.id === editingOrder.id ? { ...x, ...editOrderForm, total: Number(editOrderForm.total) } : x));
+          setEditingOrder(null);
+        } else {
+          alert('Erreur');
+        }
+      } catch (e) {
+        alert('Erreur');
+      } finally {
+        setSavingOrder(false);
+      }
     };
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(phone).then(done).catch(done);
@@ -849,6 +888,7 @@ export default function Admin() {
                           {o.status === 'delivered' && (
                             <span style={{ padding: '8px 12px', borderRadius: 10, background: '#f0fdf4', color: '#16a34a', fontSize: 13, fontWeight: 800, textAlign: 'center' }}>✅ Terminée</span>
                           )}
+                          <button style={{ padding: '6px 12px', borderRadius: 10, border: '1px solid #d1d5db', background: '#fff', color: '#111', fontSize: 12, fontWeight: 700, cursor: 'pointer' }} onClick={() => openEditOrder(o)}>✏️ Modifier</button>
                           {o.status !== 'delivered' && (
                             <button style={{ padding: '6px 12px', borderRadius: 10, border: '1px solid #fecaca', background: '#fff', color: '#dc2626', fontSize: 12, fontWeight: 700, cursor: 'pointer' }} onClick={() => deleteOrder(o.id)}>🗑️ Supprimer</button>
                           )}
@@ -861,6 +901,31 @@ export default function Admin() {
               </div>
             );
           })()}
+        </div>
+      )}
+
+      {editingOrder && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: 24, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800 }}>Modifier la commande</h3>
+              <button onClick={() => setEditingOrder(null)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }}>×</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <input placeholder="Prénom" value={editOrderForm.firstName} onChange={e => setEditOrderForm(f => ({ ...f, firstName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Nom" value={editOrderForm.lastName} onChange={e => setEditOrderForm(f => ({ ...f, lastName: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Téléphone" value={editOrderForm.phone} onChange={e => setEditOrderForm(f => ({ ...f, phone: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <input placeholder="Wilaya" value={editOrderForm.wilaya} onChange={e => setEditOrderForm(f => ({ ...f, wilaya: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Commune" value={editOrderForm.commune} onChange={e => setEditOrderForm(f => ({ ...f, commune: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb' }} />
+              <input placeholder="Adresse" value={editOrderForm.address} onChange={e => setEditOrderForm(f => ({ ...f, address: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <input type="number" placeholder="Total (DA)" value={editOrderForm.total} onChange={e => setEditOrderForm(f => ({ ...f, total: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1' }} />
+              <textarea placeholder="Note" value={editOrderForm.note} onChange={e => setEditOrderForm(f => ({ ...f, note: e.target.value }))} style={{ padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', gridColumn: '1 / -1', minHeight: 60, fontFamily: 'inherit' }} />
+            </div>
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <button onClick={() => setEditingOrder(null)} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #e5e7eb', background: '#fff', fontWeight: 700, cursor: 'pointer' }}>Annuler</button>
+              <button onClick={saveOrderEdit} disabled={savingOrder} style={{ flex: 1, padding: 12, borderRadius: 10, border: 'none', background: '#2563eb', color: '#fff', fontWeight: 700, cursor: savingOrder ? 'not-allowed' : 'pointer' }}>{savingOrder ? 'Enregistrement...' : 'Enregistrer'}</button>
+            </div>
+          </div>
         </div>
       )}
 
