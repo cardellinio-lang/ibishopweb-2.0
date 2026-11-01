@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '1px solid var(--wb-border)', boxShadow: '0 2px 14px rgba(0,117,111,0.08)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: 28, fontWeight: 800, color: '#f59e0b', letterSpacing: '-0.5px' }}>ibishop</span>
+              <span style={{ fontSize: 28, fontWeight: 900, color: '#f59e0b', letterSpacing: '-0.5px' }}>IBI</span><span style={{ fontSize: 14, fontWeight: 600, color: '#f59e0b', marginLeft: 2 }}>shop</span>
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 16, color: 'var(--wb-text)' }}>المنتجات</a>
