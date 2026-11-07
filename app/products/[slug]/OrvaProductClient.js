@@ -191,7 +191,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                 background: theme.white,
               }}>
                 <img src={imgs[imgIdx] || 'https://placehold.co/600x600/f5f5f7/8e8e93?text=N'}
-                     alt={product.name} fetchpriority="high" className="no-save-img" draggable={false}
+                     alt={product.name} fetchpriority="high" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()}
                      style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
               {imgs.length > 1 && (
@@ -203,7 +203,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                               border: i === imgIdx ? `2px solid ${theme.primary}` : `1px solid ${theme.border}`,
                               padding: 0, background: theme.white, cursor: 'pointer', flexShrink: 0,
                             }}>
-                      <img src={img} alt="" className="no-save-img" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={img} alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </button>
                   ))}
                 </div>
@@ -365,7 +365,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                 borderRadius: 14, overflow: 'hidden', marginBottom: 16,
                 boxShadow: `0px 2px 14px 0px ${theme.shadow}`,
               }}>
-                <img src={img} alt="" className="no-save-img" draggable={false} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                <img src={img} alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
             ))}
           </div>
@@ -388,7 +388,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <img src={imgs[0] || 'https://placehold.co/48x48/f5f5f7/8e8e93?text=N'}
-                     alt="" className="no-save-img" draggable={false} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover' }} />
+                     alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover' }} />
                 <div>
                   <div style={{ fontFamily: 'Rubik', fontWeight: 700, fontSize: 15, color: theme.text }}>{product.price.toLocaleString()} د.ج</div>
                   <div style={{ fontFamily: 'Cairo', fontWeight: 500, fontSize: 12, color: theme.muted }}>{product.name}</div>

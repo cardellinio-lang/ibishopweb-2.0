@@ -33,7 +33,7 @@ body{font-family:'Thmanyah Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','No
 a{color:inherit;text-decoration:none}
 img{max-width:100%;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 /* Images produits : non téléchargeables (clic droit, glisser, appui long iOS) */
-.no-save-img{pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.no-save-img{-webkit-user-drag:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 input,textarea,select{-webkit-user-select:auto;user-select:auto}
 table{width:100%;border-collapse:collapse;font-size:16px}
 th,td{padding:14px 16px;text-align:right;border-bottom:1px solid var(--wb-border)}

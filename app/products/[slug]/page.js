@@ -7,6 +7,8 @@ import OrvaProductClient from './OrvaProductClient';
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
+export const metadata = { title: 'IBI' };
+
 export default async function ProductPage({ params }) {
   let product = null;
   let wilayas = [];

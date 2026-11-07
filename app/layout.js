@@ -79,8 +79,6 @@ export default async function RootLayout({ children }) {
               Instagram
             </a>
           </div>
-
-          ibishop-2026
         </footer>
         <style>{`img{-webkit-user-drag:none}`}</style>
         <script dangerouslySetInnerHTML={{ __html: `fetch('/api/pageview',{method:'POST'}).catch(()=>{})` }} />

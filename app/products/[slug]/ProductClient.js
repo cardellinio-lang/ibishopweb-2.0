@@ -427,7 +427,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           <div style={{ background: '#fff', borderRadius: 16, padding: 8, boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
             <div style={{ borderRadius: 12, overflow: 'hidden', background: '#f5f5f7', aspectRatio: '1' }}>
               <img src={imgs[imgIdx] || 'https://placehold.co/600x600/f5f5f7/8e8e93?text=N'} alt={product.name}
-                   className="no-save-img" draggable={false}
+                   className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()}
                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
           {imgs.length > 1 && (
@@ -436,7 +436,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 {imgs.slice(0, 10).map((img, i) => (
                   <button key={i} onClick={() => setImgIdx(i)}
                           style={{ minWidth: 80, width: 80, height: 80, borderRadius: 10, overflow: 'hidden', border: i === imgIdx ? '2px solid ' + c : '2px solid #e8e8ed', padding: 0, background: '#f5f5f7', cursor: 'pointer', flexShrink: 0 }}>
-                    <img src={img} alt="" className="no-save-img" draggable={false} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </button>
                 ))}
               </div>
@@ -659,7 +659,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                                 cursor: 'pointer', textAlign: 'center', transition: 'all .2s',
                               }}>
                         {isPhoto ? (
-                          <img src={photoSrc} alt={v.label} className="no-save-img" draggable={false} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
+                          <img src={photoSrc} alt={v.label} className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }} />
                         ) : (
                           <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f7' }}>
                             {v.color && (
@@ -914,7 +914,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           }}>
             {imgs.slice(0, 10).map((img, i) => (
               <div key={i}>
-                <img src={img} alt={`${product.name} ${i + 1}`} className="no-save-img" draggable={false}
+                <img src={img} alt={`${product.name} ${i + 1}`} className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()}
                      style={{ width: '100%', height: 'auto', display: 'block' }} />
               </div>
             ))}
