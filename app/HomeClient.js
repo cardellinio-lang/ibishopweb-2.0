@@ -23,7 +23,7 @@ function ProductCard({ p, now }) {
              alt={p.name}
              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {discount > 0 && (
-          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-red)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(245,34,45,.35)' }}>
+          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-red)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(95,48,133,.35)' }}>
             -{discount}%
           </span>
         )}
@@ -79,6 +79,8 @@ function BannerCarousel({ images }) {
                 width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: 24,
               }}>
+                <img src="/logo-ibi-white.png" alt="IBI"
+                     style={{ height: 'clamp(34px, 4.6vw, 56px)', width: 'auto', display: 'block', marginBottom: 4 }} />
                 <div style={{ fontSize: 'clamp(22px, 3.6vw, 42px)', fontWeight: 900, lineHeight: 1.25 }}>إيبي شوب 🛍️ تسوّق أونلاين</div>
                 <div style={{ fontSize: 'clamp(13px, 1.7vw, 20px)', fontWeight: 600, opacity: 0.92 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
               </div>
@@ -145,15 +147,15 @@ export default function HomeClient({ products, banners = [] }) {
 
       {/* Stats Strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 36, textAlign: 'center' }}>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(72,17,115,.08)' }}>
+        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(95,48,133,.08)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-magenta)' }}>{products.length}+</div>
           <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>منتج</div>
         </div>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(72,17,115,.08)' }}>
+        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(95,48,133,.08)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-purple)' }}>58</div>
           <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
         </div>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(72,17,115,.08)' }}>
+        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(95,48,133,.08)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-magenta)' }}>10</div>
           <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
         </div>

@@ -36,12 +36,9 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 export default function ProductClient({ product, wilayas, communes}) {
-  // Thème par défaut = couleur choisie pour le produit (picker admin).
-  // Fallback violet Wildberries si pas de couleur / noir / hex invalide.
-  // Couleur trop claire → assombrie automatiquement pour garder le texte lisible.
-  const pickColor = (product.color && /^#[0-9a-f]{6}$/i.test(product.color) && product.color.toLowerCase() !== '#000000')
-    ? product.color
-    : '#CB11AB';
+  // Couleur de marque IBI (charte.png) : violet principal.
+  // Elle remplace les anciennes couleurs produit pour garder un site cohérent.
+  const pickColor = '#5F3085';
   const lum = (() => {
     const h = pickColor.replace('#', '');
     const r = parseInt(h.substring(0, 2), 16) / 255, g = parseInt(h.substring(2, 4), 16) / 255, b = parseInt(h.substring(4, 6), 16) / 255;
@@ -896,7 +893,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>السعر الإجمالي</span>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: '#c2185b' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--wb-magenta)' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
                   </div>
                 </div>
               </div>

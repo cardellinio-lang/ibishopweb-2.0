@@ -1,21 +1,25 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none}
 
 :root{
-  /* ===== Charte basée sur logo ibishop ===== */
-  --wb-magenta:#00756F;
-  --wb-magenta-dark:#005f5a;
-  --wb-magenta-darker:#004a46;
-  --wb-purple:#00756F;
-  --wb-fuchsia:#009b94;
-  /* Rouge promo dédié aux badges de réduction (style Wildberries) */
-  --wb-red:#F5222D;
-  --wb-red-dark:#D91A24;
-  --wb-grad:linear-gradient(90deg,#00756F 0%,#009b94 100%);
-  --wb-grad-diag:linear-gradient(135deg,#00756F 0%,#009b94 60%,#00b3ab 100%);
+  /* ===== Charte IBI (charte.png) ===== */
+  --wb-magenta:#5F3085;        /* violet principal (boutons, accents) */
+  --wb-magenta-dark:#4A2468;
+  --wb-magenta-darker:#371A50;
+  --wb-purple:#5F3085;
+  --wb-fuchsia:#10BABE;        /* turquoise secondaire */
+  --wb-teal:#10BABE;
+  --wb-teal-dark:#0E9A9E;
+  --wb-lavender:#C5B7D0;       /* lavande (fonds doux, bordures) */
+  --wb-lavender-soft:#EFEAF3;
+  /* Badges promo : violet de la charte (texte blanc lisible) */
+  --wb-red:#5F3085;
+  --wb-red-dark:#4A2468;
+  --wb-grad:linear-gradient(90deg,#5F3085 0%,#10BABE 100%);
+  --wb-grad-diag:linear-gradient(135deg,#5F3085 0%,#10BABE 60%,#C5B7D0 100%);
   --wb-text:#1a1a1a;
-  --wb-muted:#868695;
-  --wb-border:#ececef;
-  --wb-bg:#f6f6f9;
+  --wb-muted:#6F6678;
+  --wb-border:#E7E1EC;
+  --wb-bg:#F7F5FA;
   --wb-card:#ffffff;
 }
 
@@ -66,11 +70,11 @@ input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;b
 
 /* ===== Style produit "Wildberries" ===== */
 .wb-card{background:var(--wb-card);border:1px solid var(--wb-border);border-radius:16px;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.wb-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(72,17,115,.16)}
+.wb-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(95,48,133,.16)}
 .wb-price{color:var(--wb-text);font-weight:900}
 .wb-oldprice{color:var(--wb-muted);text-decoration:line-through;font-weight:600}
 .wb-grad{background:var(--wb-grad);color:#fff}
-.wb-carousel{position:relative;overflow:hidden;border-radius:20px;aspect-ratio:9/5;box-shadow:0 16px 40px rgba(72,17,115,.18)}
+.wb-carousel{position:relative;overflow:hidden;border-radius:20px;aspect-ratio:9/5;box-shadow:0 16px 40px rgba(95,48,133,.18)}
 .wb-carousel-dot{width:9px;height:9px;border-radius:999px;border:none;padding:0;cursor:pointer;background:rgba(255,255,255,.55);box-shadow:0 1px 5px rgba(0,0,0,.3);transition:all .3s}
 .wb-carousel-dot[data-on="1"]{width:28px;background:#fff}
 .wb-badge-discount{background:var(--wb-red);color:#fff;font-weight:900}

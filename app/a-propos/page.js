@@ -4,13 +4,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 const COLORS = {
-  orange: '#CB11AB',
-  pink: '#f5a0b0',
-  purple: '#d4a5e8',
-  blue: '#a8d8ea',
-  green: '#b5e5cf',
-  yellow: '#f7e7a0',
-  peach: '#f7c8b4',
+  orange: '#5F3085',
+  pink: '#C5B7D0',
+  purple: '#C5B7D0',
+  blue: '#10BABE',
+  green: '#10BABE',
+  yellow: '#C5B7D0',
+  peach: '#C5B7D0',
 };
 
 const animals = ['🐱', '🐶', '🐰', '🦊', '🐼', '🐨', '🦁', '🐸', '🐟', '🦋', '🐝', '🐌', '🦄', '🐥', '🦉', '🦜', '🐬', '🐳'];
@@ -310,7 +310,7 @@ export default function APropos() {
           width: 40, height: 40, borderRadius: 20,
           background: 'rgba(255,255,255,0.85)',
           backdropFilter: 'blur(10px)',
-          border: '1px solid #e8e8ed',
+          border: '1px solid #E7E1EC',
           cursor: 'pointer', fontSize: 18,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
@@ -332,7 +332,7 @@ export default function APropos() {
               <span style={{ animation: 'bounceSlow 2s ease-in-out infinite', display: 'inline-block' }}>✨</span>
             </div>
             <p style={{
-              fontSize: 13, color: '#8e8e93', letterSpacing: 3, fontWeight: 700,
+              fontSize: 13, color: '#6F6678', letterSpacing: 3, fontWeight: 700,
               marginBottom: 4, fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               BIENVENUE DANS NOTRE MONDE MAGIQUE
@@ -340,7 +340,7 @@ export default function APropos() {
             <h1 style={{
               fontSize: 32, fontWeight: 900, marginBottom: 6,
               fontFamily: "'Thmanyah Sans', sans-serif",
-              background: 'linear-gradient(135deg, #CB11AB, #d4a5e8, #a8d8ea)',
+              background: 'linear-gradient(135deg, #5F3085, #C5B7D0, #10BABE)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
               عالم ibishop السحري
@@ -358,7 +358,7 @@ export default function APropos() {
 
         <div style={{
           height: 4,
-          background: 'linear-gradient(90deg, #CB11AB, #d4a5e8, #a8d8ea, #b5e5cf, #f7e7a0, #CB11AB)',
+          background: 'linear-gradient(90deg, #5F3085, #C5B7D0, #10BABE, #10BABE, #C5B7D0, #5F3085)',
           width: '60%', margin: '20px auto', borderRadius: 2,
         }} />
 
@@ -377,13 +377,13 @@ export default function APropos() {
               <span style={{ animation: 'bounceSlow 2.5s ease-in-out infinite', display: 'inline-block' }}>💛</span>
             </div>
             <p style={{
-              fontSize: 18, fontWeight: 800, color: '#CB11AB', marginBottom: 4,
+              fontSize: 18, fontWeight: 800, color: '#5F3085', marginBottom: 4,
               fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               شكراً لأنك جزء من قصتنا
             </p>
             <p style={{
-              fontSize: 14, color: '#8e8e93',
+              fontSize: 14, color: '#6F6678',
               fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               معاً نصنع ابتسامة كل طفل في الجزائر 🌟
