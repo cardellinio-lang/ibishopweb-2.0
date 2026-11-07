@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
-  icons: { icon: '/favicon-ibi.png?v=2' },
+  icons: { icon: '/favicon-ibi.png?v=3' },
 };
 
 export default async function RootLayout({ children }) {
@@ -25,9 +25,9 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/favicon-ibi.png?v=2" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-ibi.png?v=2" />
-        <link rel="shortcut icon" href="/favicon-ibi.png?v=2" />
+        <link rel="icon" href="/favicon-ibi.png?v=3" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-ibi.png?v=3" />
+        <link rel="shortcut icon" href="/favicon-ibi.png?v=3" />
         {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
             (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
             ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}
