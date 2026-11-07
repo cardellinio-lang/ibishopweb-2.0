@@ -36,9 +36,9 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 export default function ProductClient({ product, wilayas, communes}) {
-  // Couleur de marque IBI (charte.png) : violet principal.
+  // Couleur de marque IBI (charte2.png) : bleu nuit principal.
   // Elle remplace les anciennes couleurs produit pour garder un site cohérent.
-  const pickColor = '#5F3085';
+  const pickColor = '#202F38';
   const lum = (() => {
     const h = pickColor.replace('#', '');
     const r = parseInt(h.substring(0, 2), 16) / 255, g = parseInt(h.substring(2, 4), 16) / 255, b = parseInt(h.substring(4, 6), 16) / 255;
@@ -465,9 +465,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString()}</span>
                 )}
               </div>
-              {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: 'var(--wb-red)', color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
+              {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: 'var(--wb-red)', color: '#202F38', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
               {tierActive && savings > 0 && (
-                <span style={{ display: 'inline-block', background: '#16a34a', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
+                <span style={{ display: 'inline-block', background: '#F9B629', color: '#202F38', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
                   ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
                 </span>
               )}
@@ -475,8 +475,8 @@ export default function ProductClient({ product, wilayas, communes}) {
             </div>
 
             {/* Urgence */}
-            <div style={{ background: '#fff3cd', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid #ffc107' }}>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#92400e', lineHeight: 1.6 }}>
+            <div style={{ background: '#FFF7E3', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid #F9B629' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#202F38', lineHeight: 1.6 }}>
                 هذا المنتج ينفذ بسرعة لذا اطلبوا نسختكم اليوم ليتم تأكيدها
               </div>
             </div>
@@ -849,7 +849,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
               {/* Submit buttons */}
               <button type="submit" className="order-btn"
-                      style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
+                      style={{ width: '100%', padding: '16px 24px', background: '#F9B629', color: '#202F38', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
                 اطلب الآن
               </button>
 
@@ -967,7 +967,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   if (allFilled) { submitOrder(); }
                   else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 }}
-                        style={{ flex: 1, padding: '14px 16px', background: c, color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '14px 16px', background: '#F9B629', color: '#202F38', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
                   اطلب الآن
                 </button>
@@ -988,7 +988,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             if (allFilled) { submitOrder(); }
             else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
           }}
-                  style={{ width: '100%', padding: '16px 24px', background: c, color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                  style={{ width: '100%', padding: '16px 24px', background: '#F9B629', color: '#202F38', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                   className="order-btn">
             اطلب الآن
           </button>

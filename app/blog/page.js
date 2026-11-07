@@ -7,12 +7,12 @@ const BLOG_VISIBLE_KEY = 'blog_visible';
 
 function getCategoryGradient(category) {
   const map = {
-    'تعلم الحروف': 'linear-gradient(135deg, #EFEAF3, #C5B7D0)',
-    'الأرقام والحساب': 'linear-gradient(135deg, #E3F7F7, #10BABE)',
-    'الإبداع واليدوي': 'linear-gradient(135deg, #EFEAF3, #5F3085)',
-    'النطق واللغة': 'linear-gradient(135deg, #E3F7F7, #5F3085)',
+    'تعلم الحروف': 'linear-gradient(135deg, #E9F7FA, #8FDAE6)',
+    'الأرقام والحساب': 'linear-gradient(135deg, #E6F6FA, #20B6CD)',
+    'الإبداع واليدوي': 'linear-gradient(135deg, #E9F7FA, #202F38)',
+    'النطق واللغة': 'linear-gradient(135deg, #E6F6FA, #202F38)',
   };
-  return map[category] || 'linear-gradient(135deg, #F7F5FA, #C5B7D0)';
+  return map[category] || 'linear-gradient(135deg, #F5FAFC, #8FDAE6)';
 }
 
 function getCategoryIcon(category) {
@@ -80,7 +80,7 @@ function FloatingLetters() {
           position: 'absolute',
           fontSize: [28, 36, 24, 32][i],
           fontWeight: 900,
-          color: ['#5F3085', '#10BABE', '#C5B7D0', '#10BABE'][i],
+          color: ['#202F38', '#20B6CD', '#8FDAE6', '#20B6CD'][i],
           opacity: 0.25,
           top: `${[10, 25, 60, 45][i]}%`,
           [i % 2 === 0 ? 'right' : 'left']: `${[8, 12, 5, 10][i]}%`,
@@ -187,12 +187,12 @@ export default function BlogPage() {
     <div style={{ fontFamily: "'Thmanyah Sans', sans-serif" }}>
       <style>{`
         .blog-card { transition: all 0.3s ease; }
-        .blog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(95,48,133,0.18); }
+        .blog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(32,47,56,0.18); }
         .filter-tab { transition: all 0.2s ease; cursor: pointer; }
-        .filter-tab:hover { background: #5F3085; color: #fff; }
+        .filter-tab:hover { background: #F9B629; color: #202F38; }
         .cta-pulse:hover { transform: scale(1.04); }
         .category-card { transition: all 0.3s ease; cursor: pointer; }
-        .category-card:hover { transform: scale(1.06); box-shadow: 0 20px 60px rgba(95,48,133,0.18); border-color: #5F3085; }
+        .category-card:hover { transform: scale(1.06); box-shadow: 0 20px 60px rgba(32,47,56,0.18); border-color: #F9B629; }
       `}</style>
 
       {/* NAVBAR */}
@@ -205,14 +205,14 @@ export default function BlogPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-            <img src="/logo-ibi-purple.png" alt="IBI"
+            <img src="/logo-ibi-navy.png" alt="IBI"
                  style={{ height: scrolled ? 36 : 40, width: 'auto', display: 'block', transition: 'all 0.3s ease' }} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
             <div style={{ display: 'flex', gap: 16 }}>
               {['المقالات', 'الأعمار', 'الفئات', 'عن ibishop'].map((item, i) => (
                 <a key={i} href={['/blog', '/#categories', '/#', '/a-propos'][i]} style={{
-                  fontWeight: 700, fontSize: 14, color: '#1A1A1A', opacity: 0.7,
+                  fontWeight: 700, fontSize: 14, color: '#202F38', opacity: 0.7,
                   transition: 'opacity 0.2s', textDecoration: 'none',
                 }}
                 onMouseEnter={e => e.target.style.opacity = '1'}
@@ -222,7 +222,7 @@ export default function BlogPage() {
               ))}
             </div>
             <Link href="/" style={{
-              background: '#5F3085', color: '#fff', padding: '10px 22px',
+              background: '#F9B629', color: '#202F38', padding: '10px 22px',
               borderRadius: 50, fontWeight: 800, fontSize: 13,
               textDecoration: 'none', transition: 'all 0.2s',
               display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -236,7 +236,7 @@ export default function BlogPage() {
 
       {/* HERO */}
       <section style={{
-        background: '#F7F5FA', position: 'relative', overflow: 'hidden',
+        background: '#F5FAFC', position: 'relative', overflow: 'hidden',
         padding: '40px 24px 0',
       }}>
         <GrainBg />
@@ -249,7 +249,7 @@ export default function BlogPage() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                background: '#5F3085', color: '#F7F5FA',
+                background: '#202F38', color: '#F5FAFC',
                 padding: '6px 16px', borderRadius: 50,
                 fontSize: 13, fontWeight: 700, marginBottom: 20,
               }}>
@@ -258,7 +258,7 @@ export default function BlogPage() {
               <h1 style={{
                 fontFamily: "'Thmanyah Sans', sans-serif",
                 fontWeight: 900, fontSize: 48,
-                color: '#1A1A1A', lineHeight: 1.1,
+                color: '#202F38', lineHeight: 1.1,
                 marginBottom: 16,
               }}>
                 اكتشف عالم التعلم<br />مع طفلك
@@ -287,7 +287,7 @@ export default function BlogPage() {
                   }}
                 />
                 <button style={{
-                  background: '#5F3085', color: '#fff', border: 'none',
+                  background: '#F9B629', color: '#202F38', border: 'none',
                   padding: '14px 28px', margin: 4, borderRadius: 50,
                   fontWeight: 700, fontSize: 14, cursor: 'pointer',
                   whiteSpace: 'nowrap',
@@ -311,7 +311,7 @@ export default function BlogPage() {
                 }} />
                 <div style={{
                   width: 220, height: 220, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #F7F5FA, #EFEAF3)',
+                  background: 'linear-gradient(135deg, #F5FAFC, #E9F7FA)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 100, boxShadow: '0 20px 60px rgba(232,69,10,0.15)',
                   position: 'relative',
@@ -326,16 +326,16 @@ export default function BlogPage() {
             </div>
           </div>
         </div>
-        <WaveDivider color="#C5B7D0" />
+        <WaveDivider color="#8FDAE6" />
       </section>
 
       {/* CATEGORIES STRIP */}
-      <section style={{ background: '#C5B7D0', padding: '40px 24px', position: 'relative' }}>
+      <section style={{ background: '#8FDAE6', padding: '40px 24px', position: 'relative' }}>
         <GrainBg opacity={0.025} />
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <h2 style={{
             fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 700,
-            fontSize: 26, color: '#1A1A1A', textAlign: 'center', marginBottom: 28,
+            fontSize: 26, color: '#202F38', textAlign: 'center', marginBottom: 28,
           }}>
             تصفح حسب الفئة
           </h2>
@@ -356,30 +356,30 @@ export default function BlogPage() {
               }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: '50%',
-                  background: '#F7F5FA', display: 'flex',
+                  background: '#F5FAFC', display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
                   fontSize: 26, margin: '0 auto 10px',
                 }}>
                   {item.icon}
                 </div>
-                <div style={{ fontWeight: 700, fontSize: 14, color: '#1A1A1A' }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#202F38' }}>
                   {item.label}
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <WaveDivider color="#F7F5FA" />
+        <WaveDivider color="#F5FAFC" />
       </section>
 
       {/* FEATURED ARTICLE */}
       {featured && (
-        <section style={{ background: '#F7F5FA', padding: '60px 24px', position: 'relative' }}>
+        <section style={{ background: '#F5FAFC', padding: '60px 24px', position: 'relative' }}>
           <GrainBg />
           <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
-              background: '#5F3085', color: '#fff',
+              background: '#202F38', color: '#fff',
               padding: '6px 16px', borderRadius: 50,
               fontSize: 13, fontWeight: 700, marginBottom: 20,
             }}>
@@ -400,7 +400,7 @@ export default function BlogPage() {
                   {featured.icon || getCategoryIcon(featured.category)}
                   <div style={{
                     position: 'absolute', top: 16, right: 16,
-                    background: '#10BABE', color: '#fff',
+                    background: '#20B6CD', color: '#fff',
                     padding: '4px 12px', borderRadius: 50,
                     fontSize: 12, fontWeight: 700,
                   }}>
@@ -411,7 +411,7 @@ export default function BlogPage() {
                   <h3 style={{
                     fontFamily: "'Thmanyah Sans', sans-serif",
                     fontWeight: 800, fontSize: 28,
-                    color: '#1A1A1A', lineHeight: 1.2,
+                    color: '#202F38', lineHeight: 1.2,
                     marginBottom: 12,
                   }}>
                     {featured.title}
@@ -431,7 +431,7 @@ export default function BlogPage() {
                     </span>
                   </div>
                   <span style={{
-                    color: '#5F3085', fontWeight: 700, fontSize: 14,
+                    color: '#202F38', fontWeight: 700, fontSize: 14,
                     display: 'inline-flex', alignItems: 'center', gap: 6,
                     transition: 'gap 0.2s',
                   }}
@@ -447,17 +447,17 @@ export default function BlogPage() {
       )}
 
       {/* ARTICLES GRID */}
-      <section id="articles-section" style={{ background: '#F7F5FA', padding: '0 24px 60px', position: 'relative' }}>
+      <section id="articles-section" style={{ background: '#F5FAFC', padding: '0 24px 60px', position: 'relative' }}>
         <GrainBg />
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <h2 style={{
               fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 900,
-              fontSize: 36, color: '#1A1A1A', marginBottom: 8,
+              fontSize: 36, color: '#202F38', marginBottom: 8,
             }}>
               أحدث المقالات
             </h2>
-            <div style={{ width: 60, height: 4, background: '#5F3085', borderRadius: 2, margin: '0 auto' }} />
+            <div style={{ width: 60, height: 4, background: '#202F38', borderRadius: 2, margin: '0 auto' }} />
           </div>
 
           {/* Filter Tabs */}
@@ -472,9 +472,9 @@ export default function BlogPage() {
                 style={{
                   padding: '8px 20px', borderRadius: 50,
                   border: '1.5px solid',
-                  borderColor: activeFilter === cat.id ? '#5F3085' : '#d2d2d7',
-                  background: activeFilter === cat.id ? '#5F3085' : 'transparent',
-                  color: activeFilter === cat.id ? '#fff' : '#1A1A1A',
+                  borderColor: activeFilter === cat.id ? '#F9B629' : '#d2d2d7',
+                  background: activeFilter === cat.id ? '#F9B629' : 'transparent',
+                  color: '#202F38',
                   fontWeight: 700, fontSize: 14,
                   fontFamily: "'Thmanyah Sans', sans-serif",
                 }}>
@@ -512,7 +512,7 @@ export default function BlogPage() {
                       {i === 0 && (
                         <div style={{
                           position: 'absolute', top: 12, left: 12,
-                          background: '#5F3085', color: '#fff',
+                          background: '#F9B629', color: '#202F38',
                           padding: '4px 12px', borderRadius: 50,
                           fontSize: 11, fontWeight: 700,
                         }}>
@@ -525,7 +525,7 @@ export default function BlogPage() {
                       {post.category && (
                         <div style={{
                           display: 'inline-flex', alignSelf: 'flex-start',
-                          background: '#10BABE', color: '#fff',
+                          background: '#20B6CD', color: '#fff',
                           padding: '3px 10px', borderRadius: 50,
                           fontSize: 11, fontWeight: 700, marginBottom: 8,
                         }}>
@@ -535,7 +535,7 @@ export default function BlogPage() {
                       <h3 style={{
                         fontFamily: "'Thmanyah Sans', sans-serif",
                         fontWeight: 700, fontSize: 17,
-                        color: '#1A1A1A', lineHeight: 1.5,
+                        color: '#202F38', lineHeight: 1.5,
                         marginBottom: 8,
                         display: '-webkit-box', WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical', overflow: 'hidden',
@@ -561,13 +561,13 @@ export default function BlogPage() {
                         </span>
                         <div style={{
                           width: 36, height: 36, borderRadius: '50%',
-                          background: '#F7F5FA', display: 'flex',
+                          background: '#F5FAFC', display: 'flex',
                           alignItems: 'center', justifyContent: 'center',
-                          color: '#5F3085', fontWeight: 700, fontSize: 16,
+                          color: '#202F38', fontWeight: 700, fontSize: 16,
                           transition: 'all 0.3s ease',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) rotate(-10deg)'; e.currentTarget.style.background = '#5F3085'; e.currentTarget.style.color = '#fff'; }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) rotate(0)'; e.currentTarget.style.background = '#F7F5FA'; e.currentTarget.style.color = '#5F3085'; }}>
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) rotate(-10deg)'; e.currentTarget.style.background = '#202F38'; e.currentTarget.style.color = '#fff'; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) rotate(0)'; e.currentTarget.style.background = '#F5FAFC'; e.currentTarget.style.color = '#202F38'; }}>
                           ←
                         </div>
                       </div>
@@ -582,7 +582,7 @@ export default function BlogPage() {
 
       {/* NEWSLETTER BANNER */}
       <section style={{
-        background: 'linear-gradient(135deg, #5F3085, #10BABE)',
+        background: 'linear-gradient(135deg, #202F38, #20B6CD)',
         padding: '60px 24px', position: 'relative', overflow: 'hidden',
       }}>
         <GrainBg opacity={0.04} />
@@ -629,13 +629,13 @@ export default function BlogPage() {
                 }}
               />
               <button type="submit" style={{
-                background: '#1A1A1A', color: '#fff', border: 'none',
+                background: '#F9B629', color: '#202F38', border: 'none',
                 padding: '14px 28px', borderRadius: 50,
                 fontWeight: 800, fontSize: 14, cursor: 'pointer',
                 whiteSpace: 'nowrap', transition: 'background 0.2s',
               }}
-              onMouseEnter={e => e.target.style.background = '#5F3085'}
-              onMouseLeave={e => e.target.style.background = '#1A1A1A'}>
+              onMouseEnter={e => e.target.style.background = '#E0A01C'}
+              onMouseLeave={e => e.target.style.background = '#F9B629'}>
                 اشترك الآن
               </button>
             </form>
@@ -644,11 +644,11 @@ export default function BlogPage() {
             لا إزعاج. إلغاء الاشتراك في أي وقت.
           </p>
         </div>
-        <WaveDivider color="#F7F5FA" flip />
+        <WaveDivider color="#F5FAFC" flip />
       </section>
 
       {/* POPULAR + SIDEBAR */}
-      <section style={{ background: '#F7F5FA', padding: '60px 24px', position: 'relative' }}>
+      <section style={{ background: '#F5FAFC', padding: '60px 24px', position: 'relative' }}>
         <GrainBg />
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 40, alignItems: 'start' }}>
@@ -656,7 +656,7 @@ export default function BlogPage() {
             <div>
               <h3 style={{
                 fontFamily: "'Thmanyah Sans', sans-serif", fontWeight: 800,
-                fontSize: 22, color: '#1A1A1A', marginBottom: 20,
+                fontSize: 22, color: '#202F38', marginBottom: 20,
               }}>
                 📊 الأكثر قراءة
               </h3>
@@ -673,7 +673,7 @@ export default function BlogPage() {
                       <div style={{
                         fontFamily: "'Thmanyah Sans', sans-serif",
                         fontWeight: 900, fontSize: 28,
-                        color: '#5F3085', opacity: 0.3,
+                        color: '#202F38', opacity: 0.3,
                         minWidth: 40, textAlign: 'center',
                       }}>
                         {String(i + 1).padStart(2, '0')}
@@ -687,7 +687,7 @@ export default function BlogPage() {
                         {post.icon || getCategoryIcon(post.category)}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: 14, color: '#1A1A1A', marginBottom: 2 }}>
+                        <div style={{ fontWeight: 700, fontSize: 14, color: '#202F38', marginBottom: 2 }}>
                           {post.title}
                         </div>
                         <div style={{ fontSize: 12, color: 'rgba(26,26,26,0.4)' }}>
@@ -703,7 +703,7 @@ export default function BlogPage() {
             {/* Sidebar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div style={{
-                background: 'linear-gradient(135deg, #5F3085, #10BABE)',
+                background: 'linear-gradient(135deg, #202F38, #20B6CD)',
                 borderRadius: 24, padding: 28, color: '#fff',
                 textAlign: 'center',
               }}>
@@ -719,14 +719,14 @@ export default function BlogPage() {
                 </p>
                 <Link href="/" style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: '#1A1A1A', color: '#fff',
+                  background: '#F9B629', color: '#202F38',
                   padding: '10px 24px', borderRadius: 50,
                   fontWeight: 800, fontSize: 13,
                   textDecoration: 'none',
                   transition: 'background 0.2s',
                 }}
-                onMouseEnter={e => e.target.style.background = '#5F3085'}
-                onMouseLeave={e => e.target.style.background = '#1A1A1A'}>
+                onMouseEnter={e => e.target.style.background = '#E0A01C'}
+                onMouseLeave={e => e.target.style.background = '#F9B629'}>
                   تصفح الآن ←
                 </Link>
               </div>
@@ -737,7 +737,7 @@ export default function BlogPage() {
               }}>
                 <h4 style={{
                   fontFamily: "'Thmanyah Sans', sans-serif",
-                  fontWeight: 800, fontSize: 18, color: '#1A1A1A',
+                  fontWeight: 800, fontSize: 18, color: '#202F38',
                   marginBottom: 16,
                 }}>
                   الفئات العمرية
@@ -751,16 +751,16 @@ export default function BlogPage() {
                     <div key={i} style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '10px 14px', borderRadius: 12,
-                      background: '#F7F5FA', cursor: 'pointer',
+                      background: '#F5FAFC', cursor: 'pointer',
                       transition: 'background 0.2s',
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = '#f5ede0'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#F7F5FA'}>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: '#1A1A1A' }}>
+                    onMouseLeave={e => e.currentTarget.style.background = '#F5FAFC'}>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: '#202F38' }}>
                         {item.age}
                       </span>
                       <span style={{
-                        background: '#5F3085', color: '#fff',
+                        background: '#202F38', color: '#fff',
                         width: 26, height: 26, borderRadius: '50%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 12, fontWeight: 700,
@@ -778,10 +778,10 @@ export default function BlogPage() {
 
       {/* FOOTER */}
       <footer style={{
-        background: '#1A1A1A', padding: '60px 24px 24px',
+        background: '#202F38', padding: '60px 24px 24px',
         position: 'relative',
       }}>
-        <WaveDivider color="#1A1A1A" />
+        <WaveDivider color="#202F38" />
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40, marginBottom: 40 }}>
             <div>
@@ -835,7 +835,7 @@ export default function BlogPage() {
                     color: '#fff', fontSize: 12, fontWeight: 700,
                     textDecoration: 'none', transition: 'background 0.2s',
                   }}
-                  onMouseEnter={e => e.target.style.background = '#5F3085'}
+                  onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.22)'}
                   onMouseLeave={e => e.target.style.background = 'rgba(255,255,255,0.1)'}>
                     {s.label === 'Facebook' ? 'f' : s.label === 'Instagram' ? '📷' : '🎵'}
                   </a>

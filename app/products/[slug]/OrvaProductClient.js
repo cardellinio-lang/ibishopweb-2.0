@@ -17,16 +17,16 @@ const WILAYA_AR = {
 };
 
 const COLORS = {
-  primary: '#5F3085',
-  primaryHover: '#4A2468',
-  text: '#1A1A1A',
-  bodyText: '#1A1A1A',
-  border: '#E7E1EC',
-  goldBg: 'rgba(95,48,133,0.06)',
-  secondary: '#5F3085',
+  primary: '#202F38',
+  primaryHover: '#16222A',
+  text: '#202F38',
+  bodyText: '#202F38',
+  border: '#DCE8ED',
+  goldBg: 'rgba(32,47,56,0.06)',
+  secondary: '#20B6CD',
   white: '#fff',
-  shadow: 'rgba(95,48,133,0.14)',
-  muted: 'rgba(26,26,26,0.6)',
+  shadow: 'rgba(32,47,56,0.14)',
+  muted: 'rgba(32,47,56,0.6)',
 };
 
 export default function OrvaProductClient({ product, wilayas, communes }) {
@@ -288,7 +288,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{ marginBottom: 16 }}>
                       <select value={wilayaId} onChange={e => { setWilayaId(e.target.value); setCommuneId(''); }}
                               className="orva-input"
-                              style={{ ...ib, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%235F3085\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
+                              style={{ ...ib, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23202F38\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
                         <option value="">اختر الولاية</option>
                         {wilayas.map(w => <option key={w.id} value={w.id}>{WILAYA_AR[w.id] || w.name}</option>)}
                       </select>
@@ -298,7 +298,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{ marginBottom: 16 }}>
                       <select value={communeId} onChange={e => setCommuneId(e.target.value)} disabled={!wilayaId}
                               className="orva-input"
-                              style={{ ...ib, opacity: wilayaId ? 1 : 0.5, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%235F3085\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
+                              style={{ ...ib, opacity: wilayaId ? 1 : 0.5, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23202F38\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
                         <option value="">اختر البلدية</option>
                         {filteredCommunes.map((c, i) => <option key={c.id || i} value={c.id}>{c.name}</option>)}
                       </select>
@@ -308,16 +308,16 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '15px 20px', borderRadius: 8,
-                      background: 'rgba(95,48,133,0.06)', marginBottom: 20,
-                      border: '1px solid rgba(95,48,133,0.18)',
+                      background: 'rgba(32,47,56,0.06)', marginBottom: 20,
+                      border: '1px solid rgba(32,47,56,0.18)',
                     }}>
                       <span style={{ fontFamily: 'Cairo', fontWeight: 600, fontSize: 15, color: theme.text }}>الكمية</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}
-                                style={{ width: 36, height: 36, borderRadius: '50%', border: 'none', background: theme.white, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.secondary, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>−</button>
+                                style={{ width: 36, height: 36, borderRadius: '50%', border: 'none', background: theme.white, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.primary, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>−</button>
                         <span style={{ fontFamily: 'Rubik', fontWeight: 700, fontSize: 20, color: theme.text, minWidth: 30, textAlign: 'center' }}>{qty}</span>
                         <button type="button" onClick={() => setQty(qty + 1)}
-                                style={{ width: 36, height: 36, borderRadius: '50%', border: 'none', background: theme.white, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.secondary, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>+</button>
+                                style={{ width: 36, height: 36, borderRadius: '50%', border: 'none', background: theme.white, fontSize: 20, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.primary, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>+</button>
                       </div>
                     </div>
 
@@ -332,7 +332,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                       <button type="submit" className="orva-btn"
                               style={{
                                 width: '100%', padding: '18px 24px',
-                                background: theme.secondary, color: '#fff',
+                                background: '#F9B629', color: '#202F38',
                                 fontSize: 16, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                                 borderRadius: 37, border: 'none', cursor: 'pointer',
                                 letterSpacing: '0.06em',
@@ -401,7 +401,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
               }}
                       className="orva-btn"
                       style={{
-                        padding: '15px 20px', background: theme.secondary, color: '#fff',
+                        padding: '15px 20px', background: '#F9B629', color: '#202F38',
                         fontSize: 14, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                         borderRadius: 37, border: 'none', cursor: 'pointer',
                         width: 200, whiteSpace: 'nowrap',
