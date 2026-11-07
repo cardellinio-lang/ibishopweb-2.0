@@ -4,6 +4,7 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
+import { CADRE_SLUG, cadrePriceForQty } from '@/lib/pricing';
 
 // Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
 // toutes les commandes (noms, téléphones, adresses, token de confirmation).
@@ -61,8 +62,8 @@ export async function POST(req) {
   const itemName = data.variantName || product.name;
   let itemPrice = data.variantPrice || product.price;
   // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 2000 DA/article au lieu de 2200 DA
-  if (product.slug === 'cadre-dessin-enfant-a4') {
-    itemPrice = Number(data.qty) >= 2 ? 2000 : 2200;
+  if (product.slug === CADRE_SLUG) {
+    itemPrice = cadrePriceForQty(data.qty);
   }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
 

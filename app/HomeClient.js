@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY } from '@/lib/pricing';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -8,7 +9,12 @@ function ProductCard({ p, now }) {
   const imgs = JSON.parse(p.images || '[]');
   const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   const isNew = now - new Date(p.createdAt).getTime() < MONTH_MS;
-  const hasTier = p.tierEnabled && p.tierQty && p.tierPrice;
+  // Le cadre A4 a une offre dédiée (1 = 2200 DA, 2+ = 2000 DA/article)
+  const isCadre = p.slug === CADRE_SLUG;
+  const displayPrice = isCadre ? CADRE_BASE_PRICE : p.price;
+  const tierQty = isCadre ? CADRE_OFFER_QTY : p.tierQty;
+  const tierPrice = isCadre ? CADRE_OFFER_PRICE : p.tierPrice;
+  const hasTier = isCadre || (p.tierEnabled && p.tierQty && p.tierPrice);
   return (
     <a key={p.id} href={`/products/${p.slug}`} className="wb-card"
        style={{ display: 'flex', flexDirection: 'column', textDecoration: 'none' }}>
@@ -35,11 +41,11 @@ function ProductCard({ p, now }) {
       <div style={{ padding: '12px 12px 16px', display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right', flex: 1 }}>
         <h3 style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.5, color: 'var(--wb-text)' }}>{p.name}</h3>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 'auto' }}>
-          <span className="wb-price" style={{ fontSize: 22 }}>{(p.slug === 'cadre-dessin-enfant-a4' ? 2200 : p.price).toLocaleString()} <span style={{ fontSize: 13 }}>د.ج</span></span>
-          {p.slug === 'cadre-dessin-enfant-a4' ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>)}
+          <span className="wb-price" style={{ fontSize: 22 }}>{displayPrice.toLocaleString()} <span style={{ fontSize: 13 }}>د.ج</span></span>
+          {isCadre ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>)}
         </div>
-        {p.tierEnabled && p.tierQty && p.tierPrice && (
-          <span style={{ fontSize: 12, color: '#16a34a', fontWeight: 700 }}>أقل سعر {p.tierPrice.toLocaleString()} د.ج عند شراء {p.tierQty}+</span>
+        {hasTier && (
+          <span style={{ fontSize: 12, color: '#16a34a', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString()} د.ج عند شراء {tierQty}+</span>
         )}
       </div>
     </a>

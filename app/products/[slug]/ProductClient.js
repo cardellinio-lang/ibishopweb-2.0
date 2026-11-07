@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
+import { CADRE_SLUG, CADRE_BASE_PRICE, cadrePriceForQty } from '@/lib/pricing';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
@@ -177,10 +178,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? 2200 : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === CADRE_SLUG ? CADRE_BASE_PRICE : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
   // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2000 DA/article au lieu de 2200 DA
-  const cadreUnitPrice = cadreQty >= 2 ? 2000 : 2200;
+  const cadreUnitPrice = cadrePriceForQty(cadreQty);
   const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
