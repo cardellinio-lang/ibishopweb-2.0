@@ -179,11 +179,13 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === 'cadre-dessin-enfant-a4' ? 2200 : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
-  const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreQty <= 1 ? cadreQty * 2200 : cadreQty === 2 ? 4000 : cadreQty * 2000) : 0;
+  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2000 DA/article au lieu de 2200 DA
+  const cadreUnitPrice = cadreQty >= 2 ? 2000 : 2200;
+  const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
   const effectivePrice = tierActive ? product.tierPrice : basePrice;
-  const finalPrice = effectivePrice;
+  const finalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreUnitPrice : effectivePrice;
   const selectedPack = wordBoxPacks?.find(p => p.label === pack);
   const packWow = selectedPack?.saving > 0;
   const selectedWilaya = wilayas.find(w => w.id === Number(wilayaId));
@@ -678,7 +680,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                         }}>
                           {v.shortLabel || v.label}
                           {(product.slug === 'ghilaf-lagna-tathbeet' || product.slug === 'cadre-dessin-enfant-a4') && v.price && (
-                            <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{v.price.toLocaleString()} د.ج</div>
+                            <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{(product.slug === 'cadre-dessin-enfant-a4' ? finalPrice : v.price).toLocaleString()} د.ج</div>
                           )}
                         </div>
                       </button>

@@ -58,10 +58,12 @@ export async function POST(req) {
   const deliveryPrice = data.deliveryType === 'office'
     ? (product.slug === 'silsilat-hadaf' ? 0 : wilaya.priceOffice)
     : wilaya.price;
-  const total = product.price * data.qty + deliveryPrice;
-
   const itemName = data.variantName || product.name;
-  const itemPrice = data.variantPrice || product.price;
+  let itemPrice = data.variantPrice || product.price;
+  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 2000 DA/article au lieu de 2200 DA
+  if (product.slug === 'cadre-dessin-enfant-a4') {
+    itemPrice = Number(data.qty) >= 2 ? 2000 : 2200;
+  }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
 
   const order = await prisma.order.create({
@@ -127,8 +129,8 @@ export async function POST(req) {
         body: JSON.stringify({
           number: order.number, customer: data.customer, phone: data.phone,
           wilaya: wilaya.name, commune: commune?.name || '', address: data.address,
-          product: product.name, quantity: data.qty, price: product.price,
-          delivery: deliveryPrice, total, status: 'pending',
+          product: product.name, quantity: data.qty, price: itemPrice,
+          delivery: deliveryPrice, total: orderTotal, status: 'pending',
           date: new Date().toISOString(),
         }),
       }).catch(() => {});

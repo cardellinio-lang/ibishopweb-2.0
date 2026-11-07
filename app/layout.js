@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '1px solid var(--wb-border)', boxShadow: '0 2px 14px rgba(0,117,111,0.08)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ fontSize: 30, fontWeight: 900, color: 'var(--wb-red)', letterSpacing: '-0.5px' }}>IBI</span>
+              <img src="/logoibi07.png" alt="IBI" style={{ height: 46, width: 'auto', display: 'block' }} />
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" style={{ fontWeight: 800, fontSize: 16, color: 'var(--wb-text)' }}>المنتجات</a>
