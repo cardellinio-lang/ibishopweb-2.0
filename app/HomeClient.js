@@ -23,17 +23,17 @@ function ProductCard({ p, now }) {
              alt={p.name}
              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {discount > 0 && (
-          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-red)', color: '#202F38', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(32,47,56,.35)' }}>
+          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-brown)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(24,67,145,.35)' }}>
             -{discount}%
           </span>
         )}
         {isNew && (
-          <span style={{ position: 'absolute', top: 8, left: 8, background: 'var(--wb-yellow)', color: '#202F38', fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 20 }}>
+          <span style={{ position: 'absolute', top: 8, left: 8, background: 'var(--wb-green)', color: 'var(--wb-navy)', fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 20 }}>
             جديد
           </span>
         )}
         {hasTier && (
-          <span style={{ position: 'absolute', bottom: 8, left: 8, background: 'var(--wb-teal)', color: '#202F38', fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 20 }}>
+          <span style={{ position: 'absolute', bottom: 8, left: 8, background: 'var(--wb-lightblue)', color: 'var(--wb-navy)', fontSize: 10, fontWeight: 800, padding: '4px 8px', borderRadius: 20 }}>
             كمّية
           </span>
         )}
@@ -45,7 +45,7 @@ function ProductCard({ p, now }) {
           {isCadre ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>)}
         </div>
         {hasTier && (
-          <span style={{ fontSize: 12, color: 'var(--wb-teal-dark)', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString()} د.ج عند شراء {tierQty}+</span>
+          <span style={{ fontSize: 12, color: 'var(--wb-blue-dark)', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString()} د.ج عند شراء {tierQty}+</span>
         )}
       </div>
     </a>
@@ -119,7 +119,7 @@ export default function HomeClient({ products, banners = [] }) {
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
         <button className="wb-search-btn" type="button" aria-label="بحث">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#202F38" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184391" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" /><path d="m20 20-3.2-3.2" />
           </svg>
         </button>
@@ -130,6 +130,15 @@ export default function HomeClient({ products, banners = [] }) {
 
       {/* Products Section */}
       <div style={{ marginBottom: 36, marginTop: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ width: 6, height: 26, borderRadius: 3, background: 'var(--wb-teal)', display: 'inline-block' }} />
+            <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--wb-text)' }}>منتجاتنا</h2>
+          </div>
+          <span style={{ background: 'var(--wb-lavender-soft)', color: 'var(--wb-teal-dark)', fontWeight: 800, fontSize: 13, padding: '6px 14px', borderRadius: 20 }}>
+            {filtered.length} منتج
+          </span>
+        </div>
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 60, color: 'var(--wb-muted)' }}>لا توجد منتجات مطابقة</div>
         ) : (
@@ -140,24 +149,24 @@ export default function HomeClient({ products, banners = [] }) {
 
         {filtered.length > 8 && !showAll && (
           <div style={{ textAlign: 'center', marginTop: 24 }}>
-            <button onClick={() => setShowAll(true)} className="btn btn-primary">عرض الكل ({filtered.length})</button>
+            <button onClick={() => setShowAll(true)} className="btn btn-secondary">عرض الكل ({filtered.length})</button>
           </div>
         )}
       </div>
 
       {/* Stats Strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 36, textAlign: 'center' }}>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(32,47,56,.08)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-magenta)' }}>{products.length}+</div>
-          <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>منتج</div>
+        <div style={{ background: 'var(--wb-navy)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(24,67,145,.20)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>{products.length}+</div>
+          <div style={{ fontSize: 13, color: 'rgba(185,232,252,.86)', fontWeight: 600, marginTop: 4 }}>منتج</div>
         </div>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(32,47,56,.08)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-teal-dark)' }}>58</div>
-          <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
+        <div style={{ background: 'var(--wb-green)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(166,205,77,.30)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-navy)' }}>58</div>
+          <div style={{ fontSize: 13, color: 'rgba(24,67,145,.78)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
         </div>
-        <div style={{ background: 'var(--wb-card)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(32,47,56,.08)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-magenta)' }}>10</div>
-          <div style={{ fontSize: 13, color: 'var(--wb-muted)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
+        <div style={{ background: 'var(--wb-brown)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(181,107,68,.28)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>10</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.82)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
         </div>
       </div>
     </div>

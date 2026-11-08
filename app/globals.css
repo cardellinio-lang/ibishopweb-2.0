@@ -1,26 +1,40 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none}
 
 :root{
-  /* ===== Charte IBI 2 (charte2.png) ===== */
-  --wb-magenta:#202F38;        /* bleu nuit principal (boutons, accents) */
-  --wb-magenta-dark:#16222A;
-  --wb-magenta-darker:#0E171C;
-  --wb-purple:#202F38;
-  --wb-fuchsia:#20B6CD;        /* cyan secondaire */
-  --wb-teal:#20B6CD;
-  --wb-teal-dark:#1899AD;
-  --wb-yellow:#F9B629;         /* jaune / or (promos, mises en avant) */
-  --wb-lavender:#8FDAE6;       /* cyan clair (fonds doux) */
-  --wb-lavender-soft:#E9F7FA;
-  /* Badges promo : jaune de la charte, texte bleu nuit */
-  --wb-red:#F9B629;
-  --wb-red-dark:#E0A01C;
-  --wb-grad:linear-gradient(90deg,#202F38 0%,#20B6CD 100%);
-  --wb-grad-diag:linear-gradient(135deg,#16222A 0%,#202F38 50%,#20B6CD 100%);
-  --wb-text:#202F38;
+  /* ===== Charte IBI 5 couleurs (ibilogo5colors.png) =====
+     Bleu marine #184391 · Bleu vif #55ADFD · Bleu clair #B9E8FC
+     Vert #A6CD4D · Terre cuite #B56B44 */
+  --wb-navy:#184391;           /* couleur principale (logo, textes, boutons) */
+  --wb-blue:#55ADFD;           /* bleu vif (accents, liens, bandeaux) */
+  --wb-blue-dark:#1760AD;      /* bleu lisible pour texte au survol */
+  --wb-lightblue:#B9E8FC;      /* bleu clair (fonds doux, bordures) */
+  --wb-green:#A6CD4D;          /* vert (succès, nouveautés) */
+  --wb-green-dark:#6E8F2A;
+  --wb-brown:#B56B44;          /* terre cuite (promos, accents chauds) */
+  --wb-brown-dark:#96542F;
+
+  /* Aliases historiques conservés pour ne rien casser */
+  --wb-magenta:#184391;
+  --wb-magenta-dark:#0F2E66;
+  --wb-magenta-darker:#0A2148;
+  --wb-purple:#184391;
+  --wb-fuchsia:#55ADFD;
+  --wb-cyan:#55ADFD;
+  --wb-cyan-dark:#1760AD;
+  --wb-cyan-light:#B9E8FC;
+  --wb-teal:#55ADFD;
+  --wb-teal-dark:#1760AD;
+  --wb-yellow:#B56B44;
+  --wb-lavender:#B9E8FC;
+  --wb-lavender-soft:#EAF6FE;
+  --wb-red:#B56B44;
+  --wb-red-dark:#96542F;
+  --wb-grad:linear-gradient(90deg,#184391 0%,#55ADFD 100%);
+  --wb-grad-diag:linear-gradient(135deg,#0F2E66 0%,#184391 55%,#1760AD 100%);
+  --wb-text:#184391;
   --wb-muted:#5E6E78;
-  --wb-border:#DCE8ED;
-  --wb-bg:#F5FAFC;
+  --wb-border:#D6ECFC;
+  --wb-bg:#F4FAFF;
   --wb-card:#ffffff;
 }
 
@@ -49,17 +63,19 @@ th{background:var(--wb-bg);font-weight:700;color:var(--wb-muted);font-size:15px}
 @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);gap:16px}}
 @media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr);gap:20px}}
 .kt-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;font-weight:700;transition:all .2s;font-size:16px;padding:14px 24px}
-.kt-btn-primary{background:var(--wb-yellow);color:var(--wb-magenta)}
-.kt-btn-primary:hover{background:var(--wb-red-dark)}
+.kt-btn-primary{background:var(--wb-navy);color:#fff}
+.kt-btn-primary:hover{background:var(--wb-magenta-dark)}
 .flex{display:flex;gap:8px}
 .w-full{width:100%}
 .text-center{text-align:center}
 .text-muted{color:var(--wb-muted);font-size:14px}
 @media(min-width:1024px){.lg-flex-row{flex-direction:row!important}}
-input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;box-shadow:0 0 0 3px rgba(0,0,0,.08)!important}
+input:focus,select:focus{outline:none;border-color:var(--wb-blue)!important;box-shadow:0 0 0 3px rgba(85,173,253,.22)!important}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;font-weight:800;font-size:16px;border:none;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--wb-yellow);color:var(--wb-magenta)}
-.btn-primary:hover{background:var(--wb-red-dark)}
+.btn-primary{background:var(--wb-navy);color:#fff}
+.btn-primary:hover{background:var(--wb-magenta-dark)}
+.btn-secondary{background:var(--wb-green);color:var(--wb-navy)}
+.btn-secondary:hover{background:var(--wb-cyan-light);color:var(--wb-navy)}
 .btn-danger{background:#dc2626;color:#fff}
 .btn-ghost{background:transparent;border:1.5px solid var(--wb-border)}
 .btn-ghost:hover{background:var(--wb-bg)}
@@ -71,16 +87,26 @@ input:focus,select:focus{outline:none;border-color:var(--wb-magenta)!important;b
 
 /* ===== Style produit "Wildberries" ===== */
 .wb-card{background:var(--wb-card);border:1px solid var(--wb-border);border-radius:16px;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.wb-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(32,47,56,.16)}
+.wb-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(85,173,253,.24);border-color:var(--wb-blue)}
 .wb-price{color:var(--wb-text);font-weight:900}
 .wb-oldprice{color:var(--wb-muted);text-decoration:line-through;font-weight:600}
-.wb-grad{background:var(--wb-yellow);color:var(--wb-magenta)}
-.wb-carousel{position:relative;overflow:hidden;border-radius:20px;aspect-ratio:9/5;box-shadow:0 16px 40px rgba(32,47,56,.18)}
+.wb-grad{background:var(--wb-green);color:var(--wb-navy)}
+.wb-carousel{position:relative;overflow:hidden;border-radius:20px;aspect-ratio:9/5;box-shadow:0 16px 40px rgba(24,67,145,.18)}
 .wb-carousel-dot{width:9px;height:9px;border-radius:999px;border:none;padding:0;cursor:pointer;background:rgba(255,255,255,.55);box-shadow:0 1px 5px rgba(0,0,0,.3);transition:all .3s}
 .wb-carousel-dot[data-on="1"]{width:28px;background:#fff}
-.wb-badge-discount{background:var(--wb-red);color:#202F38;font-weight:900}
+.wb-badge-discount{background:var(--wb-brown);color:#fff;font-weight:900}
 .wb-grad-diag{background:var(--wb-grad-diag);color:#fff}
-.wb-search{display:flex;align-items:center;background:#fff;border:1.5px solid var(--wb-border);border-radius:14px;overflow:hidden;transition:border-color .15s}
-.wb-search:focus-within{border-color:var(--wb-magenta);box-shadow:0 0 0 3px rgba(0,0,0,.08)}
-.wb-search-btn{background:var(--wb-yellow);border:none;width:56px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s}
-.wb-search-btn:hover{background:var(--wb-red-dark)}
+.wb-search{display:flex;align-items:center;background:#fff;border:1.5px solid var(--wb-lightblue);border-radius:14px;overflow:hidden;transition:border-color .15s}
+.wb-search:focus-within{border-color:var(--wb-blue);box-shadow:0 0 0 3px rgba(85,173,253,.22)}
+.wb-search-btn{background:var(--wb-green);border:none;width:56px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s}
+.wb-search-btn:hover{background:var(--wb-lightblue)}
+
+/* ===== Accents charte 5 couleurs ===== */
+.nav-link{color:var(--wb-text);font-weight:800;font-size:16px;padding:6px 2px;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}
+.nav-link:hover{color:var(--wb-blue-dark);border-bottom-color:var(--wb-blue)}
+.footer-link{display:block;color:rgba(185,232,252,0.72);font-size:14px;margin-bottom:8px;text-decoration:none;transition:color .2s}
+.footer-link:hover{color:var(--wb-green)}
+.footer-social{width:40px;height:40px;border-radius:50%;background:rgba(185,232,252,0.12);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;text-decoration:none;transition:background .2s,color .2s}
+.footer-social:hover{background:var(--wb-green);color:var(--wb-navy)}
+.footer-social-link{color:var(--wb-lightblue);text-decoration:none;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;transition:color .2s}
+.footer-social-link:hover{color:var(--wb-green)}

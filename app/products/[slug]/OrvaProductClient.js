@@ -17,16 +17,16 @@ const WILAYA_AR = {
 };
 
 const COLORS = {
-  primary: '#202F38',
-  primaryHover: '#16222A',
-  text: '#202F38',
-  bodyText: '#202F38',
-  border: '#DCE8ED',
-  goldBg: 'rgba(32,47,56,0.06)',
-  secondary: '#20B6CD',
+  primary: '#184391',
+  primaryHover: '#0F2E66',
+  text: '#184391',
+  bodyText: '#184391',
+  border: '#D6ECFC',
+  goldBg: 'rgba(85,173,253,0.12)',
+  secondary: '#55ADFD',
   white: '#fff',
-  shadow: 'rgba(32,47,56,0.14)',
-  muted: 'rgba(32,47,56,0.6)',
+  shadow: 'rgba(24,67,145,0.14)',
+  muted: 'rgba(24,67,145,0.6)',
 };
 
 export default function OrvaProductClient({ product, wilayas, communes }) {
@@ -146,16 +146,16 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
     <div>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes orvaPulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(128,0,4,0.2); }
-          50% { transform: scale(1.03); box-shadow: 0 6px 24px rgba(128,0,4,0.35); }
+          0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(181,107,68,0.28); }
+          50% { transform: scale(1.03); box-shadow: 0 6px 24px rgba(85,173,253,0.38); }
         }
         @keyframes orvaFadeInUp {
           0% { opacity: 0; transform: translateY(16px); }
           100% { opacity: 1; transform: translateY(0); }
         }
         .orva-input:focus {
-          border-color: ${theme.primary} !important;
-          box-shadow: 0px 0px 0px 2px rgba(0,102,204,0.15) !important;
+          border-color: ${theme.secondary} !important;
+          box-shadow: 0px 0px 0px 2px rgba(85,173,253,0.25) !important;
           outline: none;
         }
         .orva-btn {
@@ -164,7 +164,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
           letter-spacing: 0.06em;
         }
         .orva-btn:hover {
-          background-color: ${theme.primaryHover} !important;
+          background-color: #96542F !important;
           box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
           transform: translateY(-1px);
         }
@@ -200,7 +200,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <button key={i} onClick={() => setImgIdx(i)}
                             style={{
                               minWidth: 72, width: 72, height: 72, borderRadius: 10, overflow: 'hidden',
-                              border: i === imgIdx ? `2px solid ${theme.primary}` : `1px solid ${theme.border}`,
+                              border: i === imgIdx ? `2px solid ${theme.secondary}` : `1px solid ${theme.border}`,
                               padding: 0, background: theme.white, cursor: 'pointer', flexShrink: 0,
                             }}>
                       <img src={img} alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -217,6 +217,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                 borderRadius: 14,
                 background: theme.white,
                 boxShadow: `0px 2px 14px 0px ${theme.shadow}`,
+                borderTop: `4px solid ${theme.secondary}`,
                 padding: '29px 24px',
               }}>
                 {/* Product name */}
@@ -244,7 +245,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                   <div style={{ textAlign: 'center', marginBottom: 16 }}>
                     <span style={{
                       display: 'inline-block', background: theme.goldBg,
-                      color: theme.primary, fontSize: 13, padding: '6px 16px',
+                      color: '#1760AD', fontSize: 13, padding: '6px 16px',
                       borderRadius: 100, fontWeight: 700, fontFamily: 'Cairo',
                     }}>🔥 خصم {discount}%</span>
                   </div>
@@ -288,7 +289,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{ marginBottom: 16 }}>
                       <select value={wilayaId} onChange={e => { setWilayaId(e.target.value); setCommuneId(''); }}
                               className="orva-input"
-                              style={{ ...ib, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23202F38\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
+                              style={{ ...ib, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23184391\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
                         <option value="">اختر الولاية</option>
                         {wilayas.map(w => <option key={w.id} value={w.id}>{WILAYA_AR[w.id] || w.name}</option>)}
                       </select>
@@ -298,7 +299,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{ marginBottom: 16 }}>
                       <select value={communeId} onChange={e => setCommuneId(e.target.value)} disabled={!wilayaId}
                               className="orva-input"
-                              style={{ ...ib, opacity: wilayaId ? 1 : 0.5, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23202F38\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
+                              style={{ ...ib, opacity: wilayaId ? 1 : 0.5, appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'14\' height=\'14\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23184391\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'m6 9 6 6 6-6\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'left 14px center' }}>
                         <option value="">اختر البلدية</option>
                         {filteredCommunes.map((c, i) => <option key={c.id || i} value={c.id}>{c.name}</option>)}
                       </select>
@@ -308,8 +309,8 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '15px 20px', borderRadius: 8,
-                      background: 'rgba(32,47,56,0.06)', marginBottom: 20,
-                      border: '1px solid rgba(32,47,56,0.18)',
+                      background: 'rgba(85,173,253,0.10)', marginBottom: 20,
+                      border: '1px solid #B9E8FC',
                     }}>
                       <span style={{ fontFamily: 'Cairo', fontWeight: 600, fontSize: 15, color: theme.text }}>الكمية</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -332,7 +333,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                       <button type="submit" className="orva-btn"
                               style={{
                                 width: '100%', padding: '18px 24px',
-                                background: '#F9B629', color: '#202F38',
+                                background: '#B56B44', color: '#fff',
                                 fontSize: 16, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                                 borderRadius: 37, border: 'none', cursor: 'pointer',
                                 letterSpacing: '0.06em',
@@ -343,7 +344,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
 
                     {/* COD badge */}
                     <div style={{ textAlign: 'center', marginTop: 12 }}>
-                      <span style={{ fontFamily: 'Cairo', fontSize: 14, color: theme.muted }}>
+                      <span style={{ fontFamily: 'Cairo', fontSize: 14, color: '#1760AD', fontWeight: 600 }}>
                         🚚 الدفع عند الاستلام - التوصيل إلى المنزل أو المكتب
                       </span>
                     </div>
@@ -401,7 +402,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
               }}
                       className="orva-btn"
                       style={{
-                        padding: '15px 20px', background: '#F9B629', color: '#202F38',
+                        padding: '15px 20px', background: '#B56B44', color: '#fff',
                         fontSize: 14, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                         borderRadius: 37, border: 'none', cursor: 'pointer',
                         width: 200, whiteSpace: 'nowrap',

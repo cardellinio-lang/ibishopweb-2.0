@@ -4,13 +4,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 const COLORS = {
-  orange: '#202F38',
-  pink: '#1899AD',
-  purple: '#202F38',
-  blue: '#1899AD',
-  green: '#202F38',
-  yellow: '#1899AD',
-  peach: '#202F38',
+  orange: '#B56B44',
+  pink: '#1760AD',
+  purple: '#184391',
+  blue: '#1760AD',
+  green: '#6E8F2A',
+  yellow: '#96542F',
+  peach: '#184391',
 };
 
 const animals = ['🐱', '🐶', '🐰', '🦊', '🐼', '🐨', '🦁', '🐸', '🐟', '🦋', '🐝', '🐌', '🦄', '🐥', '🦉', '🦜', '🐬', '🐳'];
@@ -308,9 +308,9 @@ export default function APropos() {
         <button onClick={toggleSound} style={{
           position: 'fixed', top: 80, left: 12, zIndex: 100,
           width: 40, height: 40, borderRadius: 20,
-          background: '#F9B629',
+          background: '#B56B44',
           backdropFilter: 'blur(10px)',
-          border: '1px solid #E0A01C',
+          border: '1px solid #96542F',
           cursor: 'pointer', fontSize: 18,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
@@ -324,7 +324,7 @@ export default function APropos() {
         }}>
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(203,17,171,0.06) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(85,173,253,0.06) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
           <ScrollReveal>
@@ -340,7 +340,7 @@ export default function APropos() {
             <h1 style={{
               fontSize: 32, fontWeight: 900, marginBottom: 6,
               fontFamily: "'Thmanyah Sans', sans-serif",
-              background: 'linear-gradient(135deg, #202F38, #8FDAE6, #20B6CD)',
+              background: 'linear-gradient(135deg, #184391, #55ADFD, #B56B44)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
               عالم ibishop السحري
@@ -358,7 +358,7 @@ export default function APropos() {
 
         <div style={{
           height: 4,
-          background: 'linear-gradient(90deg, #202F38, #20B6CD, #F9B629, #F9B629, #20B6CD, #202F38)',
+          background: 'linear-gradient(90deg, #184391, #55ADFD, #B56B44, #B56B44, #55ADFD, #184391)',
           width: '60%', margin: '20px auto', borderRadius: 2,
         }} />
 
@@ -371,13 +371,13 @@ export default function APropos() {
         <ScrollReveal>
           <div style={{
             textAlign: 'center', padding: '24px 16px',
-            background: 'linear-gradient(135deg, rgba(203,17,171,0.04), rgba(212,165,232,0.04))',
+            background: 'linear-gradient(135deg, rgba(85,173,253,0.04), rgba(185,232,252,0.04))',
           }}>
             <div style={{ fontSize: 36, marginBottom: 8 }}>
               <span style={{ animation: 'bounceSlow 2.5s ease-in-out infinite', display: 'inline-block' }}>💛</span>
             </div>
             <p style={{
-              fontSize: 18, fontWeight: 800, color: '#202F38', marginBottom: 4,
+              fontSize: 18, fontWeight: 800, color: '#184391', marginBottom: 4,
               fontFamily: "'Thmanyah Sans', sans-serif",
             }}>
               شكراً لأنك جزء من قصتنا

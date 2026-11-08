@@ -31,30 +31,30 @@ export default function ConfirmOrder({ params }) {
   const s = {
     page: {
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)',
+      background: 'linear-gradient(135deg, #F4FAFF 0%, #EAF6FE 50%, #B9E8FC 100%)',
       fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
     },
     card: {
       background: '#fff', borderRadius: 28, padding: '48px 36px',
       maxWidth: 420, width: '100%', textAlign: 'center',
-      boxShadow: '0 20px 80px rgba(22,163,74,0.15)',
+      boxShadow: '0 20px 80px rgba(24,67,145,0.14)',
     },
     check: {
       width: 100, height: 100, borderRadius: '50%',
-      background: 'linear-gradient(135deg, #16a34a, #22c55e)',
+      background: 'linear-gradient(135deg, #184391, #55ADFD)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       margin: '0 auto 24px',
-      boxShadow: '0 8px 32px rgba(22,163,74,0.3)',
+      boxShadow: '0 8px 32px rgba(24,67,145,0.28)',
     },
-    title: { fontSize: 28, fontWeight: 900, marginBottom: 8, color: '#166534' },
+    title: { fontSize: 28, fontWeight: 900, marginBottom: 8, color: '#184391' },
     text: { fontSize: 16, color: '#4a4a50', lineHeight: 1.8, margin: '0 0 8px' },
     detail: { fontSize: 14, color: '#6e6e73', margin: '4px 0' },
     btn: {
       display: 'inline-block', marginTop: 28, padding: '16px 48px',
-      background: 'linear-gradient(135deg, #16a34a, #22c55e)',
+      background: 'linear-gradient(135deg, #184391, #55ADFD)',
       color: '#fff', borderRadius: 16, textDecoration: 'none',
       fontWeight: 800, fontSize: 18, border: 'none', cursor: 'pointer',
-      boxShadow: '0 4px 20px rgba(22,163,74,0.3)',
+      boxShadow: '0 4px 20px rgba(24,67,145,0.28)',
     },
   };
 
@@ -68,8 +68,8 @@ export default function ConfirmOrder({ params }) {
         <meta property="og:description" content="اضغط لتأكيد طلبك بكل أمان. تأكيد فوري بدون انتظار." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://ibishop-dz.com/logo-ibi-navy.png" />
-        <meta property="og:image:width" content="636" />
-        <meta property="og:image:height" content="480" />
+        <meta property="og:image:width" content="708" />
+        <meta property="og:image:height" content="546" />
         <meta name="twitter:card" content="summary_large_image" />
       </head>
       <body style={{ margin: 0 }}>
@@ -101,10 +101,10 @@ export default function ConfirmOrder({ params }) {
               </>
             ) : order ? (
               <>
-                <div style={{ ...s.check, background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
+                <div style={{ ...s.check, background: 'linear-gradient(135deg, #B56B44, #96542F)' }}>
                   <span style={{ fontSize: 50 }}>📋</span>
                 </div>
-                <h1 style={{ ...s.title, color: '#92400e' }}>تأكيد طلبك</h1>
+                <h1 style={{ ...s.title, color: '#96542F' }}>تأكيد طلبك</h1>
                 <p style={s.text}>مرحباً {order.customer}!</p>
                 <p style={s.detail}>رقم الطلب: {order.number}</p>
                 <p style={s.detail}>المبلغ: {order.total?.toLocaleString()} د.ج</p>

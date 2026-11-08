@@ -1437,12 +1437,12 @@ export default function Admin() {
                 Personnalise les couleurs du thème. Format: <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>rgba(r,g,b,a)</code> ou <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>#hex</code>.
               </p>
               {[
-                { key: 'primary', label: 'Couleur primaire', def: '#202F38' },
-                { key: 'primary_hover', label: 'Survol bouton', def: '#16222A' },
-                { key: 'gold_bg', label: 'Fond icônes', def: 'rgba(32,47,56,0.08)' },
-                { key: 'text', label: 'Texte', def: '#202F38' },
-                { key: 'border', label: 'Bordure', def: '#DCE8ED' },
-                { key: 'secondary', label: 'Bouton principal', def: '#20B6CD' },
+                { key: 'primary', label: 'Couleur primaire', def: '#184391' },
+                { key: 'primary_hover', label: 'Survol bouton', def: '#0F2E66' },
+                { key: 'gold_bg', label: 'Fond icônes', def: 'rgba(24,67,145,0.08)' },
+                { key: 'text', label: 'Texte', def: '#184391' },
+                { key: 'border', label: 'Bordure', def: '#D6ECFC' },
+                { key: 'secondary', label: 'Bouton principal', def: '#55ADFD' },
               ].map(({ key, label, def }) => {
                 const val = settings[key] ?? def;
                 return (
