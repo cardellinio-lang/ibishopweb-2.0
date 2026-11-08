@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = {
   title: 'ibishop',
   description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
-  icons: { icon: '/favicon-ibi.png?v=5' },
+  icons: { icon: '/favicon-ibi.png?v=6' },
 };
 
 export default async function RootLayout({ children }) {
@@ -25,9 +25,9 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <link rel="icon" href="/favicon-ibi.png?v=5" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-ibi.png?v=5" />
-        <link rel="shortcut icon" href="/favicon-ibi.png?v=5" />
+        <link rel="icon" href="/favicon-ibi.png?v=6" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-ibi.png?v=6" />
+        <link rel="shortcut icon" href="/favicon-ibi.png?v=6" />
         {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
             (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
             ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}
@@ -51,7 +51,7 @@ export default async function RootLayout({ children }) {
         )}
       </head>
       <body>
-        <div className="wb-grad" style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, padding: '7px 16px', letterSpacing: 0.2, borderBottom: '3px solid var(--wb-yellow)' }}>
+        <div className="wb-grad" style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, padding: '7px 16px', letterSpacing: 0.2 }}>
           توصيل إلى جميع الولايات — الدفع عند الاستلام
         </div>
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '2px solid var(--wb-blue)', boxShadow: '0 2px 14px rgba(24,67,145,0.10)' }}>
