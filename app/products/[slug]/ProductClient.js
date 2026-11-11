@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, cadrePriceForQty } from '@/lib/pricing';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
@@ -140,8 +140,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
     { label: 'باك كامل أخضر', price: 3950, color: '#6E8F2A', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
-    { label: 'أسود', price: 2200, color: '#000000' },
-    { label: 'بني', price: 2200, color: '#B9A07E' },
+    { label: 'أسود', price: 2900, color: '#000000' },
+    { label: 'بني', price: 2900, color: '#B9A07E' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -177,7 +177,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === CADRE_SLUG ? CADRE_BASE_PRICE : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
-  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2000 DA/article au lieu de 2200 DA
+  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2500 DA/article au lieu de 2900 DA
   const cadreUnitPrice = cadrePriceForQty(cadreQty);
   const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
@@ -825,7 +825,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
                     {product.slug === 'cadre-dessin-enfant-a4'
-                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر 400 د.ج إجمالاً!`
+                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر ${((CADRE_BASE_PRICE - CADRE_OFFER_PRICE) * CADRE_OFFER_QTY).toLocaleString()} د.ج إجمالاً!`
                       : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>
