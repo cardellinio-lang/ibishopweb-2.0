@@ -76,7 +76,7 @@ function FeaturedProductBanner({ product }) {
   );
 }
 
-export default function HomeClient({ products }) {
+export default function HomeClient({ products, featuredProduct }) {
   const now = useMemo(() => Date.now(), []);
   const [showAll, setShowAll] = useState(false);
   const [q, setQ] = useState('');
@@ -99,7 +99,7 @@ export default function HomeClient({ products }) {
         </p>
       </div>
 
-      <FeaturedProductBanner product={products[0]} />
+      <FeaturedProductBanner product={featuredProduct || products[0]} />
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
