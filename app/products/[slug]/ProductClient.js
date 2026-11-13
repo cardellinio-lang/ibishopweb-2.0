@@ -140,8 +140,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
     { label: 'باك كامل أخضر', price: 3950, color: '#6E8F2A', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
-    { label: 'أسود', price: 2900, color: '#000000' },
-    { label: 'بني', price: 2900, color: '#B9A07E' },
+    { label: 'أسود', price: 2200, color: '#000000' },
+    { label: 'بني', price: 2200, color: '#B9A07E' },
   ] : null;
   const [variant, setVariant] = useState(variants ? variants[0].label : null);
 
@@ -177,7 +177,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === CADRE_SLUG ? CADRE_BASE_PRICE : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
-  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2500 DA/article au lieu de 2900 DA
+  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2000 DA/article au lieu de 2200 DA
   const cadreUnitPrice = cadrePriceForQty(cadreQty);
   const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;

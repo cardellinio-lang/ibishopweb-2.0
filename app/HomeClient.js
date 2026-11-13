@@ -9,7 +9,7 @@ function ProductCard({ p, now }) {
   const imgs = JSON.parse(p.images || '[]');
   const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   const isNew = now - new Date(p.createdAt).getTime() < MONTH_MS;
-  // Le cadre A4 a une offre dédiée (1 = 2900 DA, 2+ = 2500 DA/article)
+  // Le cadre A4 a une offre dédiée (1 = 2200 DA, 2+ = 2000 DA/article)
   const isCadre = p.slug === CADRE_SLUG;
   const displayPrice = isCadre ? CADRE_BASE_PRICE : p.price;
   const tierQty = isCadre ? CADRE_OFFER_QTY : p.tierQty;
