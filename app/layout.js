@@ -107,7 +107,7 @@ export default async function RootLayout({ children }) {
         <div className="wb-grad" style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, padding: '7px 16px', letterSpacing: 0.2 }}>
           توصيل إلى جميع الولايات — الدفع عند الاستلام
         </div>
-        <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '2px solid var(--wb-blue)', boxShadow: '0 2px 14px rgba(24,67,145,0.10)' }}>
+        <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--wb-card)', borderBottom: '2px solid var(--wb-lightblue)', boxShadow: '0 2px 14px rgba(75,56,47,0.10)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
               <img src="/logo-ibi-navy.png" alt="IBI Kids" style={{ height: 46, width: 'auto', display: 'block' }} />
@@ -121,7 +121,7 @@ export default async function RootLayout({ children }) {
         <main className="container" style={{ paddingBottom: 60 }}>
           {children}
         </main>
-        <footer style={{ textAlign: 'center', padding: 24, color: 'rgba(185,232,252,0.78)', fontSize: 13, background: 'var(--wb-navy)', borderTop: '3px solid var(--wb-brown)' }}>
+        <footer style={{ textAlign: 'center', padding: 24, color: 'rgba(255,253,252,0.82)', fontSize: 13, background: 'var(--wb-navy)', borderTop: '3px solid var(--wb-brown)' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
             <img src="/logo-ibi-white.png" alt="IBI Kids" style={{ height: 32, width: 'auto', display: 'block' }} />
           </div>
