@@ -909,7 +909,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginTop: 16 }}>{error}</div>}
 
               <button type="submit" className="order-btn"
-                      style={{ width: '100%', padding: '16px 24px', marginTop: 16, background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
+                      style={{ width: '100%', padding: '16px 24px', marginTop: 16, background: '#55C6C0', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
                 اطلب الآن
               </button>
 
@@ -997,7 +997,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   if (allFilled) { submitOrder(); }
                   else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 }}
-                        style={{ flex: 1, padding: '14px 16px', background: 'var(--p-cta)', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '14px 16px', background: '#55C6C0', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
                   اطلب الآن
                 </button>
@@ -1018,7 +1018,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             if (allFilled) { submitOrder(); }
             else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
           }}
-                  style={{ width: '100%', padding: '16px 24px', background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                  style={{ width: '100%', padding: '16px 24px', background: '#55C6C0', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                   className="order-btn">
             اطلب الآن
           </button>
