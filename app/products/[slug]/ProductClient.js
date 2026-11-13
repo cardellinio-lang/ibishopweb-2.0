@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, cadrePriceForQty } from '@/lib/pricing';
+import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 
@@ -36,15 +37,11 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 export default function ProductClient({ product, wilayas, communes}) {
-  // Couleur de marque IBI (charte2.png) : bleu nuit principal.
-  // Elle remplace les anciennes couleurs produit pour garder un site cohérent.
-  const pickColor = '#184391';
-  const lum = (() => {
-    const h = pickColor.replace('#', '');
-    const r = parseInt(h.substring(0, 2), 16) / 255, g = parseInt(h.substring(2, 4), 16) / 255, b = parseInt(h.substring(4, 6), 16) / 255;
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  })();
-  const c = lum > 0.68 ? darken(pickColor, 70) : pickColor;
+  // Thème de la page produit : couleur choisie dans l'admin, sinon couleur
+  // dominante de l'image principale (calculée dans le navigateur).
+  const [autoTheme, setAutoTheme] = useState(null);
+  const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#184391');
+  const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
@@ -201,6 +198,25 @@ export default function ProductClient({ product, wilayas, communes}) {
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
   const savings = (product.slug === 'cadre-dessin-enfant-a4') ? 0 : (product.tierEnabled && product.tierPrice ? product.price - product.tierPrice : 0);
   const imgs = Array.isArray(product.images) ? product.images : [];
+
+  // Si l'admin n'a pas fixé de couleur de thème, on prend la dominante de l'image.
+  useEffect(() => {
+    if (normalizeHex(product.themeColor) || !imgs[0]) return;
+    const cacheKey = 'ibi-theme:' + imgs[0];
+    try {
+      const cached = normalizeHex(window.localStorage.getItem(cacheKey));
+      if (cached) { setAutoTheme(cached); return; }
+    } catch {}
+    let cancelled = false;
+    autoThemeFromImages(imgs.slice(0, 2))
+      .then((hex) => {
+        if (cancelled || !hex) return;
+        setAutoTheme(hex);
+        try { window.localStorage.setItem(cacheKey, hex); } catch {}
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [product.themeColor, imgs[0]]);
 
   const filteredCommunes = wilayaId ? communes.filter(c => c.wilayaId === Number(wilayaId)) : [];
 
@@ -360,7 +376,15 @@ export default function ProductClient({ product, wilayas, communes}) {
   };
 
   return (
-    <div>
+    <div style={{
+      '--p-accent': tk.accent,
+      '--p-cta': tk.cta,
+      '--p-text': tk.text,
+      '--p-soft': tk.soft,
+      '--p-soft-strong': tk.softStrong,
+      '--p-border': tk.border,
+      '--p-border-strong': tk.borderStrong,
+    }}>
       <style dangerouslySetInnerHTML={{ __html: `
         * { user-select: none; -webkit-user-select: none; }
         input, textarea, select { user-select: auto; -webkit-user-select: auto; }
@@ -465,9 +489,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString()}</span>
                 )}
               </div>
-              {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: 'var(--wb-brown)', color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
+              {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: 'var(--p-cta)', color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
               {tierActive && savings > 0 && (
-                <span style={{ display: 'inline-block', background: '#B56B44', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
+                <span style={{ display: 'inline-block', background: 'var(--p-cta)', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
                   ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
                 </span>
               )}
@@ -475,8 +499,8 @@ export default function ProductClient({ product, wilayas, communes}) {
             </div>
 
             {/* Urgence */}
-            <div style={{ background: '#EAF6FE', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid #B56B44' }}>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#184391', lineHeight: 1.6 }}>
+            <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid var(--p-border-strong)' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.6 }}>
                 هذا المنتج ينفذ بسرعة لذا اطلبوا نسختكم اليوم ليتم تأكيدها
               </div>
             </div>
@@ -499,7 +523,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <input value={customer} onChange={e => setCustomer(e.target.value)}
                        placeholder="يرجى إدخال الاسم واللقب"
                        style={{ width: '100%', padding: '12px 16px', border: '1.5px solid #d2d2d7', borderRadius: 12, fontSize: 16, background: '#fff' }}
-                       onFocus={e => e.target.style.borderColor = '#55ADFD'}
+                       onFocus={e => e.target.style.borderColor = 'var(--p-accent)'}
                        onBlur={e => e.target.style.borderColor = '#d2d2d7'} />
               </div>
 
@@ -509,7 +533,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <input value={phone} onChange={e => setPhone(e.target.value)}
                        placeholder="05XX XX XX XX" dir="ltr"
                        style={{ width: '100%', padding: '12px 16px', border: '1.5px solid #d2d2d7', borderRadius: 12, fontSize: 16, textAlign: 'right', background: '#fff' }}
-                       onFocus={e => e.target.style.borderColor = '#55ADFD'}
+                       onFocus={e => e.target.style.borderColor = 'var(--p-accent)'}
                        onBlur={e => e.target.style.borderColor = '#d2d2d7'} />
                 <div style={{ fontSize: 12, color: '#8e8e93', marginTop: 4 }}>سنقوم بالاتصال بك عبر هذا الرقم لتأكيد الطلب.</div>
               </div>
@@ -794,12 +818,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الكمية</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}
-                          style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid #B9E8FC', background: '#EAF6FE', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#184391' }}>
+                          style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid var(--p-border)', background: 'var(--p-soft)', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text)' }}>
                     −
                   </button>
                   <div style={{ fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'center', color: '#1d1d1f' }}>{qty}</div>
                   <button type="button" onClick={() => setQty(qty + 1)}
-                          style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid #B9E8FC', background: '#EAF6FE', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#184391' }}>
+                          style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid var(--p-border)', background: 'var(--p-soft)', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text)' }}>
                     +
                   </button>
                   <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#6E8F2A' : c }}>× {finalPrice.toLocaleString()} د.ج</div>
@@ -835,11 +859,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>نوع التوصيل</label>
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button type="button" onClick={() => setDeliveryType('home')}
-                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'home' ? '2px solid ' + '#55ADFD' : '2px solid #e8e8ed', background: deliveryType === 'home' ? '#B9E8FC' : '#fff', color: '#184391', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'home' ? '2px solid var(--p-accent)' : '2px solid #e8e8ed', background: deliveryType === 'home' ? 'var(--p-soft-strong)' : '#fff', color: 'var(--p-text)', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span style={{ fontSize: 17, fontWeight: 900 }}>التوصيل إلى المنزل</span>
                   </button>
                   <button type="button" onClick={() => setDeliveryType('office')}
-                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'office' ? '2px solid ' + '#55ADFD' : '2px solid #e8e8ed', background: deliveryType === 'office' ? '#B9E8FC' : '#fff', color: '#184391', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          style={{ flex: 1, padding: '15px 8px', borderRadius: 14, border: deliveryType === 'office' ? '2px solid var(--p-accent)' : '2px solid #e8e8ed', background: deliveryType === 'office' ? 'var(--p-soft-strong)' : '#fff', color: 'var(--p-text)', cursor: 'pointer', transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span style={{ fontSize: 17, fontWeight: 900 }}>التوصيل إلى المكتب</span>
                   </button>
                 </div>
@@ -849,7 +873,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
               {/* Submit buttons */}
               <button type="submit" className="order-btn"
-                      style={{ width: '100%', padding: '16px 24px', background: '#B56B44', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
+                      style={{ width: '100%', padding: '16px 24px', background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
                 اطلب الآن
               </button>
 
@@ -869,7 +893,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
 
               {/* Order Summary */}
-              <div style={{ marginTop: 20, background: '#EAF6FE', borderRadius: 14, padding: 16, border: '1px solid #B9E8FC' }}>
+              <div style={{ marginTop: 20, background: 'var(--p-soft)', borderRadius: 14, padding: 16, border: '1px solid var(--p-border)' }}>
                 <h3 style={{ fontSize: 16, fontWeight: 900, marginBottom: 4, color: '#1d1d1f' }}>ملخص الطلبية</h3>
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
@@ -893,7 +917,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>السعر الإجمالي</span>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--wb-magenta)' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--p-text)' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
                   </div>
                 </div>
               </div>
@@ -967,7 +991,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   if (allFilled) { submitOrder(); }
                   else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 }}
-                        style={{ flex: 1, padding: '14px 16px', background: '#B56B44', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '14px 16px', background: 'var(--p-cta)', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
                   اطلب الآن
                 </button>
@@ -988,7 +1012,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             if (allFilled) { submitOrder(); }
             else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
           }}
-                  style={{ width: '100%', padding: '16px 24px', background: '#B56B44', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                  style={{ width: '100%', padding: '16px 24px', background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                   className="order-btn">
             اطلب الآن
           </button>

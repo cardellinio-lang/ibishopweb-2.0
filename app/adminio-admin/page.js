@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { normalizeImageUrl, compressImageFile } from '@/lib/images';
+import { paletteFromImages, themeTokens } from '@/lib/theme';
 
 export default function Admin() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -12,8 +13,11 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [wilayas, setWilayas] = useState([]);
   const [tab, setTab] = useState('products');
-  const [form, setForm] = useState({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
+  const [form, setForm] = useState({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', themeColor: '', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
   const [uploading, setUploadingState] = useState({});
+  const [themePalette, setThemePalette] = useState([]);
+  const [themeLoading, setThemeLoading] = useState(false);
+  const [themeAllLoading, setThemeAllLoading] = useState(false);
   const setUploading = (i, v) => setUploadingState(u => ({ ...u, [i]: v }));
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -165,12 +169,50 @@ export default function Admin() {
     if (r.ok) setBlogPosts(await r.json());
   };
 
+  const suggestTheme = async () => {
+    const list = form.images.map(normalizeImageUrl).filter(Boolean);
+    if (!list.length) { alert("Ajoute d'abord une image produit."); return; }
+    setThemeLoading(true);
+    try {
+      const palette = await paletteFromImages(list, 3);
+      if (!palette.length) {
+        alert("Impossible de lire les couleurs de ces images (protection du site d'images). Choisis une couleur dans la palette.");
+        return;
+      }
+      setThemePalette(palette);
+      setForm(f => ({ ...f, themeColor: palette[0] }));
+    } finally {
+      setThemeLoading(false);
+    }
+  };
+
+  const autoThemeAll = async () => {
+    const targets = products.filter(p => !p.themeColor);
+    if (!targets.length) { alert('Tous les produits ont déjà un thème défini.'); return; }
+    if (!confirm(`Calculer la couleur de thème depuis l'image pour ${targets.length} produit(s) ?`)) return;
+    setThemeAllLoading(true);
+    let done = 0, skipped = 0;
+    for (const p of targets) {
+      const imgs = Array.isArray(p.images) ? p.images : (() => { try { return JSON.parse(p.images || '[]'); } catch { return []; } })();
+      const palette = await paletteFromImages(imgs, 2).catch(() => []);
+      if (!palette.length) { skipped++; continue; }
+      const r = await fetch('/api/products', {
+        method: 'PATCH', headers: authHeaders(),
+        body: JSON.stringify({ id: p.id, themeColor: palette[0] }),
+      });
+      if (r.ok) done++; else skipped++;
+    }
+    setThemeAllLoading(false);
+    load();
+    alert(`✅ ${done} thème(s) calculé(s) depuis les images` + (skipped ? ` — ${skipped} ignoré(s) (image non lisible)` : ''));
+  };
+
   const save = async () => {
     setLoading(true);
     const images = form.images.map(normalizeImageUrl).filter(Boolean);
     const dropped = form.images.filter(i => i.trim() && !normalizeImageUrl(i)).length;
     if (dropped > 0) alert(`${dropped} image(s) ignorée(s) : l'URL n'est pas valide.`);
-    const body = { ...form, slug: form.slug || undefined, images, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
+    const body = { ...form, slug: form.slug || undefined, images, price: Number(form.price), oldPrice: form.oldPrice ? Number(form.oldPrice) : null, color: form.color || '#000000', themeColor: form.themeColor || null, category: form.category || '', sku: form.sku || null, stock: Number(form.stock), tierEnabled: form.tierEnabled, tierQty: form.tierEnabled && form.tierQty ? Number(form.tierQty) : null, tierPrice: form.tierEnabled && form.tierPrice ? Number(form.tierPrice) : null, tierMessage: form.tierEnabled ? form.tierMessage || null : null, tierGift: form.tierEnabled ? form.tierGift || null : null };
     const res = await fetch('/api/products' + (editId ? `/${editId}` : ''), {
       method: editId ? 'PUT' : 'POST',
       headers: authHeaders(),
@@ -183,7 +225,7 @@ export default function Admin() {
       setLoading(false);
       return;
     }
-    setForm({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
+    setForm({ name: '', slug: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', themeColor: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' });
     setEditId(null);
     setLoading(false);
     load();
@@ -191,7 +233,7 @@ export default function Admin() {
 
   const edit = (p) => {
     const imgs = (Array.isArray(p.images) ? p.images : (() => { try { return JSON.parse(p.images || '[]'); } catch { return []; } })()).map(normalizeImageUrl).filter(Boolean);
-    setForm({ name: p.name, slug: p.slug || '', price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
+    setForm({ name: p.name, slug: p.slug || '', price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', themeColor: p.themeColor || '', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
     setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
       setEditingReviewId(null);
@@ -369,7 +411,7 @@ export default function Admin() {
           <button className={`btn ${tab === 'products' ? 'btn-primary' : ''}`} onClick={() => setTab('products')}>📦 Produits ({products.length})</button>
           <button className={`btn ${tab === 'orders' ? 'btn-primary' : ''}`} onClick={() => setTab('orders')}>📋 Commandes ({orders.length})</button>
           <button className={`btn ${tab === 'ordertable' ? 'btn-primary' : ''}`} onClick={() => setTab('ordertable')}>📊 Tableau</button>
-          <button className={`btn ${tab === 'add' ? 'btn-primary' : ''}`} onClick={() => { setTab('add'); setForm({ name: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' }); setEditId(null); }}>
+          <button className={`btn ${tab === 'add' ? 'btn-primary' : ''}`} onClick={() => { setTab('add'); setForm({ name: '', price: '', oldPrice: '', images: [''], description: '', color: '#000000', themeColor: '', category: '', sku: '', stock: '1', tierEnabled: false, tierQty: '', tierPrice: '', tierMessage: '', tierGift: '' }); setEditId(null); }}>
             {editId ? '✏️ Modifier' : '➕ Ajouter'}
           </button>
           <button className={`btn ${tab === 'sync' ? 'btn-primary' : ''}`} onClick={() => setTab('sync')}>📊 Google Sheets</button>
@@ -384,6 +426,12 @@ export default function Admin() {
       </div>
       {tab === 'products' && (
         <div className="card" style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+            <button className="btn btn-ghost" style={{ border: '1px solid #55ADFD', color: '#184391', fontSize: 13 }}
+                    onClick={autoThemeAll} disabled={themeAllLoading}>
+              {themeAllLoading ? '⏳ Analyse des images…' : '🎨 Thèmes auto depuis les images'}
+            </button>
+          </div>
           {selected.length > 0 && (
             <div className="flex" style={{ gap: 8, marginBottom: 12, padding: '8px 12px', background: '#fef2f2', borderRadius: 10, alignItems: 'center' }}>
               <span style={{ fontSize: 13, color: '#991b1b', fontWeight: 600 }}>{selected.length} sélectionné(s)</span>
@@ -1519,10 +1567,51 @@ export default function Admin() {
             )}
             <div><label style={{ fontWeight: 700 }}>Description</label><textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
             <div>
-              <label style={{ fontWeight: 700 }}>Couleur du thème</label>
+              <label style={{ fontWeight: 700 }}>Couleur du produit (pastille)</label>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <input type="color" value={form.color} onChange={e => setForm(f => ({ ...f, color: e.target.value }))} style={{ width: 50, height: 40, padding: 2, borderRadius: 8 }} />
                 <input value={form.color} onChange={e => setForm(f => ({ ...f, color: e.target.value }))} placeholder="#000000" style={{ flex: 1 }} />
+              </div>
+            </div>
+
+            <div style={{ border: '2px dashed #e5e5ea', borderRadius: 12, padding: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
+                <label style={{ fontWeight: 700, margin: 0 }}>🎨 Thème de la page produit</label>
+                <button type="button" onClick={() => { setForm(f => ({ ...f, themeColor: '' })); setThemePalette([]); }}
+                        style={{ background: form.themeColor ? '#e8e8ed' : '#dcfce7', border: 'none', borderRadius: 8, padding: '5px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#184391' }}>
+                  ♻️ Auto (image)
+                </button>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input type="color" value={form.themeColor || '#184391'} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} style={{ width: 50, height: 40, padding: 2, borderRadius: 8 }} />
+                <input value={form.themeColor} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} placeholder="Vide = couleur dominante de l'image" dir="ltr" style={{ flex: 1, fontFamily: 'monospace', fontSize: 13 }} />
+              </div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                {['#184391', '#55ADFD', '#A6CD4D', '#B56B44', '#B9E8FC', ...themePalette].map((hex, i) => (
+                  <button key={hex + i} type="button" onClick={() => setForm(f => ({ ...f, themeColor: hex }))} title={hex}
+                          style={{ width: 28, height: 28, borderRadius: 8, border: (form.themeColor || '').toLowerCase() === hex.toLowerCase() ? '3px solid #1d1d1f' : '1px solid #d2d2d7', background: hex, cursor: 'pointer', padding: 0 }} />
+                ))}
+              </div>
+              <button type="button" onClick={suggestTheme} disabled={themeLoading}
+                      style={{ marginTop: 10, width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid #55ADFD', background: '#EAF6FE', color: '#184391', fontSize: 13, fontWeight: 800, cursor: themeLoading ? 'progress' : 'pointer' }}>
+                {themeLoading ? '⏳ Analyse des images…' : "🖼️ Prendre les couleurs de l'image"}
+              </button>
+              {(() => {
+                const t = themeTokens(form.themeColor || '#184391');
+                return (
+                  <div style={{ marginTop: 10, padding: 10, borderRadius: 10, background: t.soft, border: `1px solid ${t.border}` }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: t.text, marginBottom: 6 }}>
+                      Aperçu {form.themeColor ? '(couleur choisie)' : '(automatique depuis l\'image)'}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontWeight: 900, color: t.text }}>2 200 د.ج</span>
+                      <span style={{ padding: '6px 12px', borderRadius: 8, background: t.cta, color: '#fff', fontSize: 12, fontWeight: 800 }}>أضف إلى السلة</span>
+                    </div>
+                  </div>
+                );
+              })()}
+              <div style={{ fontSize: 12, color: '#6e6e73', marginTop: 6 }}>
+                Laisse vide pour que la couleur soit calculée depuis l'image du produit (homogène avec le visuel).
               </div>
             </div>
             <div><label style={{ fontWeight: 700 }}>SKU (optionnel)</label><input value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="ex: SAM-S24-256" /></div>

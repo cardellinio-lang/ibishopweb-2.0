@@ -37,6 +37,15 @@ export async function PATCH(req) {
     return Response.json({ success: true, products: await prisma.product.findMany({ orderBy: { position: 'asc' } }) });
   }
 
+  // Mise à jour ciblée du thème visuel (page produit)
+  if (body.id && body.themeColor !== undefined) {
+    const product = await prisma.product.update({
+      where: { id: body.id },
+      data: { themeColor: body.themeColor || null },
+    });
+    return Response.json({ success: true, product });
+  }
+
   // Legacy direction-based (up/down) — keep for compatibility
   const { id, direction } = body;
   if (!id || !direction) return Response.json({ error: 'Paramètres manquants' }, { status: 400 });
@@ -65,7 +74,7 @@ export async function POST(req) {
   const maxPos = await prisma.product.aggregate({ _max: { position: true } });
   const position = (maxPos._max.position || 0) + 10;
   const product = await prisma.product.create({
-    data: { name: data.name, slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', category: data.category || '', sku: data.sku || null, stock: data.stock || 1, position, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
+    data: { name: data.name, slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', themeColor: data.themeColor || null, category: data.category || '', sku: data.sku || null, stock: data.stock || 1, position, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
   });
   return Response.json(product, { status: 201 });
 }

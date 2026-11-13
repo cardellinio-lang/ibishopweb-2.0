@@ -23,6 +23,7 @@ model Product {
   images      String      @default("[]")
   description String      @default("")
   color       String      @default("#000000")
+  themeColor  String?
   category    String      @default("")
   sku         String?
   stock       Int         @default(1)
