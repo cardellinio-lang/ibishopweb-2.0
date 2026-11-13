@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY } from '@/lib/pricing';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
@@ -52,59 +52,31 @@ function ProductCard({ p, now }) {
   );
 }
 
-function BannerCarousel({ images }) {
-  const slides = useMemo(
-    () => [{ type: 'hero' }, ...images.map(src => ({ type: 'image', src }))],
-    [images]
-  );
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    if (slides.length <= 1) return;
-    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 5000);
-    return () => clearInterval(t);
-  }, [slides.length]);
+function FeaturedProductBanner({ product }) {
+  if (!product) return null;
+  const images = JSON.parse(product.images || '[]');
+  const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
 
   return (
-    <div className="wb-carousel" style={{ marginTop: 16 }}>
-      <div style={{
-        display: 'flex', height: '100%', direction: 'ltr',
-        transition: 'transform .65s cubic-bezier(.4,0,.2,1)',
-        transform: `translateX(${-idx * 100}%)`,
-      }}>
-        {slides.map((s, i) => (
-          <div key={i} style={{ minWidth: '100%', height: '100%', position: 'relative' }}>
-            {s.type === 'hero' ? (
-              <div dir="rtl" className="wb-grad-diag" style={{
-                width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: 24,
-              }}>
-                <img src="/logo-ibi-white.png" alt="IBI Kids"
-                     style={{ height: 'clamp(34px, 4.6vw, 56px)', width: 'auto', display: 'block', marginBottom: 4 }} />
-                <h1 style={{ fontSize: 'clamp(22px, 3.6vw, 42px)', fontWeight: 900, lineHeight: 1.25, margin: 0, color: '#fff' }}>IBI Kids</h1>
-                <div style={{ fontSize: 'clamp(14px, 1.9vw, 22px)', fontWeight: 800, opacity: 0.95 }}>ألعاب ووسائل تعليمية للأطفال 🛍️</div>
-                <div style={{ fontSize: 'clamp(13px, 1.7vw, 20px)', fontWeight: 600, opacity: 0.92 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
-              </div>
-            ) : (
-              <img src={s.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            )}
-          </div>
-        ))}
-      </div>
-
-      {slides.length > 1 && (
-        <div style={{ position: 'absolute', bottom: 12, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8, zIndex: 2 }}>
-          {slides.map((_, i) => (
-            <button key={i} type="button" className="wb-carousel-dot" data-on={idx === i ? '1' : '0'}
-                    onClick={() => setIdx(i)} aria-label={`banner ${i + 1}`} />
-          ))}
+    <a href={`/products/${product.slug}`} className="wb-home-hero" dir="rtl" aria-label={`اكتشف ${product.name}`}>
+      <div className="wb-home-hero-copy">
+        <span className="wb-home-hero-kicker">أحدث منتجاتنا</span>
+        <h2>{product.name}</h2>
+        <p>ألعاب ووسائل تعليمية للأطفال · الدفع عند الاستلام</p>
+        <div className="wb-home-hero-price">
+          <strong>{product.price.toLocaleString()} د.ج</strong>
+          {discount > 0 && <><del>{product.oldPrice.toLocaleString()} د.ج</del><span>-{discount}%</span></>}
         </div>
-      )}
-    </div>
+        <span className="wb-home-hero-cta">اكتشف المنتج <span aria-hidden="true">←</span></span>
+      </div>
+      <div className="wb-home-hero-image">
+        <img src={images[0] || 'https://placehold.co/600x600/f6f6f9/868695?text=IBI+Kids'} alt={product.name} />
+      </div>
+    </a>
   );
 }
 
-export default function HomeClient({ products, banners = [] }) {
+export default function HomeClient({ products }) {
   const now = useMemo(() => Date.now(), []);
   const [showAll, setShowAll] = useState(false);
   const [q, setQ] = useState('');
@@ -126,6 +98,8 @@ export default function HomeClient({ products, banners = [] }) {
           ألعاب ووسائل تعليمية للأطفال 🛍️
         </p>
       </div>
+
+      <FeaturedProductBanner product={products[0]} />
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>

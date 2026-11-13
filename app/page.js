@@ -1,34 +1,8 @@
 import prisma, { withDbRetry } from '@/lib/db';
 import HomeClient from './HomeClient';
 import { getHiddenSlugs } from '@/lib/hidden-products';
-import fs from 'fs';
-import path from 'path';
 
 export const dynamic = 'force-dynamic';
-
-// Bannières animées : priorise les visuels éducatifs/orthophonie
-function getBanners() {
-  const dir = path.join(process.cwd(), 'public');
-  const out = [];
-  // Ordre forcé: cadre dessin, puis produit edu
-  const preferred = ['ban1', 'ban2'];
-  for (const name of preferred) {
-    for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
-      const file = `${name}.${ext}`;
-      if (fs.existsSync(path.join(dir, file))) { out.push('/' + file + '?v=' + Date.now()); break; }
-    }
-  }
-  if (out.length === 0) {
-    const fallback = ['ban-cadre', 'ban-edu'];
-    for (const name of fallback) {
-      for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
-        const file = `${name}.${ext}`;
-        if (fs.existsSync(path.join(dir, file))) { out.push('/' + file + '?v=' + Date.now()); break; }
-      }
-    }
-  }
-  return out.slice(0, 2);
-}
 
 export default async function Home() {
   let products = [];
@@ -38,5 +12,5 @@ export default async function Home() {
   } catch (e) {
     console.error('[home] DB indisponible', e?.message);
   }
-  return <HomeClient products={products} banners={getBanners()} />;
+  return <HomeClient products={products} />;
 }
