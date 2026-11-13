@@ -79,9 +79,10 @@ function BannerCarousel({ images }) {
                 width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: 24,
               }}>
-                <img src="/logo-ibi-white.png" alt="IBI"
+                <img src="/logo-ibi-white.png" alt="IBI Kids"
                      style={{ height: 'clamp(34px, 4.6vw, 56px)', width: 'auto', display: 'block', marginBottom: 4 }} />
-                <div style={{ fontSize: 'clamp(22px, 3.6vw, 42px)', fontWeight: 900, lineHeight: 1.25 }}>إيبي شوب 🛍️ تسوّق أونلاين</div>
+                <h1 style={{ fontSize: 'clamp(22px, 3.6vw, 42px)', fontWeight: 900, lineHeight: 1.25, margin: 0, color: '#fff' }}>IBI Kids</h1>
+                <div style={{ fontSize: 'clamp(14px, 1.9vw, 22px)', fontWeight: 800, opacity: 0.95 }}>ألعاب ووسائل تعليمية للأطفال 🛍️</div>
                 <div style={{ fontSize: 'clamp(13px, 1.7vw, 20px)', fontWeight: 600, opacity: 0.92 }}>توصيل إلى جميع الولايات — الدفع عند الاستلام</div>
               </div>
             ) : (
@@ -115,6 +116,16 @@ export default function HomeClient({ products, banners = [] }) {
 
   return (
     <div>
+
+      {/* Nom de la boutique : sert aussi à Google pour le nom du site. */}
+      <div style={{ marginTop: 18, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 900, color: 'var(--wb-navy)', margin: 0, lineHeight: 1.2 }}>
+          IBI Kids
+        </h1>
+        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--wb-blue-dark)', margin: '5px 0 0' }}>
+          ألعاب ووسائل تعليمية للأطفال 🛍️
+        </p>
+      </div>
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>

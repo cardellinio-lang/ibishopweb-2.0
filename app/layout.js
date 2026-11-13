@@ -41,7 +41,6 @@ const structuredData = {
       '@id': `${SITE_URL}/#website`,
       url: SITE_URL,
       name: SITE_NAME,
-      alternateName: ['ibishop', 'ibishop-dz', 'IBI'],
       inLanguage: 'ar',
       publisher: { '@id': `${SITE_URL}/#organization` },
     },
@@ -49,7 +48,6 @@ const structuredData = {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
       name: SITE_NAME,
-      alternateName: 'ibishop',
       url: SITE_URL,
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-ibi-navy.png` },
       sameAs: [
@@ -112,7 +110,7 @@ export default async function RootLayout({ children }) {
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '2px solid var(--wb-blue)', boxShadow: '0 2px 14px rgba(24,67,145,0.10)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="/logo-ibi-navy.png" alt="IBI" style={{ height: 46, width: 'auto', display: 'block' }} />
+              <img src="/logo-ibi-navy.png" alt="IBI Kids" style={{ height: 46, width: 'auto', display: 'block' }} />
             </a>
             <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
               <a href="/" className="nav-link">المنتجات</a>
@@ -125,7 +123,7 @@ export default async function RootLayout({ children }) {
         </main>
         <footer style={{ textAlign: 'center', padding: 24, color: 'rgba(185,232,252,0.78)', fontSize: 13, background: 'var(--wb-navy)', borderTop: '3px solid var(--wb-brown)' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-            <img src="/logo-ibi-white.png" alt="IBI" style={{ height: 32, width: 'auto', display: 'block' }} />
+            <img src="/logo-ibi-white.png" alt="IBI Kids" style={{ height: 32, width: 'auto', display: 'block' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 10 }}>
             <a href="https://www.facebook.com/ibishop.boutique" target="_blank" rel="noopener" className="footer-social-link">

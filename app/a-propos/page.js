@@ -20,7 +20,7 @@ const sections = [
   {
     id: 'story', emoji: '📖', title: 'قصتنا',
     color: COLORS.purple,
-    text: 'بدأ ibishop كحلم صغير في غرفة مليئة بالألوان والضحك. اليوم، نحن عائلة من الآباء والمربين الذين يؤمنون أن كل طفل يستحق ألعاباً تغذي خياله وتصنع ابتسامته.',
+    text: 'بدأ IBI Kids كحلم صغير في غرفة مليئة بالألوان والضحك. اليوم، نحن عائلة من الآباء والمربين الذين يؤمنون أن كل طفل يستحق ألعاباً تغذي خياله وتصنع ابتسامته.',
   },
   {
     id: 'values', emoji: '✨', title: 'قيمنا',
@@ -343,7 +343,7 @@ export default function APropos() {
               background: 'linear-gradient(135deg, #184391, #55ADFD, #B56B44)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
-              عالم ibishop السحري
+              عالم IBI Kids السحري
             </h1>
             <p style={{
               fontSize: 15, color: '#5E6E78', marginBottom: 4,

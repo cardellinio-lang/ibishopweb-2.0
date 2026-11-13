@@ -205,12 +205,12 @@ export default function BlogPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-            <img src="/logo-ibi-navy.png" alt="IBI"
+            <img src="/logo-ibi-navy.png" alt="IBI Kids"
                  style={{ height: scrolled ? 36 : 40, width: 'auto', display: 'block', transition: 'all 0.3s ease' }} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
             <div style={{ display: 'flex', gap: 16 }}>
-              {['المقالات', 'الأعمار', 'الفئات', 'عن ibishop'].map((item, i) => (
+              {['المقالات', 'الأعمار', 'الفئات', 'عن IBI Kids'].map((item, i) => (
                 <a key={i} href={['/blog', '/#categories', '/#', '/a-propos'][i]} style={{
                   fontWeight: 700, fontSize: 14, color: '#184391', opacity: 0.7,
                   transition: 'opacity 0.2s', textDecoration: 'none',
@@ -786,7 +786,7 @@ export default function BlogPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40, marginBottom: 40 }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <img src="/logo-ibi-white.png" alt="IBI" style={{ height: 40, width: 'auto', display: 'block' }} />
+                <img src="/logo-ibi-white.png" alt="IBI Kids" style={{ height: 40, width: 'auto', display: 'block' }} />
               </div>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
                 ألعاب تعليمية وتربوية — صنع في الجزائر 🇩🇿
@@ -828,7 +828,7 @@ export default function BlogPage() {
             paddingTop: 20, textAlign: 'center',
             color: 'rgba(255,255,255,0.3)', fontSize: 13,
           }}>
-            © 2026 ibishop-dz.com — tous droits réservés
+            © 2026 IBI Kids — tous droits réservés
           </div>
         </div>
       </footer>
