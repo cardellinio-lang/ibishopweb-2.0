@@ -18,7 +18,7 @@ export default function BlogPost({ params }) {
       .then(data => {
         setPost(data);
         setLoading(false);
-        document.title = `${data.title} — ibishop`;
+        document.title = `${data.title} — IBI Kids`;
       })
       .catch(async () => {
         try {
@@ -26,7 +26,7 @@ export default function BlogPost({ params }) {
           const p = getPostBySlug(decodeURIComponent(params.slug));
           if (p) {
             setPost(p);
-            document.title = `${p.title} — ibishop`;
+            document.title = `${p.title} — IBI Kids`;
           } else {
             setNotFound(true);
           }

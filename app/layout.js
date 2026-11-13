@@ -3,10 +3,61 @@ import prisma, { withDbRetry } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
+// Nom affiché par Google (résultat de recherche) et dans les partages sociaux.
+const SITE_NAME = 'IBI Kids';
+const SITE_URL = 'https://ibishop-dz.com';
+const SITE_DESCRIPTION = 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي';
+
 export const metadata = {
-  title: 'ibishop',
-  description: 'وسائل تعليمية و علاجية للأرطوفونيا و صعوبات التعلم — ألعاب خشبية و أدوات للدعم البيداغوجي',
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
+  applicationName: SITE_NAME,
+  description: SITE_DESCRIPTION,
   icons: { icon: '/favicon-ibi.png?v=6' },
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    locale: 'ar_DZ',
+    images: [{ url: '/logo-ibi-navy.png', width: 708, height: 546, alt: SITE_NAME }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ['/logo-ibi-navy.png'],
+  },
+  alternates: { canonical: '/' },
+};
+
+// Données structurées : Google s'en sert pour le nom du site dans les résultats.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      alternateName: ['ibishop', 'ibishop-dz', 'IBI'],
+      inLanguage: 'ar',
+      publisher: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      alternateName: 'ibishop',
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-ibi-navy.png` },
+      sameAs: [
+        'https://www.facebook.com/ibishop.boutique',
+        'https://instagram.com/ibishop.dz',
+      ],
+    },
+  ],
 };
 
 export default async function RootLayout({ children }) {
@@ -28,6 +79,10 @@ export default async function RootLayout({ children }) {
         <link rel="icon" href="/favicon-ibi.png?v=6" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-ibi.png?v=6" />
         <link rel="shortcut icon" href="/favicon-ibi.png?v=6" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         {/* Thmanyah Sans auto-hebergee : on precharge les 2 graisses les plus utilisees
             (corps 400 + gras 700) pour eviter le flash de police. Cairo/Montserrat/Tajawal
             ont ete retires : plus aucune page ne les utilise, ils bloquaient l'affichage. */}

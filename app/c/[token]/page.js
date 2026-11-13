@@ -63,8 +63,8 @@ export default function ConfirmOrder({ params }) {
       <head>
         <link rel="preload" href="/fonts/thmanyahsans-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/thmanyahsans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <title>تأكيد الطلب - ibishop</title>
-        <meta property="og:title" content="✅ تأكيد طلبك - ibishop" />
+        <title>تأكيد الطلب - IBI Kids</title>
+        <meta property="og:title" content="✅ تأكيد طلبك - IBI Kids" />
         <meta property="og:description" content="اضغط لتأكيد طلبك بكل أمان. تأكيد فوري بدون انتظار." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://ibishop-dz.com/logo-ibi-navy.png" />

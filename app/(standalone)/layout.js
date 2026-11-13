@@ -1,4 +1,4 @@
-export const metadata = { title: 'تأكيد الطلب - ibishop' };
+export const metadata = { title: 'تأكيد الطلب - IBI Kids' };
 
 export default function StandaloneLayout({ children }) {
   return (
