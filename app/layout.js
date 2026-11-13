@@ -107,7 +107,7 @@ export default async function RootLayout({ children }) {
         <div className="wb-grad" style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, padding: '7px 16px', letterSpacing: 0.2 }}>
           توصيل إلى جميع الولايات — الدفع عند الاستلام
         </div>
-        <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--wb-card)', borderBottom: '2px solid var(--wb-lightblue)', boxShadow: '0 2px 14px rgba(75,56,47,0.10)' }}>
+        <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--wb-card)', borderBottom: '2px solid var(--wb-lightblue)', boxShadow: '0 2px 14px rgba(23,19,26,0.10)' }}>
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px' }}>
             <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
               <img src="/logo-ibi-navy.png" alt="IBI Kids" style={{ height: 46, width: 'auto', display: 'block' }} />

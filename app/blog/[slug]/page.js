@@ -42,7 +42,7 @@ export default function BlogPost({ params }) {
       <div style={{ padding: '60px 0', textAlign: 'center' }}>
         <div style={{
           width: 60, height: 60, borderRadius: '50%',
-          border: '4px solid #f0f0f0', borderTopColor: '#55ADFD',
+          border: '4px solid #f0f0f0', borderTopColor: '#A0C4E8',
           animation: 'spin 0.8s linear infinite',
           margin: '0 auto',
         }} />
@@ -55,9 +55,9 @@ export default function BlogPost({ params }) {
     return (
       <div style={{ textAlign: 'center', padding: '80px 24px' }}>
         <p style={{ fontSize: 64, marginBottom: 12 }}>📭</p>
-        <p style={{ fontSize: 18, color: '#5E6E78', marginBottom: 20 }}>هذه المقالة غير موجودة</p>
+        <p style={{ fontSize: 18, color: '#6B6B75', marginBottom: 20 }}>هذه المقالة غير موجودة</p>
         <Link href="/blog" style={{
-          background: '#184391', color: '#fff', padding: '12px 28px',
+          background: '#17131A', color: '#fff', padding: '12px 28px',
           borderRadius: 50, fontWeight: 700, fontSize: 14,
           textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6,
         }}>
@@ -82,7 +82,7 @@ export default function BlogPost({ params }) {
   return (
     <div>
       <div style={{
-        background: 'linear-gradient(135deg, #F4FAFF, #EAF6FE)',
+        background: 'linear-gradient(135deg, #FBF7FB, #F1F8FD)',
         padding: '40px 24px', position: 'relative',
       }}>
         <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
@@ -96,7 +96,7 @@ export default function BlogPost({ params }) {
         <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <Link href="/blog" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            color: '#184391', fontWeight: 700, fontSize: 14, marginBottom: 20,
+            color: '#17131A', fontWeight: 700, fontSize: 14, marginBottom: 20,
             textDecoration: 'none', transition: 'gap 0.2s',
           }}
           onMouseEnter={e => e.currentTarget.style.gap = '10px'}
@@ -116,7 +116,7 @@ export default function BlogPost({ params }) {
 
           {post.category && (
             <div style={{
-              display: 'inline-flex', background: '#B9E8FC', color: '#184391',
+              display: 'inline-flex', background: '#DDEBF7', color: '#17131A',
               padding: '4px 14px', borderRadius: 50, fontSize: 12, fontWeight: 700,
               marginBottom: 12,
             }}>
@@ -127,7 +127,7 @@ export default function BlogPost({ params }) {
           <h1 style={{
             fontFamily: "'Thmanyah Sans', sans-serif",
             fontWeight: 900, fontSize: 32,
-            color: '#184391', lineHeight: 1.2,
+            color: '#17131A', lineHeight: 1.2,
             marginBottom: 12,
           }}>
             {post.title}
@@ -158,7 +158,7 @@ export default function BlogPost({ params }) {
           marginTop: -20, position: 'relative', zIndex: 2,
         }}>
           {sections.length === 0 ? (
-            <p style={{ fontSize: 15, lineHeight: 1.9, color: '#184391' }}>
+            <p style={{ fontSize: 15, lineHeight: 1.9, color: '#17131A' }}>
               {post.excerpt}
             </p>
           ) : (
@@ -167,19 +167,19 @@ export default function BlogPost({ params }) {
                 <div key={i}>
                   <h2 style={{
                     fontFamily: "'Thmanyah Sans', sans-serif",
-                    fontSize: 18, fontWeight: 800, color: '#184391',
+                    fontSize: 18, fontWeight: 800, color: '#17131A',
                     marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
                   }}>
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       width: 28, height: 28, borderRadius: '50%',
-                      background: '#184391', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0,
+                      background: '#17131A', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0,
                     }}>
                       {i + 1}
                     </span>
                     {section.title}
                   </h2>
-                  <p style={{ fontSize: 15, lineHeight: 1.9, color: '#184391', paddingRight: 38 }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.9, color: '#17131A', paddingRight: 38 }}>
                     {section.body}
                   </p>
                 </div>
@@ -190,7 +190,7 @@ export default function BlogPost({ params }) {
 
         <div style={{
           marginTop: 24, padding: '28px 24px',
-          background: 'linear-gradient(135deg, #184391, #1760AD)',
+          background: 'linear-gradient(135deg, #17131A, #59799B)',
           borderRadius: 24, textAlign: 'center',
           position: 'relative', overflow: 'hidden',
         }}>
@@ -212,12 +212,12 @@ export default function BlogPost({ params }) {
             </p>
             <Link href="/" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#fff', color: '#184391', padding: '12px 28px',
+              background: '#fff', color: '#17131A', padding: '12px 28px',
               borderRadius: 50, fontWeight: 800, fontSize: 14,
               textDecoration: 'none', transition: 'background 0.2s, color 0.2s',
             }}
-            onMouseEnter={e => { e.target.style.background = '#B56B44'; e.target.style.color = '#fff'; }}
-            onMouseLeave={e => { e.target.style.background = '#fff'; e.target.style.color = '#184391'; }}>
+            onMouseEnter={e => { e.target.style.background = '#FFCF63'; e.target.style.color = '#17131A'; }}
+            onMouseLeave={e => { e.target.style.background = '#fff'; e.target.style.color = '#17131A'; }}>
               تسوق الآن ←
             </Link>
           </div>

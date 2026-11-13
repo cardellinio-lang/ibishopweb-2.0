@@ -22,7 +22,7 @@ function ConfirmContent() {
   const s = {
     page: {
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#F4FAFF', fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
+      background: '#FBF7FB', fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
     },
     card: {
       background: '#fff', borderRadius: 24, padding: '40px 32px',
@@ -30,7 +30,7 @@ function ConfirmContent() {
       boxShadow: '0 8px 40px rgba(0,0,0,0.06)',
     },
     emoji: { fontSize: 64, marginBottom: 16 },
-    title: { fontSize: 24, fontWeight: 900, marginBottom: 8, color: '#184391' },
+    title: { fontSize: 24, fontWeight: 900, marginBottom: 8, color: '#17131A' },
     text: { fontSize: 15, color: '#6e6e73', lineHeight: 1.6, margin: 0 },
   };
 
@@ -52,7 +52,7 @@ function ConfirmContent() {
         {(status === 'missing' || status === 'invalid') && (
           <><div style={s.emoji}>⚠️</div><h1 style={s.title}>رابط غير صالح</h1><p style={s.text}>عذراً، الرابط الذي استخدمته غير صالح. يرجى التحقق من الرابط والمحاولة مرة أخرى.</p></>
         )}
-        <a href="/" style={{ display: 'inline-block', marginTop: 24, padding: '12px 28px', background: '#184391', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+        <a href="/" style={{ display: 'inline-block', marginTop: 24, padding: '12px 28px', background: '#17131A', color: '#fff', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
           العودة للمتجر
         </a>
       </div>
@@ -63,10 +63,10 @@ function ConfirmContent() {
 export default function ConfirmPage() {
   return (
     <Suspense fallback={
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F4FAFF', fontFamily: "'Thmanyah Sans', sans-serif" }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FBF7FB', fontFamily: "'Thmanyah Sans', sans-serif" }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 64, marginBottom: 16 }}>⏳</div>
-          <h1 style={{ fontSize: 24, fontWeight: 900, color: '#184391' }}>جاري التحميل...</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 900, color: '#17131A' }}>جاري التحميل...</h1>
         </div>
       </div>
     }>

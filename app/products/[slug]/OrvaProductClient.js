@@ -17,16 +17,16 @@ const WILAYA_AR = {
 };
 
 const COLORS = {
-  primary: '#184391',
-  primaryHover: '#0F2E66',
-  text: '#184391',
-  bodyText: '#184391',
+  primary: '#17131A',
+  primaryHover: '#0B0B0E',
+  text: '#17131A',
+  bodyText: '#17131A',
   border: '#D6ECFC',
-  goldBg: 'rgba(85,173,253,0.12)',
-  secondary: '#55ADFD',
+  goldBg: 'rgba(160,196,232,0.12)',
+  secondary: '#A0C4E8',
   white: '#fff',
-  shadow: 'rgba(24,67,145,0.14)',
-  muted: 'rgba(24,67,145,0.6)',
+  shadow: 'rgba(23,19,26,0.14)',
+  muted: 'rgba(23,19,26,0.6)',
 };
 
 export default function OrvaProductClient({ product, wilayas, communes }) {
@@ -146,8 +146,8 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
     <div>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes orvaPulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(181,107,68,0.28); }
-          50% { transform: scale(1.03); box-shadow: 0 6px 24px rgba(85,173,253,0.38); }
+          0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(241,120,173,0.28); }
+          50% { transform: scale(1.03); box-shadow: 0 6px 24px rgba(160,196,232,0.38); }
         }
         @keyframes orvaFadeInUp {
           0% { opacity: 0; transform: translateY(16px); }
@@ -155,7 +155,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
         }
         .orva-input:focus {
           border-color: ${theme.secondary} !important;
-          box-shadow: 0px 0px 0px 2px rgba(85,173,253,0.25) !important;
+          box-shadow: 0px 0px 0px 2px rgba(160,196,232,0.25) !important;
           outline: none;
         }
         .orva-btn {
@@ -164,7 +164,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
           letter-spacing: 0.06em;
         }
         .orva-btn:hover {
-          background-color: #96542F !important;
+          background-color: #B8487D !important;
           box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
           transform: translateY(-1px);
         }
@@ -245,7 +245,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                   <div style={{ textAlign: 'center', marginBottom: 16 }}>
                     <span style={{
                       display: 'inline-block', background: theme.goldBg,
-                      color: '#1760AD', fontSize: 13, padding: '6px 16px',
+                      color: '#59799B', fontSize: 13, padding: '6px 16px',
                       borderRadius: 100, fontWeight: 700, fontFamily: 'Cairo',
                     }}>🔥 خصم {discount}%</span>
                   </div>
@@ -309,8 +309,8 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <div style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '15px 20px', borderRadius: 8,
-                      background: 'rgba(85,173,253,0.10)', marginBottom: 20,
-                      border: '1px solid #B9E8FC',
+                      background: 'rgba(160,196,232,0.10)', marginBottom: 20,
+                      border: '1px solid #DDEBF7',
                     }}>
                       <span style={{ fontFamily: 'Cairo', fontWeight: 600, fontSize: 15, color: theme.text }}>الكمية</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -333,7 +333,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                       <button type="submit" className="orva-btn"
                               style={{
                                 width: '100%', padding: '18px 24px',
-                                background: '#B56B44', color: '#fff',
+                                background: '#17131A', color: '#fff',
                                 fontSize: 16, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                                 borderRadius: 37, border: 'none', cursor: 'pointer',
                                 letterSpacing: '0.06em',
@@ -344,7 +344,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
 
                     {/* COD badge */}
                     <div style={{ textAlign: 'center', marginTop: 12 }}>
-                      <span style={{ fontFamily: 'Cairo', fontSize: 14, color: '#1760AD', fontWeight: 600 }}>
+                      <span style={{ fontFamily: 'Cairo', fontSize: 14, color: '#59799B', fontWeight: 600 }}>
                         🚚 الدفع عند الاستلام - التوصيل إلى المنزل أو المكتب
                       </span>
                     </div>
@@ -402,7 +402,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
               }}
                       className="orva-btn"
                       style={{
-                        padding: '15px 20px', background: '#B56B44', color: '#fff',
+                        padding: '15px 20px', background: '#17131A', color: '#fff',
                         fontSize: 14, fontWeight: 700, fontFamily: 'Cairo, sans-serif',
                         borderRadius: 37, border: 'none', cursor: 'pointer',
                         width: 200, whiteSpace: 'nowrap',

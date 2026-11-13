@@ -31,30 +31,30 @@ export default function ConfirmOrder({ params }) {
   const s = {
     page: {
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(135deg, #F4FAFF 0%, #EAF6FE 50%, #B9E8FC 100%)',
+      background: 'linear-gradient(135deg, #FBF7FB 0%, #F1F8FD 50%, #DDEBF7 100%)',
       fontFamily: "'Thmanyah Sans', sans-serif", padding: 20,
     },
     card: {
       background: '#fff', borderRadius: 28, padding: '48px 36px',
       maxWidth: 420, width: '100%', textAlign: 'center',
-      boxShadow: '0 20px 80px rgba(24,67,145,0.14)',
+      boxShadow: '0 20px 80px rgba(23,19,26,0.14)',
     },
     check: {
       width: 100, height: 100, borderRadius: '50%',
-      background: 'linear-gradient(135deg, #184391, #55ADFD)',
+      background: 'linear-gradient(135deg, #17131A, #A0C4E8)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       margin: '0 auto 24px',
-      boxShadow: '0 8px 32px rgba(24,67,145,0.28)',
+      boxShadow: '0 8px 32px rgba(23,19,26,0.28)',
     },
-    title: { fontSize: 28, fontWeight: 900, marginBottom: 8, color: '#184391' },
+    title: { fontSize: 28, fontWeight: 900, marginBottom: 8, color: '#17131A' },
     text: { fontSize: 16, color: '#4a4a50', lineHeight: 1.8, margin: '0 0 8px' },
     detail: { fontSize: 14, color: '#6e6e73', margin: '4px 0' },
     btn: {
       display: 'inline-block', marginTop: 28, padding: '16px 48px',
-      background: 'linear-gradient(135deg, #184391, #55ADFD)',
+      background: 'linear-gradient(135deg, #17131A, #A0C4E8)',
       color: '#fff', borderRadius: 16, textDecoration: 'none',
       fontWeight: 800, fontSize: 18, border: 'none', cursor: 'pointer',
-      boxShadow: '0 4px 20px rgba(24,67,145,0.28)',
+      boxShadow: '0 4px 20px rgba(23,19,26,0.28)',
     },
   };
 
@@ -101,10 +101,10 @@ export default function ConfirmOrder({ params }) {
               </>
             ) : order ? (
               <>
-                <div style={{ ...s.check, background: 'linear-gradient(135deg, #B56B44, #96542F)' }}>
+                <div style={{ ...s.check, background: 'linear-gradient(135deg, #F178AD, #B8487D)' }}>
                   <span style={{ fontSize: 50 }}>📋</span>
                 </div>
-                <h1 style={{ ...s.title, color: '#96542F' }}>تأكيد طلبك</h1>
+                <h1 style={{ ...s.title, color: '#B8487D' }}>تأكيد طلبك</h1>
                 <p style={s.text}>مرحباً {order.customer}!</p>
                 <p style={s.detail}>رقم الطلب: {order.number}</p>
                 <p style={s.detail}>المبلغ: {order.total?.toLocaleString()} د.ج</p>

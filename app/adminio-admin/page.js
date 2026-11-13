@@ -427,7 +427,7 @@ export default function Admin() {
       {tab === 'products' && (
         <div className="card" style={{ overflowX: 'auto' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-            <button className="btn btn-ghost" style={{ border: '1px solid #55ADFD', color: '#184391', fontSize: 13 }}
+            <button className="btn btn-ghost" style={{ border: '1px solid #A0C4E8', color: '#17131A', fontSize: 13 }}
                     onClick={autoThemeAll} disabled={themeAllLoading}>
               {themeAllLoading ? '⏳ Analyse des images…' : '🎨 Thèmes auto depuis les images'}
             </button>
@@ -1497,12 +1497,12 @@ export default function Admin() {
                 Personnalise les couleurs du thème. Format: <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>rgba(r,g,b,a)</code> ou <code style={{ fontSize: 12, background: '#e5e5ea', padding: '2px 6px', borderRadius: 4 }}>#hex</code>.
               </p>
               {[
-                { key: 'primary', label: 'Couleur primaire', def: '#184391' },
-                { key: 'primary_hover', label: 'Survol bouton', def: '#0F2E66' },
-                { key: 'gold_bg', label: 'Fond icônes', def: 'rgba(24,67,145,0.08)' },
-                { key: 'text', label: 'Texte', def: '#184391' },
+                { key: 'primary', label: 'Couleur primaire', def: '#17131A' },
+                { key: 'primary_hover', label: 'Survol bouton', def: '#0B0B0E' },
+                { key: 'gold_bg', label: 'Fond icônes', def: 'rgba(23,19,26,0.08)' },
+                { key: 'text', label: 'Texte', def: '#17131A' },
                 { key: 'border', label: 'Bordure', def: '#D6ECFC' },
-                { key: 'secondary', label: 'Bouton principal', def: '#55ADFD' },
+                { key: 'secondary', label: 'Bouton principal', def: '#A0C4E8' },
               ].map(({ key, label, def }) => {
                 const val = settings[key] ?? def;
                 return (
@@ -1590,26 +1590,26 @@ export default function Admin() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
                 <label style={{ fontWeight: 700, margin: 0 }}>🎨 Thème de la page produit</label>
                 <button type="button" onClick={() => { setForm(f => ({ ...f, themeColor: '' })); setThemePalette([]); }}
-                        style={{ background: form.themeColor ? '#e8e8ed' : '#dcfce7', border: 'none', borderRadius: 8, padding: '5px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#184391' }}>
+                        style={{ background: form.themeColor ? '#e8e8ed' : '#dcfce7', border: 'none', borderRadius: 8, padding: '5px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#17131A' }}>
                   ♻️ Auto (image)
                 </button>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <input type="color" value={form.themeColor || '#184391'} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} style={{ width: 50, height: 40, padding: 2, borderRadius: 8 }} />
+                <input type="color" value={form.themeColor || '#A0C4E8'} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} style={{ width: 50, height: 40, padding: 2, borderRadius: 8 }} />
                 <input value={form.themeColor} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} placeholder="Vide = couleur dominante de l'image" dir="ltr" style={{ flex: 1, fontFamily: 'monospace', fontSize: 13 }} />
               </div>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                {['#184391', '#55ADFD', '#A6CD4D', '#B56B44', '#B9E8FC', ...themePalette].map((hex, i) => (
+                {['#A0C4E8', '#B4E0D3', '#D7E06D', '#F178AD', '#CF97C4', '#FFCF63', ...themePalette].map((hex, i) => (
                   <button key={hex + i} type="button" onClick={() => setForm(f => ({ ...f, themeColor: hex }))} title={hex}
                           style={{ width: 28, height: 28, borderRadius: 8, border: (form.themeColor || '').toLowerCase() === hex.toLowerCase() ? '3px solid #1d1d1f' : '1px solid #d2d2d7', background: hex, cursor: 'pointer', padding: 0 }} />
                 ))}
               </div>
               <button type="button" onClick={suggestTheme} disabled={themeLoading}
-                      style={{ marginTop: 10, width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid #55ADFD', background: '#EAF6FE', color: '#184391', fontSize: 13, fontWeight: 800, cursor: themeLoading ? 'progress' : 'pointer' }}>
+                      style={{ marginTop: 10, width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid #A0C4E8', background: '#F1F8FD', color: '#17131A', fontSize: 13, fontWeight: 800, cursor: themeLoading ? 'progress' : 'pointer' }}>
                 {themeLoading ? '⏳ Analyse des images…' : "🖼️ Prendre les couleurs de l'image"}
               </button>
               {(() => {
-                const t = themeTokens(form.themeColor || '#184391');
+                const t = themeTokens(form.themeColor || '#A0C4E8');
                 return (
                   <div style={{ marginTop: 10, padding: 10, borderRadius: 10, background: t.soft, border: `1px solid ${t.border}` }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: t.text, marginBottom: 6 }}>

@@ -23,7 +23,7 @@ function ProductCard({ p, now }) {
              alt={p.name}
              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {discount > 0 && (
-          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-brown)', color: '#fff', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(24,67,145,.35)' }}>
+          <span style={{ position: 'absolute', top: 8, right: 8, background: 'var(--wb-brown)', color: 'var(--wb-navy)', fontSize: 12, fontWeight: 900, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(23,19,26,.18)' }}>
             -{discount}%
           </span>
         )}
@@ -104,7 +104,7 @@ export default function HomeClient({ products, featuredProduct }) {
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
         <button className="wb-search-btn" type="button" aria-label="بحث">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184391" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17131A" strokeWidth="2.5" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" /><path d="m20 20-3.2-3.2" />
           </svg>
         </button>
@@ -141,17 +141,17 @@ export default function HomeClient({ products, featuredProduct }) {
 
       {/* Stats Strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 36, textAlign: 'center' }}>
-        <div style={{ background: 'var(--wb-navy)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(24,67,145,.20)' }}>
+        <div style={{ background: 'var(--wb-navy)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(23,19,26,.20)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>{products.length}+</div>
-          <div style={{ fontSize: 13, color: 'rgba(185,232,252,.86)', fontWeight: 600, marginTop: 4 }}>منتج</div>
+          <div style={{ fontSize: 13, color: 'rgba(221,235,247,.86)', fontWeight: 600, marginTop: 4 }}>منتج</div>
         </div>
-        <div style={{ background: 'var(--wb-green)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(166,205,77,.30)' }}>
+        <div style={{ background: 'var(--wb-green)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(215,224,109,.30)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-navy)' }}>58</div>
-          <div style={{ fontSize: 13, color: 'rgba(24,67,145,.78)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
+          <div style={{ fontSize: 13, color: 'rgba(23,19,26,.78)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
         </div>
-        <div style={{ background: 'var(--wb-brown)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(181,107,68,.28)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>10</div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.82)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
+        <div style={{ background: 'var(--wb-brown)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(241,120,173,.28)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-navy)' }}>10</div>
+          <div style={{ fontSize: 13, color: 'rgba(23,19,26,.78)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
         </div>
       </div>
     </div>

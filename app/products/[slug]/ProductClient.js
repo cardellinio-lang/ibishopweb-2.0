@@ -31,7 +31,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // Thème de la page produit : couleur choisie dans l'admin, sinon couleur
   // dominante de l'image principale (calculée dans le navigateur).
   const [autoTheme, setAutoTheme] = useState(null);
-  const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#184391');
+  const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
   const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
@@ -135,12 +135,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     { label: 'غلاف بنفسجي', price: 3950, color: '#7c3aed', img: 1 },
     { label: 'غلاف أزرق', price: 3950, color: '#2563eb', img: 2 },
     { label: 'غلاف ذهبي', price: 3950, color: '#b45309', img: 3 },
-    { label: 'غلاف أخضر', price: 3950, color: '#6E8F2A', img: 4 },
+    { label: 'غلاف أخضر', price: 3950, color: '#697327', img: 4 },
     { label: 'باك كامل بنفسجي', price: 3950, color: '#7c3aed', img: 5 },
     { label: 'باك كامل وردي', price: 3950, color: '#ec4899', img: 6 },
     { label: 'باك كامل أزرق', price: 3950, color: '#2563eb', img: 7 },
     { label: 'باك كامل ذهبي', price: 3950, color: '#b45309', img: 8 },
-    { label: 'باك كامل أخضر', price: 3950, color: '#6E8F2A', img: 9 },
+    { label: 'باك كامل أخضر', price: 3950, color: '#697327', img: 9 },
   ] : product.slug === 'cadre-dessin-enfant-a4' ? [
     { label: 'أسود', price: 2200, color: '#000000' },
     { label: 'بني', price: 2200, color: '#B9A07E' },
@@ -476,7 +476,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
                 {product.oldPrice && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
                 <span style={{
-                  fontSize: 28, fontWeight: 800, color: tierActive ? '#6E8F2A' : c,
+                  fontSize: 28, fontWeight: 800, color: tierActive ? '#697327' : c,
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
                   {finalPrice.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span>
@@ -828,7 +828,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid var(--p-border)', background: 'var(--p-soft)', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text)' }}>
                     +
                   </button>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#6E8F2A' : c }}>× {finalPrice.toLocaleString()} د.ج</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString()} د.ج</div>
                 </div>
               </div>
               )}
@@ -840,7 +840,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   {product.slug === 'cadre-dessin-enfant-a4' ? (
                     <div style={{ fontSize: 16, fontWeight: 700, color: c }}>{cadreAvgPrice.toLocaleString()} د.ج</div>
                   ) : (
-                    <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#6E8F2A' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
                   )}
                 </div>
               </div>
@@ -877,7 +877,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>سعر المنتج</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: tierActive ? '#6E8F2A' : '#6e6e73' }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: tierActive ? '#697327' : '#6e6e73' }}>
                       {finalPrice.toLocaleString()} د.ج
                       {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString()}</span>}
                     </span>
@@ -888,7 +888,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>{deliveryType === 'home' ? 'سعر التوصيل للمنزل' : 'سعر التوصيل للمكتب'}</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: freeOfficeDelivery && deliveryType === 'office' ? '#6E8F2A' : '#6e6e73' }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: freeOfficeDelivery && deliveryType === 'office' ? '#697327' : '#6e6e73' }}>
                       {freeOfficeDelivery && deliveryType === 'office'
                         ? 'مجاني'
                         : (delivery > 0 ? `${delivery.toLocaleString()} د.ج` : 'اختر الولاية')}
@@ -911,7 +911,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               {isWhatsAppProduct && (
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6E8F2A', background: '#F0F7E6', padding: '6px 14px', borderRadius: 20 }}>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#697327', background: '#EDF6EF', padding: '6px 14px', borderRadius: 20 }}>
                       {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
                     </span>
                   </div>
@@ -1096,7 +1096,7 @@ function CelebrationOverlay({ data, onClose }) {
     canvas.width = parent.offsetWidth;
     canvas.height = parent.offsetHeight;
 
-    const colors = ['#184391','#55ADFD','#B9E8FC','#A6CD4D','#B56B44','#1760AD','#96542F','#6E8F2A'];
+    const colors = ['#17131A','#A0C4E8','#B4E0D3','#D7E06D','#F178AD','#CF97C4','#FFCF63'];
     let pieces = [];
 
     for (let i = 0; i < 100; i++) {
@@ -1179,7 +1179,7 @@ function CelebrationOverlay({ data, onClose }) {
         const angle = Math.random() * Math.PI * 2;
         const dist = 60 + Math.random() * 120;
         const size = 3 + Math.random() * 6;
-        const colors = ['#184391','#55ADFD','#B9E8FC','#A6CD4D','#B56B44','#1760AD','#fff'];
+        const colors = ['#17131A','#A0C4E8','#B4E0D3','#D7E06D','#F178AD','#CF97C4','#FFCF63'];
         return (
           <div key={i} style={{
             position: 'absolute', left: '50%', top: '50%',
