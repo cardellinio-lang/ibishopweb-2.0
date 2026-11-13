@@ -1,13 +1,19 @@
 import prisma, { withDbRetry } from '@/lib/db';
 
-export async function POST() {
+export async function POST(req) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  let event = 'page_view';
+
+  try {
+    const body = await req.json();
+    if (['page_view', 'product_view', 'order_start'].includes(body?.event)) event = body.event;
+  } catch {}
 
   // Une statistique de visite ne doit jamais faire échouer la requête.
   try {
     const existing = await withDbRetry(() => prisma.pageView.findFirst({
-      where: { date: { gte: today } },
+      where: { date: { gte: today }, path: event },
     }));
 
     if (existing) {
@@ -17,7 +23,7 @@ export async function POST() {
       }));
     } else {
       await withDbRetry(() => prisma.pageView.create({
-        data: { date: today, count: 1 },
+        data: { date: today, path: event, count: 1 },
       }));
     }
   } catch (e) {

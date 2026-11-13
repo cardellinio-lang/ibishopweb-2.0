@@ -1214,6 +1214,18 @@ export default function Admin() {
                   <div style={{ fontSize: 28, fontWeight: 900, color: '#8b5cf6' }}>{stats.totalProducts}</div>
                   <div style={{ fontSize: 13, color: '#6e6e73' }}>Produits actifs</div>
                 </div>
+                <div style={{ background: '#fff7ed', borderRadius: 12, padding: 16, textAlign: 'center' }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: '#c2410c' }}>{stats.todayProductViews || 0}</div>
+                  <div style={{ fontSize: 13, color: '#6e6e73' }}>Fiches produit vues aujourd'hui</div>
+                </div>
+                <div style={{ background: '#fdf2f8', borderRadius: 12, padding: 16, textAlign: 'center' }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: '#be185d' }}>{stats.todayOrderStarts || 0}</div>
+                  <div style={{ fontSize: 13, color: '#6e6e73' }}>Formulaires commencés</div>
+                </div>
+                <div style={{ background: '#ecfdf5', borderRadius: 12, padding: 16, textAlign: 'center' }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: '#047857' }}>{stats.todayOrders || 0}</div>
+                  <div style={{ fontSize: 13, color: '#6e6e73' }}>Commandes enregistrées aujourd'hui</div>
+                </div>
               </div>
               {stats.weeklyViews?.length > 0 && (
                 <div>

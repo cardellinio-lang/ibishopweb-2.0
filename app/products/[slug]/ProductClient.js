@@ -60,19 +60,33 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [scrolled, setScrolled] = useState(false);
   const [celebration, setCelebration] = useState(null);
   const [blocked, setBlocked] = useState(false);
-  const [liveCount, setLiveCount] = useState(14 + Math.floor(Math.random() * 6));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveCount(prev => {
-        const delta = Math.random() < 0.5 ? 1 : -1;
-        return Math.max(12, Math.min(22, prev + delta));
-      });
-    }, 4000 + Math.random() * 3000);
-    return () => clearInterval(interval);
-  }, []);
+  const orderStartTrackedRef = useRef(false);
 
   const [reviews, setReviews] = useState([]);
+
+  const reviewSummary = useMemo(() => {
+    if (!reviews.length) return null;
+    const average = reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length;
+    return { average, count: reviews.length };
+  }, [reviews]);
+
+  useEffect(() => {
+    fetch('/api/pageview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'product_view' }),
+    }).catch(() => {});
+  }, [product.id]);
+
+  const trackOrderStart = useCallback(() => {
+    if (orderStartTrackedRef.current) return;
+    orderStartTrackedRef.current = true;
+    fetch('/api/pageview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'order_start' }),
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch(`/api/reviews?productId=${product.id}`)
@@ -415,10 +429,6 @@ export default function ProductClient({ product, wilayas, communes}) {
           0% { background-position: -200% center; }
           100% { background-position: 200% center; }
         }
-        @keyframes blinkPulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(0.85); }
-        }
         .order-btn {
           -webkit-tap-highlight-color: transparent;
         }
@@ -432,18 +442,6 @@ export default function ProductClient({ product, wilayas, communes}) {
           <span style={{ fontSize: 26 }}>🚚</span>
           الدفع عند الاستلام
         </div>
-
-      {/* Social proof : blinking green dot */}
-      {product.slug !== 'chaussure-cuir-marron' && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
-          <span style={{
-            width: 12, height: 12, borderRadius: '50%', background: '#A6CD4D', display: 'inline-block',
-            animation: 'blinkPulse 1.5s ease-in-out infinite',
-            boxShadow: '0 0 8px rgba(166,205,77,0.75)',
-          }} />
-          <span style={{ fontSize: 15, fontWeight: 800, color: '#6E8F2A' }}>{liveCount} شخص يشترون الآن</span>
-        </div>
-      )}
 
       <div className="lg-flex-row" style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
         {/* Left column - Image */}
@@ -477,6 +475,13 @@ export default function ProductClient({ product, wilayas, communes}) {
             {/* Product title & price */}
             <div style={{ textAlign: 'center', position: 'relative' }}>
               <h1 style={{ fontSize: 24, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, color: '#1d1d1f' }}>{product.name}</h1>
+              {reviewSummary && (
+                <a href="#customer-reviews" aria-label={`تقييم ${reviewSummary.average.toFixed(1)} من 5، ${reviewSummary.count} آراء العملاء`}
+                   style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 8, color: '#80613E', fontSize: 14, fontWeight: 800 }}>
+                  <span style={{ color: '#C28A32', letterSpacing: 1 }}>{'★'.repeat(Math.round(reviewSummary.average))}{'☆'.repeat(5 - Math.round(reviewSummary.average))}</span>
+                  <span>{reviewSummary.average.toFixed(1)} · {reviewSummary.count} آراء العملاء</span>
+                </a>
+              )}
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
                 {product.oldPrice && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
                 <span style={{
@@ -498,10 +503,11 @@ export default function ProductClient({ product, wilayas, communes}) {
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
             </div>
 
-            {/* Urgence */}
-            <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '14px 18px', margin: '0 20px 16px', textAlign: 'center', border: '1.5px solid var(--p-border-strong)' }}>
+            <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '10px 16px', margin: '0 20px 16px', textAlign: 'center', border: '1px solid var(--p-border)' }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.6 }}>
-                هذا المنتج ينفذ بسرعة لذا اطلبوا نسختكم اليوم ليتم تأكيدها
+                {product.stock > 0 && product.stock <= 3
+                  ? `متوفر — بقي ${product.stock} فقط في المخزون`
+                  : product.stock > 0 ? 'متوفر للطلب — الدفع عند الاستلام' : 'غير متوفر حالياً'}
               </div>
             </div>
 
@@ -516,7 +522,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </div>
               </div>
             ) : (
-            <form ref={formRef} data-order-form onSubmit={e => { e.preventDefault(); submitOrder(); }} style={{ padding: '0 20px 20px' }}>
+            <form ref={formRef} data-order-form onFocusCapture={trackOrderStart} onSubmit={e => { e.preventDefault(); submitOrder(); }} style={{ padding: '0 20px 20px' }}>
               {/* Name */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الاسم الكامل</label>
@@ -546,6 +552,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <option value="">اختر الولاية</option>
                   {wilayas.map(w => <option key={w.id} value={w.id}>{WILAYA_AR[w.id] || w.name} / {w.name}</option>)}
                 </select>
+                {selectedWilaya && (
+                  <div style={{ marginTop: 7, fontSize: 12, fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.6 }}>
+                    التوصيل للمنزل: {selectedWilaya.price.toLocaleString()} د.ج · إلى المكتب: {freeOfficeDelivery ? 'مجاني' : `${selectedWilaya.priceOffice.toLocaleString()} د.ج`}
+                  </div>
+                )}
               </div>
 
               {/* Commune */}
@@ -869,30 +880,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </div>
               </div>
 
-              {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginBottom: 16 }}>{error}</div>}
-
-              {/* Submit buttons */}
-              <button type="submit" className="order-btn"
-                      style={{ width: '100%', padding: '16px 24px', background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
-                اطلب الآن
-              </button>
-
-              {isWhatsAppProduct && (
-                <div style={{ marginTop: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6E8F2A', background: '#F0F7E6', padding: '6px 14px', borderRadius: 20 }}>
-                      {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
-                    </span>
-                  </div>
-                  <button type="button" onClick={submitWhatsAppOrder}
-                          style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
-                          className="order-btn">
-                    {isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني'}
-                  </button>
-                </div>
-              )}
-
-              {/* Order Summary */}
+              {/* Order Summary: displayed before the order actions */}
               <div style={{ marginTop: 20, background: 'var(--p-soft)', borderRadius: 14, padding: 16, border: '1px solid var(--p-border)' }}>
                 <h3 style={{ fontSize: 16, fontWeight: 900, marginBottom: 4, color: '#1d1d1f' }}>ملخص الطلبية</h3>
                 <div>
@@ -916,11 +904,33 @@ export default function ProductClient({ product, wilayas, communes}) {
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
-                    <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>السعر الإجمالي</span>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--p-text)' }}>{delivery > 0 ? `${total.toLocaleString()} د.ج` : `${subtotal.toLocaleString()} د.ج`}</span>
+                    <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{selectedWilaya ? 'السعر الإجمالي' : 'الإجمالي قبل التوصيل'}</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--p-text)' }}>{total.toLocaleString()} د.ج</span>
                   </div>
                 </div>
               </div>
+
+              {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginTop: 16 }}>{error}</div>}
+
+              <button type="submit" className="order-btn"
+                      style={{ width: '100%', padding: '16px 24px', marginTop: 16, background: 'var(--p-cta)', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
+                اطلب الآن
+              </button>
+
+              {isWhatsAppProduct && (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#6E8F2A', background: '#F0F7E6', padding: '6px 14px', borderRadius: 20 }}>
+                      {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
+                    </span>
+                  </div>
+                  <button type="button" onClick={submitWhatsAppOrder}
+                          style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                          className="order-btn">
+                    {isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني'}
+                  </button>
+                </div>
+              )}
             </form>
             )}
           </div>
@@ -947,7 +957,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       )}
 
       {/* Reviews / Avis */}
-      <div style={{ marginTop: 24, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+      <div id="customer-reviews" style={{ marginTop: 24, background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 8px 40px rgba(0,0,0,0.08)', scrollMarginTop: 90 }}>
         <h3 style={{ fontSize: 20, fontWeight: 900, textAlign: 'center', marginBottom: 20, color: '#1d1d1f' }}>⭐ آراء العملاء</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {reviews.map((review, i) => (
