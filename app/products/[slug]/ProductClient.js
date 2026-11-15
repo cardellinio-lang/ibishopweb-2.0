@@ -18,6 +18,24 @@ const WILAYA_AR = {
   53:'عين صالح',54:'عين قزام',55:'تقرت',56:'جانت',57:'المغير',58:'المنيعة',
 };
 
+// Téléphone algérien : 10 chiffres commençant par 0 (mobile 05/06/07, fixe 02/03/04).
+// On ne garde que les chiffres en état, et on affiche des groupes lisibles.
+function phoneDigits(value) {
+  return String(value || '').replace(/\D/g, '').slice(0, 10);
+}
+
+function formatPhone(value) {
+  const d = phoneDigits(value);
+  if (d.length <= 4) return d;
+  if (d.length <= 6) return `${d.slice(0, 4)} ${d.slice(4)}`;
+  if (d.length <= 8) return `${d.slice(0, 4)} ${d.slice(4, 6)} ${d.slice(6)}`;
+  return `${d.slice(0, 4)} ${d.slice(4, 6)} ${d.slice(6, 8)} ${d.slice(8)}`;
+}
+
+function isValidPhone(value) {
+  return /^0[2-7]\d{8}$/.test(phoneDigits(value));
+}
+
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
   hex = hex.replace('#', '');
@@ -49,6 +67,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [celebration, setCelebration] = useState(null);
   const [blocked, setBlocked] = useState(false);
   const orderStartTrackedRef = useRef(false);
@@ -164,8 +184,15 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    const onResize = () => setIsMobile(window.innerWidth < 1024);
+    onScroll();
+    onResize();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -227,7 +254,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
   // Vérifier si ce téléphone est bloqué pour ce produit
   useEffect(() => {
-    if (phone.replace(/\s/g, '').length >= 10) {
+    if (isValidPhone(phone)) {
       fetch('/api/check-phone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -288,6 +315,12 @@ export default function ProductClient({ product, wilayas, communes}) {
       setError('يرجى ملء جميع الحقول المطلوبة');
       return;
     }
+    if (!isValidPhone(phone)) {
+      setPhoneTouched(true);
+      setError('رقم الهاتف غير صحيح — 10 أرقام تبدأ بـ 0');
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     submittedRef.current = true;
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
@@ -333,6 +366,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (submittedRef.current) return;
     if (!customer || !phone || !wilayaId || !communeId || realQty < 1) {
       setError('يرجى ملء جميع الحقول المطلوبة');
+      return;
+    }
+    if (!isValidPhone(phone)) {
+      setPhoneTouched(true);
+      setError('رقم الهاتف غير صحيح — 10 أرقام تبدأ بـ 0');
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
     submittedRef.current = true;
@@ -541,7 +580,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الاسم</label>
                 <input value={customer} onChange={e => setCustomer(e.target.value)}
-                       placeholder="أدخل الاسم"
+                       placeholder="أدخل الاسم" autoComplete="name" name="name"
                        style={{ width: '100%', padding: '12px 16px', border: '1.5px solid #d2d2d7', borderRadius: 12, fontSize: 16, background: '#fff' }}
                        onFocus={e => e.target.style.borderColor = 'var(--p-accent)'}
                        onBlur={e => e.target.style.borderColor = '#d2d2d7'} />
@@ -550,12 +589,19 @@ export default function ProductClient({ product, wilayas, communes}) {
               {/* Phone */}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>رقم الهاتف</label>
-                <input value={phone} onChange={e => setPhone(e.target.value)}
-                       placeholder="05XX XX XX XX" dir="ltr"
-                       style={{ width: '100%', padding: '12px 16px', border: '1.5px solid #d2d2d7', borderRadius: 12, fontSize: 16, textAlign: 'right', background: '#fff' }}
-                       onFocus={e => e.target.style.borderColor = 'var(--p-accent)'}
-                       onBlur={e => e.target.style.borderColor = '#d2d2d7'} />
-                <div style={{ fontSize: 12, color: '#8e8e93', marginTop: 4 }}>سنقوم بالاتصال بك عبر هذا الرقم لتأكيد الطلب.</div>
+                <input value={formatPhone(phone)}
+                       onChange={e => setPhone(phoneDigits(e.target.value))}
+                       onBlur={e => { setPhoneTouched(true); e.target.style.borderColor = '#d2d2d7'; }}
+                       type="tel" inputMode="tel" autoComplete="tel" name="tel"
+                       maxLength={13}
+                       placeholder="05XX XX XX XX" dir="ltr" aria-label="رقم الهاتف"
+                       style={{ width: '100%', padding: '12px 16px', border: `1.5px solid ${phoneTouched && phone && !isValidPhone(phone) ? '#e5484d' : '#d2d2d7'}`, borderRadius: 12, fontSize: 16, textAlign: 'left', background: '#fff', letterSpacing: '0.5px' }}
+                       onFocus={e => e.target.style.borderColor = 'var(--p-accent)'} />
+                <div style={{ fontSize: 12, color: phoneTouched && phone && !isValidPhone(phone) ? '#e5484d' : '#8e8e93', marginTop: 4 }}>
+                  {phoneTouched && phone && !isValidPhone(phone)
+                    ? 'رقم غير صحيح — 10 أرقام تبدأ بـ 0'
+                    : 'سنقوم بالاتصال بك عبر هذا الرقم لتأكيد الطلب.'}
+                </div>
               </div>
 
               {/* Wilaya */}
@@ -1004,9 +1050,12 @@ export default function ProductClient({ product, wilayas, communes}) {
         </div>
       </div>
 
-      {/* Sticky bottom button — scrolls to form OR submits if form is complete */}
-      {scrolled && (
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px', background: lightBg, borderTop: `1px solid ${hexToRgba(c, 0.15)}`, zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+      {/* Sticky bottom button — visible dès le premier écran sur mobile,
+          puis après scroll sur desktop. Soumet si le formulaire est complet,
+          sinon fait défiler jusqu'au formulaire. */}
+      {(scrolled || isMobile) && <div aria-hidden="true" style={{ height: 84 }} />}
+      {(scrolled || isMobile) && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '10px 16px', paddingBottom: 'calc(10px + env(safe-area-inset-bottom))', background: '#fff', borderTop: `1px solid ${hexToRgba(c, 0.15)}`, zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
           {isWhatsAppProduct ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -1031,15 +1080,23 @@ export default function ProductClient({ product, wilayas, communes}) {
               </div>
             </div>
           ) : (
-          <button onClick={() => {
-            const allFilled = customer && phone && wilayaId && communeId;
-            if (allFilled) { submitOrder(); }
-            else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-          }}
-                  style={{ width: '100%', padding: '16px 24px', background: '#55C6C0', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
-                  className="order-btn">
-            اطلب الآن
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ flexShrink: 0, lineHeight: 1.15, textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#6e6e73' }}>المجموع</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: c, whiteSpace: 'nowrap' }}>
+                {total.toLocaleString()} <span style={{ fontSize: 11 }}>د.ج</span>
+              </div>
+            </div>
+            <button onClick={() => {
+              const allFilled = customer && phone && wilayaId && communeId;
+              if (allFilled) { submitOrder(); }
+              else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            }}
+                    style={{ flex: 1, padding: '15px 20px', background: '#55C6C0', color: '#fff', fontSize: 18, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
+                    className="order-btn">
+              اطلب الآن
+            </button>
+          </div>
           )}
         </div>
       )}

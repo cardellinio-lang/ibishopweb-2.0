@@ -280,9 +280,11 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
 
                     {/* Phone */}
                     <div style={{ marginBottom: 16 }}>
-                      <input value={phone} onChange={e => setPhone(e.target.value)}
-                             placeholder="رقم الهاتف" dir="ltr" className="orva-input"
-                             style={{ ...ib, textAlign: 'right' }} />
+                      <input value={phone}
+                             onChange={e => setPhone(String(e.target.value).replace(/\D/g, '').slice(0, 10))}
+                             type="tel" inputMode="tel" autoComplete="tel" name="tel" maxLength={10} aria-label="رقم الهاتف"
+                             placeholder="05XXXXXXXX" dir="ltr" className="orva-input"
+                             style={{ ...ib, textAlign: 'left', letterSpacing: '0.5px' }} />
                     </div>
 
                     {/* Wilaya */}
