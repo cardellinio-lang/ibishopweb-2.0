@@ -55,7 +55,10 @@ function ProductCard({ p, now }) {
 function FeaturedProductBanner({ product }) {
   if (!product) return null;
   const images = JSON.parse(product.images || '[]');
-  const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
+  // Le cadre A4 a un prix dédié (source: lib/pricing.js), comme sur sa fiche.
+  const isCadre = product.slug === CADRE_SLUG;
+  const displayPrice = isCadre ? CADRE_BASE_PRICE : product.price;
+  const discount = !isCadre && product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
 
   return (
     <a href={`/products/${product.slug}`} className="wb-home-hero" dir="rtl" aria-label={`اكتشف ${product.name}`}>
@@ -64,7 +67,7 @@ function FeaturedProductBanner({ product }) {
         <h2>{product.name}</h2>
         <p>ألعاب ووسائل تعليمية للأطفال · الدفع عند الاستلام</p>
         <div className="wb-home-hero-price">
-          <strong>{product.price.toLocaleString()} د.ج</strong>
+          <strong>{displayPrice.toLocaleString()} د.ج</strong>
           {discount > 0 && <><del>{product.oldPrice.toLocaleString()} د.ج</del><span>-{discount}%</span></>}
         </div>
         <span className="wb-home-hero-cta">اكتشف المنتج <span aria-hidden="true">←</span></span>
