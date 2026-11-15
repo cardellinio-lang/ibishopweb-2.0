@@ -804,19 +804,19 @@ async function main() {
     console.log('✅ sabourat-el-horouf already present (kept admin edits)');
   }
 
-  // Cadre dessin A4 : joli encadrement avec façade en verre, sans mention
-  // du matériau (plus de plexiglas ni de MDF). Migration idempotente : ne
-  // touche qu'aux descriptions contenant encore les anciennes mentions.
+  // Cadre dessin A4 : joli encadrement avec façade en verre et ouverture
+  // magnétique, sans mention du matériau. Migration idempotente : ne touche
+  // qu'aux descriptions contenant encore les anciennes mentions.
   const cadreSlug = 'cadre-dessin-enfant-a4';
   const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug } });
-  if (cadre && /plexiglas|MDF|Cadre en bois/i.test(cadre.description || '')) {
+  if (cadre && /plexiglas|MDF|Cadre en bois|crochet/i.test(cadre.description || '')) {
     await prisma.product.update({
       where: { slug: cadreSlug },
       data: {
-        description: "Joli encadrement pour dessins d'enfants format A4. Ouverture avant avec crochet pour fermeture, rangement jusqu'à 200 dessins. Façade en verre. Couleurs disponibles : Noir et effet Bois.",
+        description: "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en verre. Couleurs disponibles : Noir et effet Bois.",
       },
     });
-    console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (façade en verre, sans matériau)');
+    console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (façade en verre, ouverture magnétique)');
   }
 }
 
