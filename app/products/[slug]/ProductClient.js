@@ -100,10 +100,22 @@ export default function ProductClient({ product, wilayas, communes}) {
   }, []);
 
   useEffect(() => {
-    fetch(`/api/reviews?productId=${product.id}`)
-      .then(r => r.json())
-      .then(data => setReviews(data))
-      .catch(() => {});
+    let cancelled = false;
+    const load = async (attempt = 0) => {
+      try {
+        const res = await fetch(`/api/reviews?productId=${product.id}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (Array.isArray(data)) { setReviews(data); return; }
+      } catch {
+        if (cancelled) return;
+      }
+      // Base momentanément saturée : on retente plutôt que de laisser
+      // la section avis vide.
+      if (!cancelled && attempt < 2) setTimeout(() => load(attempt + 1), 1200);
+    };
+    load();
+    return () => { cancelled = true; };
   }, [product.id]);
 
   const formRef = useRef(null);

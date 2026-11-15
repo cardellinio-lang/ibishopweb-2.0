@@ -42,7 +42,7 @@ function displayedPrice(product) {
 export async function generateMetadata({ params }) {
   let product = null;
   try {
-    product = await withDbRetry(() => prisma.product.findUnique({ where: { slug: params.slug } }));
+    product = await withDbRetry(() => prisma.product.findUnique({ where: { slug: params.slug } }), { retries: 5 });
   } catch (e) {
     console.error('[product-metadata] DB indisponible pour', params.slug, e?.message);
   }
@@ -85,16 +85,34 @@ export default async function ProductPage({ params }) {
   let communes = [];
   let dbFailed = false;
   try {
-    product = await withDbRetry(() => prisma.product.findUnique({ where: { slug: params.slug } }));
+    product = await withDbRetry(() => prisma.product.findUnique({ where: { slug: params.slug } }), { retries: 5 });
     if (product) product.images = JSON.parse(product.images || '[]');
-    wilayas = await withDbRetry(() => prisma.wilaya.findMany({ orderBy: { id: 'asc' } }));
-    communes = await withDbRetry(() => prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] }));
+    wilayas = await withDbRetry(() => prisma.wilaya.findMany({ orderBy: { id: 'asc' } }), { retries: 5 });
+    communes = await withDbRetry(() => prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] }), { retries: 5 });
   } catch (e) {
     // Ne pas transformer une erreur de base en 404 : le produit existe peut-être.
     dbFailed = true;
     console.error('[product-page] DB indisponible pour', params.slug, e?.message);
   }
   if (!dbFailed && (!product || !product.active)) notFound();
+
+  // Base momentanément indisponible : page de reprise plutôt qu'une erreur 500.
+  // Un clic publicitaire qui tombe sur une erreur, c'est de l'argent perdu.
+  if (!product) {
+    return (
+      <main style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, padding: 24, textAlign: 'center' }}>
+        <img src={FALLBACK_IMAGE} alt={SITE_NAME} style={{ height: 46 }} />
+        <h1 style={{ fontSize: 20, fontWeight: 900, color: '#17131A', margin: 0 }}>تحميل المنتج لم يكتمل</h1>
+        <p style={{ fontSize: 15, color: '#666', maxWidth: 380, margin: 0, lineHeight: 1.6 }}>
+          صار مشكل صغير في الاتصال. عاود المحاولة — المنتج مازال متوفر والدفع عند الاستلام.
+        </p>
+        <a href={`/products/${params.slug}`} style={{ padding: '12px 28px', borderRadius: 999, background: '#55C6C0', color: '#17131A', fontWeight: 800, textDecoration: 'none' }}>
+          إعادة المحاولة
+        </a>
+      </main>
+    );
+  }
+
   const host = (await headers()).get('host') || '';
   const isOrva = host.includes('orva');
   const Client = isOrva ? OrvaProductClient : ProductClient;
