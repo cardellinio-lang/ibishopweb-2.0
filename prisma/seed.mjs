@@ -741,6 +741,30 @@ async function main() {
     }
   }
 
+  // Photos des avis clients : associe les images aux avis qui n'en ont pas
+  // encore (du plus récent au plus ancien). Idempotent : ne remplit que les vides.
+  const reviewPhotoMigrations = [
+    { slug: 'cadre-dessin-enfant-a4', images: ['/reviews/cadre-a4-avis1.webp'] },
+  ];
+  for (const migration of reviewPhotoMigrations) {
+    try {
+      const prod = await prisma.product.findUnique({ where: { slug: migration.slug }, select: { id: true } });
+      if (!prod) continue;
+      const list = await prisma.review.findMany({
+        where: { productId: prod.id },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, image: true },
+      });
+      const targets = list.filter((r) => !r.image).slice(0, migration.images.length);
+      for (let i = 0; i < targets.length; i++) {
+        await prisma.review.update({ where: { id: targets[i].id }, data: { image: migration.images[i] } });
+        console.log(`✅ avis ${migration.slug} : photo ${migration.images[i]}`);
+      }
+    } catch (e) {
+      console.log(`[avis] migration photos ignorée (${migration.slug}): ${String(e?.message || e).slice(0, 120)}`);
+    }
+  }
+
   const existing = await prisma.product.count();
   if (existing > 0) {
     console.log('✅ Database already seeded — checking for missing products...');

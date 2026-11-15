@@ -48,6 +48,7 @@ model Review {
   rating    Int
   text      String
   date      String
+  image     String?
   createdAt DateTime @default(now())
 }
 

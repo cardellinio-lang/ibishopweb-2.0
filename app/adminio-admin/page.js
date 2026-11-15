@@ -28,7 +28,7 @@ export default function Admin() {
   const [deliverySaving, setDeliverySaving] = useState({});
   const [stats, setStats] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [reviewForm, setReviewForm] = useState({ name: '', city: '', rating: 5, text: '', date: '' });
+  const [reviewForm, setReviewForm] = useState({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
   const [reviewLoading, setReviewLoading] = useState(false);
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
@@ -235,7 +235,7 @@ export default function Admin() {
     const imgs = (Array.isArray(p.images) ? p.images : (() => { try { return JSON.parse(p.images || '[]'); } catch { return []; } })()).map(normalizeImageUrl).filter(Boolean);
     setForm({ name: p.name, slug: p.slug || '', price: String(p.price), oldPrice: p.oldPrice ? String(p.oldPrice) : '', images: imgs.length ? imgs : [''], description: p.description, color: p.color || '#000000', themeColor: p.themeColor || '', category: p.category || '', sku: p.sku || '', stock: String(p.stock), tierEnabled: p.tierEnabled || false, tierQty: p.tierQty ? String(p.tierQty) : '', tierPrice: p.tierPrice ? String(p.tierPrice) : '', tierMessage: p.tierMessage || '', tierGift: p.tierGift || '' });
     setEditId(p.id);
-    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
       setEditingReviewId(null);
     loadReviews(p.id);
   };
@@ -310,19 +310,19 @@ export default function Admin() {
     });
     if (r.status === 401) { alert('Session expirée.'); autoLogout(); setReviewLoading(false); return; }
     if (!r.ok) { alert(isEdit ? 'Erreur modification avis' : 'Erreur ajout avis'); setReviewLoading(false); return; }
-    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
     setEditingReviewId(null);
     setReviewLoading(false);
     loadReviews(editId);
   };
 
   const editReview = (r) => {
-    setReviewForm({ name: r.name, city: r.city, rating: r.rating, text: r.text, date: r.date });
+    setReviewForm({ name: r.name, city: r.city, rating: r.rating, text: r.text, date: r.date, image: r.image || '' });
     setEditingReviewId(r.id);
   };
 
   const cancelEditReview = () => {
-    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '' });
+    setReviewForm({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
     setEditingReviewId(null);
   };
 
@@ -1698,6 +1698,35 @@ export default function Admin() {
                   <textarea value={reviewForm.text} onChange={e => setReviewForm(f => ({ ...f, text: e.target.value }))}
                             placeholder="Texte de l'avis" rows={2}
                             style={{ width: '100%', padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <input value={reviewForm.image || ''} onChange={e => setReviewForm(f => ({ ...f, image: e.target.value }))}
+                           placeholder="Photo de l'avis (URL ou upload)" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
+                    <label style={{ padding: '8px 12px', background: '#eef2ff', color: '#184391', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                      📷 Photo
+                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                        const file = e.target.files?.[0]; if (!file) return; e.target.value = '';
+                        try {
+                          const payload = (await compressImageFile(file)) || file;
+                          const fd = new FormData(); fd.append('file', payload);
+                          const r = await fetch('/api/upload-image', { method: 'POST', headers: { 'x-admin-password': password }, body: fd });
+                          const d = await r.json();
+                          if (d.url) setReviewForm(f => ({ ...f, image: d.url }));
+                          else alert('Erreur upload: ' + (d.imgbb ? `${d.error} — ${d.imgbb}` : d.error || 'inconnue'));
+                        } catch (err) {
+                          alert('Erreur upload: ' + (err.message || 'inconnue'));
+                        }
+                      }} />
+                    </label>
+                    {reviewForm.image && (
+                      <button onClick={() => setReviewForm(f => ({ ...f, image: '' }))}
+                              style={{ padding: '8px 10px', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  {reviewForm.image && (
+                    <img src={reviewForm.image} alt="" style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 8, border: '1px solid #e5e5ea' }} />
+                  )}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <input value={reviewForm.date} onChange={e => setReviewForm(f => ({ ...f, date: e.target.value }))}
                            placeholder="Date (ex: منذ 3 أيام)" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />

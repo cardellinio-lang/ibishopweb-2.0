@@ -1047,6 +1047,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                   {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                 </div>
                 <p style={{ fontSize: 14, color: '#444', lineHeight: 1.6, margin: 0 }}>{review.text}</p>
+                {review.image && (
+                  <a href={review.image} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: 10 }}>
+                    <img src={review.image} alt={`صورة من العميل ${review.name}`} loading="lazy"
+                         style={{ width: '100%', maxWidth: 260, maxHeight: 260, objectFit: 'cover', borderRadius: 12, border: '1px solid #eee', display: 'block', cursor: 'zoom-in' }} />
+                  </a>
+                )}
               </div>
             </div>
           ))}

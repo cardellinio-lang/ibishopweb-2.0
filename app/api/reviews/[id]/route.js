@@ -6,7 +6,7 @@ export async function PUT(req, { params }) {
   const data = await req.json();
   const review = await prisma.review.update({
     where: { id: params.id },
-    data: { name: data.name, city: data.city || '', rating: data.rating || 5, text: data.text, date: data.date || '' },
+    data: { name: data.name, city: data.city || '', rating: data.rating || 5, text: data.text, date: data.date || '', image: data.image || null },
   });
   return Response.json(review);
 }
