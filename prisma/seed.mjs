@@ -722,14 +722,15 @@ const PRODUCTS = [
 
 async function main() {
   // Migration prioritaire : description du cadre dessin A4.
-  // Façade en plexiglas (plus sûre que le verre pour les enfants), ouverture magnétique.
+  // Façade en plexiglas, légère et résistante aux chocs, ouverture magnétique.
   const cadreSlug = 'cadre-dessin-enfant-a4';
-  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en plexiglas, plus sûre que le verre : légère, résistante aux chocs et sans risque de bris dangereux pour les enfants. Couleurs disponibles : Noir et effet Bois.";
+  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en plexiglas : légère, résistante aux chocs et facile à manipuler par les enfants. Couleurs disponibles : Noir et effet Bois.";
   for (let attempt = 1; attempt <= 8; attempt++) {
     try {
       const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug }, select: { description: true } });
       const desc = cadre?.description || '';
-      if (cadre && /encadrement|cadre/i.test(desc) && !/plexiglas/i.test(desc)) {
+      // Ne migre que les anciennes formulations (mention « bris » ou façade en verre).
+      if (cadre && /encadrement|cadre/i.test(desc) && (/bris/i.test(desc) || !/plexiglas/i.test(desc))) {
         await prisma.product.update({ where: { slug: cadreSlug }, data: { description: cadreDescription } });
         console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (plexiglas, sécurité enfants)');
       }

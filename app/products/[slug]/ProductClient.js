@@ -506,10 +506,10 @@ export default function ProductClient({ product, wilayas, communes}) {
                     <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> اخترنا البلكسيجلاس بدل الزجاج لأنه أخف وأكثر مقاومة للصدمات.
                   </div>
                   <div style={{ fontSize: 13, color: '#0F4C46', lineHeight: 1.7, marginBottom: 6 }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> عند الضغط أو السقوط لا يتشظّى إلى قطع حادة، ما يجعل الإطار أكثر أمانًا أثناء لمس طفلك له وتغيير الرسومات.
+                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> خفيفة ومتينة: تتحمّل لمس الأطفال اليومي وتغيير الرسومات بسهولة وأمان.
                   </div>
                   <div style={{ fontSize: 13, color: '#0F4C46', lineHeight: 1.7, direction: 'ltr', textAlign: 'left' }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> <strong style={{ color: '#0F4C46' }}>Façade en plexiglas, plus sûre que le verre :</strong> légère, résistante aux chocs et sans risque de bris dangereux pour les enfants.
+                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> <strong style={{ color: '#0F4C46' }}>Façade en plexiglas :</strong> légère, résistante aux chocs et facile à manipuler par les enfants.
                   </div>
                 </div>
               )}
