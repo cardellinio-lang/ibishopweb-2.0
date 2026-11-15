@@ -1048,9 +1048,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </div>
                 <p style={{ fontSize: 14, color: '#444', lineHeight: 1.6, margin: 0 }}>{review.text}</p>
                 {review.image && (
-                  <a href={review.image} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: 10 }}>
-                    <img src={review.image} alt={`صورة من العميل ${review.name}`} loading="lazy"
-                         style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: 320, objectFit: 'contain', borderRadius: 12, border: '1px solid #eee', background: '#fff', cursor: 'zoom-in' }} />
+                  <a href={review.image} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: 10, width: '100%', maxWidth: 280 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', aspectRatio: '3 / 4', background: '#fff', border: '1px solid #eee', borderRadius: 12, overflow: 'hidden', cursor: 'zoom-in' }}>
+                      <img src={review.image} alt={`صورة من العميل ${review.name}`} loading="lazy" decoding="async"
+                           style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+                    </span>
                   </a>
                 )}
               </div>
