@@ -274,7 +274,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     {/* Name */}
                     <div style={{ marginBottom: 16 }}>
                       <input value={customer} onChange={e => setCustomer(e.target.value)}
-                             placeholder="الاسم الكامل" className="orva-input"
+                             placeholder="أدخل الاسم" className="orva-input"
                              style={{ ...ib }} />
                     </div>
 

@@ -539,9 +539,9 @@ export default function ProductClient({ product, wilayas, communes}) {
             <form ref={formRef} data-order-form onFocusCapture={trackOrderStart} onSubmit={e => { e.preventDefault(); submitOrder(); }} style={{ padding: '0 20px 20px' }}>
               {/* Name */}
               <div style={{ marginBottom: 16 }}>
-                <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الاسم الكامل</label>
+                <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 6, color: '#1d1d1f' }}>الاسم</label>
                 <input value={customer} onChange={e => setCustomer(e.target.value)}
-                       placeholder="يرجى إدخال الاسم واللقب"
+                       placeholder="أدخل الاسم"
                        style={{ width: '100%', padding: '12px 16px', border: '1.5px solid #d2d2d7', borderRadius: 12, fontSize: 16, background: '#fff' }}
                        onFocus={e => e.target.style.borderColor = 'var(--p-accent)'}
                        onBlur={e => e.target.style.borderColor = '#d2d2d7'} />
