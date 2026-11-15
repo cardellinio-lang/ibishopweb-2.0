@@ -782,8 +782,12 @@ async function main() {
       text: 'طلبته هدية لعيد ميلاد بنت خويا، وصل في وقتو وعجب الكل. خدمة محترمة، نعاود نطلب بيه.',
     },
   ];
+  // Marqueur en base : ces contenus ne sont appliqués qu'une seule fois.
+  // Ensuite l'admin est seul maître des avis (modification, suppression),
+  // et un déploiement ne réécrit plus rien.
   try {
-    const prod = await prisma.product.findUnique({ where: { slug: 'cadre-dessin-enfant-a4' }, select: { id: true } });
+    const done = await prisma.setting.findUnique({ where: { key: 'seed.cadre.reviews.v1' } });
+    const prod = done ? null : await prisma.product.findUnique({ where: { slug: 'cadre-dessin-enfant-a4' }, select: { id: true } });
     if (prod) {
       for (const review of cadreReviewContent) {
         const current = await prisma.review.findFirst({
@@ -816,6 +820,8 @@ async function main() {
           console.log(`✅ avis ${review.name} : texte mis à jour`);
         }
       }
+      await prisma.setting.create({ data: { key: 'seed.cadre.reviews.v1', value: new Date().toISOString() } });
+      console.log('✅ avis cadre : contenus appliqués (une seule fois)');
     }
   } catch (e) {
     console.log(`[avis] migration contenus ignorée: ${String(e?.message || e).slice(0, 120)}`);
@@ -839,6 +845,8 @@ async function main() {
   ];
   for (const migration of reviewPhotoMigrations) {
     try {
+      const done = await prisma.setting.findUnique({ where: { key: `seed.reviewPhotos.${migration.slug}.v1` } });
+      if (done) continue;
       const prod = await prisma.product.findUnique({ where: { slug: migration.slug }, select: { id: true } });
       if (!prod) continue;
       const list = await prisma.review.findMany({
@@ -852,6 +860,7 @@ async function main() {
         await prisma.review.update({ where: { id: review.id }, data: { image: photo } });
         console.log(`✅ avis ${migration.slug} #${index} : photo ${photo}`);
       }
+      await prisma.setting.create({ data: { key: `seed.reviewPhotos.${migration.slug}.v1`, value: new Date().toISOString() } });
     } catch (e) {
       console.log(`[avis] migration photos ignorée (${migration.slug}): ${String(e?.message || e).slice(0, 120)}`);
     }

@@ -30,6 +30,7 @@ export default function Admin() {
   const [reviews, setReviews] = useState([]);
   const [reviewForm, setReviewForm] = useState({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
   const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewMsg, setReviewMsg] = useState('');
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
   const [orderSort, setOrderSort] = useState({ key: 'createdAt', dir: 'desc' });
@@ -313,12 +314,16 @@ export default function Admin() {
     setReviewForm({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
     setEditingReviewId(null);
     setReviewLoading(false);
+    setReviewMsg(isEdit ? '✅ Avis modifié' : '✅ Avis ajouté');
+    setTimeout(() => setReviewMsg(''), 4000);
     loadReviews(editId);
   };
 
   const editReview = (r) => {
     setReviewForm({ name: r.name, city: r.city, rating: r.rating, text: r.text, date: r.date, image: r.image || '' });
     setEditingReviewId(r.id);
+    setReviewMsg('');
+    setTimeout(() => document.getElementById('review-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
   };
 
   const cancelEditReview = () => {
@@ -1662,15 +1667,24 @@ export default function Admin() {
                       alignItems: 'flex-start',
                     }}>
                       <div style={{ flex: 1, fontSize: 13 }}>
-                        <div style={{ fontWeight: 700 }}>{r.name} <span style={{ color: '#8e8e93', fontWeight: 400 }}>📍 {r.city}</span></div>
-                        <div style={{ color: '#f59e0b', fontSize: 12 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
-                        <div style={{ color: '#444', marginTop: 2 }}>{r.text}</div>
-                        <div style={{ color: '#8e8e93', fontSize: 11, marginTop: 2 }}>{r.date}</div>
+                        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                          {r.image && (
+                            <img src={r.image} alt="" style={{ width: 44, height: 56, objectFit: 'cover', borderRadius: 6, border: '1px solid #e5e5ea', flexShrink: 0 }} />
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 700 }}>{r.name} <span style={{ color: '#8e8e93', fontWeight: 400 }}>📍 {r.city}</span></div>
+                            <div style={{ color: '#f59e0b', fontSize: 12 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
+                            <div style={{ color: '#444', marginTop: 2 }}>{r.text}</div>
+                            <div style={{ color: '#8e8e93', fontSize: 11, marginTop: 2 }}>
+                              {r.date}{r.image ? ' · 📷 photo' : ' · sans photo'}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                         <button onClick={() => editReview(r)}
-                                style={{ background: '#e8e8ed', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 13 }}>
-                          ✏️
+                                style={{ background: '#e8e8ed', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          ✏️ Modifier
                         </button>
                         <button onClick={() => deleteReview(r.id)}
                                 style={{ background: '#fee2e2', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 13, color: '#dc2626', fontWeight: 700 }}>
@@ -1684,7 +1698,12 @@ export default function Admin() {
                   )}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div id="review-form" style={{ display: 'flex', flexDirection: 'column', gap: 8, scrollMarginTop: 120, padding: editingReviewId ? 12 : 0, borderRadius: 12, background: editingReviewId ? '#fffbeb' : 'transparent', border: editingReviewId ? '2px solid #f59e0b' : 'none' }}>
+                  {editingReviewId && (
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#92400e' }}>
+                      ✏️ Modification de l'avis de {reviewForm.name}
+                    </div>
+                  )}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <input value={reviewForm.name} onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
                            placeholder="Nom" style={{ flex: 1, padding: '8px 10px', border: '1px solid #d2d2d7', borderRadius: 8, fontSize: 13 }} />
@@ -1741,6 +1760,12 @@ export default function Admin() {
                       {reviewLoading ? '...' : editingReviewId ? '💾 Sauvegarder' : '➕ Ajouter'}
                     </button>
                   </div>
+                  {reviewMsg && (
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#15803d' }}>{reviewMsg}</div>
+                  )}
+                  <p style={{ fontSize: 11, color: '#8e8e93', margin: 0 }}>
+                    Les modifications faites ici ne sont jamais écrasées au déploiement.
+                  </p>
                 </div>
               </div>
             )}
