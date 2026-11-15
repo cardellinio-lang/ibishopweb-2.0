@@ -497,6 +497,19 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </span>
               )}
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
+              {product.slug === 'cadre-dessin-enfant-a4' && (
+                <div style={{ marginTop: 12, background: 'var(--p-soft)', border: '1px solid var(--p-border)', borderRadius: 12, padding: '12px 14px' }}>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--p-text)', marginBottom: 6 }}>
+                    🛡️ واجهة بلكسيجلاس: أمان أكبر لطفلك
+                  </div>
+                  <div style={{ fontSize: 13, color: '#6e6e73', lineHeight: 1.7, marginBottom: 8 }}>
+                    اخترنا البلكسيجلاس بدل الزجاج لأنه أخف وأكثر مقاومة للصدمات: عند الضغط أو السقوط لا يتشظّى إلى قطع حادة، ما يجعل الإطار أكثر أمانًا أثناء لمس طفلك له وتغيير الرسومات.
+                  </div>
+                  <div style={{ fontSize: 13, color: '#6e6e73', lineHeight: 1.7, direction: 'ltr', textAlign: 'left' }}>
+                    <strong style={{ color: 'var(--p-text)' }}>Façade en plexiglas, plus sûre que le verre :</strong> légère, résistante aux chocs et sans risque de bris dangereux pour les enfants.
+                  </div>
+                </div>
+              )}
             </div>
 
             <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '10px 16px', margin: '0 20px 16px', textAlign: 'center', border: '1px solid var(--p-border)' }}>

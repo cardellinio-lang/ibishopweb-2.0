@@ -722,15 +722,16 @@ const PRODUCTS = [
 
 async function main() {
   // Migration prioritaire : description du cadre dessin A4.
-  // Joli encadrement, façade en verre, ouverture magnétique, sans matériau.
+  // Façade en plexiglas (plus sûre que le verre pour les enfants), ouverture magnétique.
   const cadreSlug = 'cadre-dessin-enfant-a4';
-  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en verre. Couleurs disponibles : Noir et effet Bois.";
+  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en plexiglas, plus sûre que le verre : légère, résistante aux chocs et sans risque de bris dangereux pour les enfants. Couleurs disponibles : Noir et effet Bois.";
   for (let attempt = 1; attempt <= 8; attempt++) {
     try {
       const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug }, select: { description: true } });
-      if (cadre && /plexiglas|MDF|Cadre en bois|crochet/i.test(cadre.description || '')) {
+      const desc = cadre?.description || '';
+      if (cadre && /encadrement|cadre/i.test(desc) && !/plexiglas/i.test(desc)) {
         await prisma.product.update({ where: { slug: cadreSlug }, data: { description: cadreDescription } });
-        console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (verre, ouverture magnétique)');
+        console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (plexiglas, sécurité enfants)');
       }
       break;
     } catch (e) {
