@@ -741,8 +741,88 @@ async function main() {
     }
   }
 
+  // Contenus des avis du cadre : textes en darija algérienne, plus crédibles
+  // qu'un arabe littéraire identique d'un avis à l'autre. Les avis déjà en base
+  // sont mis à jour, les manquants sont créés (ordre d'affichage via createdAt).
+  const cadreReviewContent = [
+    {
+      name: 'بهاء م.', city: 'الشلف', rating: 5, date: 'منذ أسبوعين',
+      text: 'شريت الأسود لبنتي وعجبها بزاف. حبيت نزيد نشري الخشبي باش نبدلو في الصالون. الإطار محكم والفتح ساهل.',
+    },
+    {
+      name: 'نزيهة ب.', city: 'عنابة', rating: 4, date: 'منذ 9 أيام',
+      text: 'وصلني مغلّف مزيان بلا حتى خدش. بناتي حطو رسوماتهم فيه وفرحو بزاف. الواجهة شفافة والرسمة تبان مزيان.',
+    },
+    {
+      name: 'الصديق ع.', city: 'وهران', rating: 5, date: 'منذ 6 أيام',
+      text: 'وصلني لوهران في يومين والخدمة نظيفة. السعر مليح بالنسبة للجودة، راني راضي.',
+    },
+    {
+      name: 'حليمة ر.', city: 'الجزائر', rating: 5, date: 'منذ 3 أيام',
+      text: 'بنتي فرحت كي علّقت رسمتها. الفتح بالمغناطيس ساهل حتى هي تبدّل الرسمة وحدها. شكراً IBI.',
+    },
+    {
+      name: 'سعاد ل.', city: 'سطيف', rating: 5, date: 'منذ 3 أسابيع',
+      createdAt: '2026-05-16T09:12:00.000Z',
+      text: 'حبيت نوريكم الصورة، الإطار زاد بنة في غرفة بنتي. جودة عالية والتغليف محترم.',
+    },
+    {
+      name: 'ياسين ب.', city: 'بومرداس', rating: 4, date: 'منذ شهر',
+      createdAt: '2026-05-04T16:40:00.000Z',
+      text: 'خدمة سريعة والمنتج كيما في الصور. لو كان التغليف أقوى شوية يكون أحسن، بصح راني راضي.',
+    },
+    {
+      name: 'أمينة ح.', city: 'تيزي وزو', rating: 5, date: 'منذ شهر ونصف',
+      createdAt: '2026-04-20T11:05:00.000Z',
+      text: 'أنا وأختي شرينا زوج، واحد أسود وواحد خشبي، وجاو روعة في الصالون. ننصح بيه كل أم.',
+    },
+    {
+      name: 'كريم م.', city: 'قسنطينة', rating: 5, date: 'منذ شهرين',
+      createdAt: '2026-03-28T18:20:00.000Z',
+      text: 'طلبته هدية لعيد ميلاد بنت خويا، وصل في وقتو وعجب الكل. خدمة محترمة.',
+    },
+  ];
+  try {
+    const prod = await prisma.product.findUnique({ where: { slug: 'cadre-dessin-enfant-a4' }, select: { id: true } });
+    if (prod) {
+      for (const review of cadreReviewContent) {
+        const current = await prisma.review.findFirst({
+          where: { productId: prod.id, name: review.name },
+          select: { id: true, text: true, city: true, date: true, rating: true },
+        });
+        if (!current) {
+          await prisma.review.create({
+            data: {
+              productId: prod.id,
+              name: review.name,
+              city: review.city,
+              rating: review.rating,
+              text: review.text,
+              date: review.date,
+              createdAt: new Date(review.createdAt || Date.now()),
+            },
+          });
+          console.log(`✅ avis ${review.name} : créé`);
+        } else if (
+          current.text !== review.text ||
+          current.city !== review.city ||
+          current.date !== review.date ||
+          current.rating !== review.rating
+        ) {
+          await prisma.review.update({
+            where: { id: current.id },
+            data: { text: review.text, city: review.city, date: review.date, rating: review.rating },
+          });
+          console.log(`✅ avis ${review.name} : texte mis à jour`);
+        }
+      }
+    }
+  } catch (e) {
+    console.log(`[avis] migration contenus ignorée: ${String(e?.message || e).slice(0, 120)}`);
+  }
+
   // Photos des avis clients : association par position (0 = avis le plus récent)
-  // pour pouvoir alterner photo / pas de photo et éviter un rendu trop uniforme.
+  // pour alterner photo / pas de photo et éviter un rendu trop uniforme.
   // Idempotent : ne remplit que les avis qui n'ont pas encore de photo.
   const reviewPhotoMigrations = [
     {
@@ -751,6 +831,9 @@ async function main() {
         0: '/reviews/cadre-a4-avis1.webp',
         1: '/reviews/cadre-a4-avis2.webp',
         3: '/reviews/cadre-a4-avis3.webp',
+        4: '/reviews/cadre-a4-avis4.webp',
+        6: '/reviews/cadre-a4-avis5.webp',
+        7: '/reviews/cadre-a4-avis6.webp',
       },
     },
   ];
