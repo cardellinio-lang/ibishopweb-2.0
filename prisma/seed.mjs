@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+
+// Limite la connexion à 1 client : la base Neon en mode session plafonne à 15
+// clients et le build Vercel peut saturer le pool.
+const dbUrl = process.env.DATABASE_URL;
+const prisma = new PrismaClient(dbUrl
+  ? { datasources: { db: { url: dbUrl + (dbUrl.includes('?') ? '&' : '?') + 'connection_limit=1' } } }
+  : undefined);
 
 const WILAYAS = [
   { id: 1, name: 'Adrar', price: 800, priceOffice: 600 },{ id: 2, name: 'Chlef', price: 500, priceOffice: 400 },
@@ -715,6 +721,24 @@ const PRODUCTS = [
   ];
 
 async function main() {
+  // Migration prioritaire : description du cadre dessin A4.
+  // Joli encadrement, façade en verre, ouverture magnétique, sans matériau.
+  const cadreSlug = 'cadre-dessin-enfant-a4';
+  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en verre. Couleurs disponibles : Noir et effet Bois.";
+  for (let attempt = 1; attempt <= 8; attempt++) {
+    try {
+      const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug }, select: { description: true } });
+      if (cadre && /plexiglas|MDF|Cadre en bois|crochet/i.test(cadre.description || '')) {
+        await prisma.product.update({ where: { slug: cadreSlug }, data: { description: cadreDescription } });
+        console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (verre, ouverture magnétique)');
+      }
+      break;
+    } catch (e) {
+      console.log(`[cadre] tentative ${attempt}/8 échouée: ${String(e?.message || e).slice(0, 140)}`);
+      await new Promise((r) => setTimeout(r, 400 * attempt));
+    }
+  }
+
   const existing = await prisma.product.count();
   if (existing > 0) {
     console.log('✅ Database already seeded — checking for missing products...');
@@ -802,21 +826,6 @@ async function main() {
   } else {
     await prisma.product.update({ where: { slug: sabouratSlug }, data: { active: true } });
     console.log('✅ sabourat-el-horouf already present (kept admin edits)');
-  }
-
-  // Cadre dessin A4 : joli encadrement avec façade en verre et ouverture
-  // magnétique, sans mention du matériau. Migration idempotente : ne touche
-  // qu'aux descriptions contenant encore les anciennes mentions.
-  const cadreSlug = 'cadre-dessin-enfant-a4';
-  const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug } });
-  if (cadre && /plexiglas|MDF|Cadre en bois|crochet/i.test(cadre.description || '')) {
-    await prisma.product.update({
-      where: { slug: cadreSlug },
-      data: {
-        description: "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Façade en verre. Couleurs disponibles : Noir et effet Bois.",
-      },
-    });
-    console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (façade en verre, ouverture magnétique)');
   }
 }
 
