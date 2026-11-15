@@ -803,6 +803,21 @@ async function main() {
     await prisma.product.update({ where: { slug: sabouratSlug }, data: { active: true } });
     console.log('✅ sabourat-el-horouf already present (kept admin edits)');
   }
+
+  // Cadre dessin A4 : la façade est désormais en verre (plus de plexiglas).
+  // Migration idempotente : ne touche qu'aux descriptions contenant encore
+  // l'ancienne mention, les modifications admin restent prioritaires ensuite.
+  const cadreSlug = 'cadre-dessin-enfant-a4';
+  const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug } });
+  if (cadre && /plexiglas/i.test(cadre.description || '')) {
+    await prisma.product.update({
+      where: { slug: cadreSlug },
+      data: {
+        description: "Cadre en bois pour dessins d'enfants format A4. Ouverture avant avec crochet pour fermeture, rangement jusqu'à 200 dessins. Fabriqué en bois MDF avec façade en verre. Couleurs disponibles : Noir et effet Bois.",
+      },
+    });
+    console.log('✅ cadre-dessin-enfant-a4 : description mise à jour (façade en verre)');
+  }
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
