@@ -747,33 +747,40 @@ async function main() {
   const cadreReviewContent = [
     {
       name: 'بهاء م.', city: 'الشلف', rating: 5, date: 'منذ أسبوعين',
+      previousText: 'شريت الأسود لبنتي وعجبها بزاف. حبيت نزيد نشري الخشبي باش نبدلو في الصالون. الإطار محكم والفتح ساهل.',
       text: 'شريت الأسود لبنتي وعجبها بزاف، قاتلي يهبللللل 😍 حبيت نزيد نشري الخشبي باش نبدلو في la chambre تاعها. الإطار محكم والفتح ساهل.',
     },
     {
       name: 'نزيهة ب.', city: 'عنابة', rating: 4, date: 'منذ 9 أيام',
+      previousText: 'وصلني مغلّف شباب بلا حتى خدش. بناتي حطو رسوماتهم فيه وفرحو بزاف. الواجهة شفافة والرسمة تبان هايلة.',
       text: 'le colis وصلني مغلّف شباب بلا حتى خدش. بناتي حطو رسوماتهم فيه وفرحو بزاف. الواجهة شفافة والرسمة تبان هايلة.',
     },
     {
       name: 'الصديق ع.', city: 'وهران', rating: 5, date: 'منذ 6 أيام',
+      previousText: 'وصلني لوهران في يومين والخدمة نظيفة. السعر مليح على الجودة، راني راضي.',
       text: 'وصلني لوهران في يومين والخدمة نظيفة. السعر مليح على la qualité، راني راضي.',
     },
     {
       name: 'حليمة ر.', city: 'الجزائر', rating: 5, date: 'منذ 3 أيام',
+      previousText: 'بنتي فرحت كي علّقت رسمتها، قاتلي «هايل» 😄 الفتح بالمغناطيس ساهل حتى هي تبدّل الرسمة وحدها. شكراً IBI.',
       text: 'بنتي فرحت كي علّقت رسمتها في la chambre، قاتلي «هايل» 😄 الفتح بالمغناطيس ساهل حتى هي تبدّل الرسمة وحدها. شكراً IBI.',
     },
     {
       name: 'سعاد ل.', city: 'سطيف', rating: 5, date: 'منذ 3 أسابيع',
       createdAt: '2026-05-16T09:12:00.000Z',
+      previousText: 'حبيت نوريكم الصورة، الإطار زاد بنة في غرفة بنتي. الجودة هايلة والتغليف محترم.',
       text: 'حبيت نوريكم la photo، الإطار زاد بنة في la chambre تاع بنتي. la qualité هايلة والتغليف محترم.',
     },
     {
       name: 'ياسين ب.', city: 'بومرداس', rating: 4, date: 'منذ شهر',
       createdAt: '2026-05-04T16:40:00.000Z',
+      previousText: 'خدمة سريعة والمنتج كيما في الصور. التغليف يقدر يكون أقوى شوية، بصح راني راضي.',
       text: 'la livraison كانت سريعة والمنتج كيما في الصور. التغليف يقدر يكون أقوى شوية، بصح راني راضي.',
     },
     {
       name: 'أمينة ح.', city: 'تيزي وزو', rating: 5, date: 'منذ شهر ونصف',
       createdAt: '2026-04-20T11:05:00.000Z',
+      previousText: 'أنا وأختي شرينا زوج، واحد أسود وواحد خشبي، وجاو يهبلو في الصالون. ننصح بيه كل أم.',
       text: 'أنا وأختي شرينا زوج، واحد أسود وواحد خشبي، وجاو يهبلو في la chambre d’enfant. ننصح بيه كل أم.',
     },
     {
@@ -808,14 +815,15 @@ async function main() {
           });
           console.log(`✅ avis ${review.name} : créé`);
         } else if (
-          current.text !== review.text ||
-          current.city !== review.city ||
-          current.date !== review.date ||
-          current.rating !== review.rating
+          review.previousText &&
+          current.text === review.previousText &&
+          current.text !== review.text
         ) {
+          // On ne réécrit que si le texte est resté celui d'origine.
+          // Si l'admin l'a modifié à la main, on ne touche à rien.
           await prisma.review.update({
             where: { id: current.id },
-            data: { text: review.text, city: review.city, date: review.date, rating: review.rating },
+            data: { text: review.text },
           });
           console.log(`✅ avis ${review.name} : texte mis à jour`);
         }
@@ -825,45 +833,6 @@ async function main() {
     }
   } catch (e) {
     console.log(`[avis] migration contenus ignorée: ${String(e?.message || e).slice(0, 120)}`);
-  }
-
-  // Photos des avis clients : association par position (0 = avis le plus récent)
-  // pour alterner photo / pas de photo et éviter un rendu trop uniforme.
-  // Idempotent : ne remplit que les avis qui n'ont pas encore de photo.
-  const reviewPhotoMigrations = [
-    {
-      slug: 'cadre-dessin-enfant-a4',
-      photos: {
-        0: '/reviews/cadre-a4-avis1.webp',
-        1: '/reviews/cadre-a4-avis2.webp',
-        3: '/reviews/cadre-a4-avis3.webp',
-        4: '/reviews/cadre-a4-avis4.webp',
-        6: '/reviews/cadre-a4-avis5.webp',
-        7: '/reviews/cadre-a4-avis6.webp',
-      },
-    },
-  ];
-  for (const migration of reviewPhotoMigrations) {
-    try {
-      const done = await prisma.setting.findUnique({ where: { key: `seed.reviewPhotos.${migration.slug}.v1` } });
-      if (done) continue;
-      const prod = await prisma.product.findUnique({ where: { slug: migration.slug }, select: { id: true } });
-      if (!prod) continue;
-      const list = await prisma.review.findMany({
-        where: { productId: prod.id },
-        orderBy: { createdAt: 'desc' },
-        select: { id: true, image: true },
-      });
-      for (const [index, photo] of Object.entries(migration.photos)) {
-        const review = list[Number(index)];
-        if (!review || review.image) continue;
-        await prisma.review.update({ where: { id: review.id }, data: { image: photo } });
-        console.log(`✅ avis ${migration.slug} #${index} : photo ${photo}`);
-      }
-      await prisma.setting.create({ data: { key: `seed.reviewPhotos.${migration.slug}.v1`, value: new Date().toISOString() } });
-    } catch (e) {
-      console.log(`[avis] migration photos ignorée (${migration.slug}): ${String(e?.message || e).slice(0, 120)}`);
-    }
   }
 
   const existing = await prisma.product.count();
