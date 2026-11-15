@@ -835,6 +835,38 @@ async function main() {
     console.log(`[avis] migration contenus ignorée: ${String(e?.message || e).slice(0, 120)}`);
   }
 
+  // Rattrapage : les photos d'avis ont été effacées par un bug de l'API
+  // (repli « sans photo » déclenché sur une saturation passagère de la base).
+  // On les remet une seule fois, uniquement sur les avis qui n'en ont plus.
+  try {
+    const donePhotos = await prisma.setting.findUnique({ where: { key: 'seed.cadre.reviewPhotos.v2' } });
+    if (!donePhotos) {
+      const prodPhotos = await prisma.product.findUnique({ where: { slug: 'cadre-dessin-enfant-a4' }, select: { id: true } });
+      if (prodPhotos) {
+        const photosByName = {
+          'بهاء م.': '/reviews/cadre-a4-avis1.webp',
+          'نزيهة ب.': '/reviews/cadre-a4-avis2.webp',
+          'حليمة ر.': '/reviews/cadre-a4-avis3.webp',
+          'سعاد ل.': '/reviews/cadre-a4-avis4.webp',
+          'أمينة ح.': '/reviews/cadre-a4-avis5.webp',
+          'كريم م.': '/reviews/cadre-a4-avis6.webp',
+        };
+        for (const [name, image] of Object.entries(photosByName)) {
+          const review = await prisma.review.findFirst({
+            where: { productId: prodPhotos.id, name },
+            select: { id: true, image: true },
+          });
+          if (!review || review.image) continue;
+          await prisma.review.update({ where: { id: review.id }, data: { image } });
+          console.log(`✅ photo restaurée pour ${name}`);
+        }
+      }
+      await prisma.setting.create({ data: { key: 'seed.cadre.reviewPhotos.v2', value: new Date().toISOString() } });
+    }
+  } catch (e) {
+    console.log(`[avis] restauration photos ignorée: ${String(e?.message || e).slice(0, 120)}`);
+  }
+
   const existing = await prisma.product.count();
   if (existing > 0) {
     console.log('✅ Database already seeded — checking for missing products...');

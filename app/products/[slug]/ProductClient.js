@@ -1063,7 +1063,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div
                     onContextMenu={(e) => e.preventDefault()}
                     style={{
-                      position: 'relative', marginTop: 10, width: '100%', maxWidth: 280,
+                      position: 'relative', marginTop: 10, width: '100%', maxWidth: 120,
                       aspectRatio: '3 / 4', background: '#fff', border: '1px solid #eee', borderRadius: 12,
                       overflow: 'hidden', WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none',
                     }}
