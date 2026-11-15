@@ -1050,7 +1050,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 {review.image && (
                   <a href={review.image} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: 10 }}>
                     <img src={review.image} alt={`صورة من العميل ${review.name}`} loading="lazy"
-                         style={{ width: '100%', maxWidth: 260, maxHeight: 260, objectFit: 'cover', borderRadius: 12, border: '1px solid #eee', display: 'block', cursor: 'zoom-in' }} />
+                         style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: 320, objectFit: 'contain', borderRadius: 12, border: '1px solid #eee', background: '#fff', cursor: 'zoom-in' }} />
                   </a>
                 )}
               </div>

@@ -741,10 +741,18 @@ async function main() {
     }
   }
 
-  // Photos des avis clients : associe les images aux avis qui n'en ont pas
-  // encore (du plus récent au plus ancien). Idempotent : ne remplit que les vides.
+  // Photos des avis clients : association par position (0 = avis le plus récent)
+  // pour pouvoir alterner photo / pas de photo et éviter un rendu trop uniforme.
+  // Idempotent : ne remplit que les avis qui n'ont pas encore de photo.
   const reviewPhotoMigrations = [
-    { slug: 'cadre-dessin-enfant-a4', images: ['/reviews/cadre-a4-avis1.webp'] },
+    {
+      slug: 'cadre-dessin-enfant-a4',
+      photos: {
+        0: '/reviews/cadre-a4-avis1.webp',
+        1: '/reviews/cadre-a4-avis2.webp',
+        3: '/reviews/cadre-a4-avis3.webp',
+      },
+    },
   ];
   for (const migration of reviewPhotoMigrations) {
     try {
@@ -755,10 +763,11 @@ async function main() {
         orderBy: { createdAt: 'desc' },
         select: { id: true, image: true },
       });
-      const targets = list.filter((r) => !r.image).slice(0, migration.images.length);
-      for (let i = 0; i < targets.length; i++) {
-        await prisma.review.update({ where: { id: targets[i].id }, data: { image: migration.images[i] } });
-        console.log(`✅ avis ${migration.slug} : photo ${migration.images[i]}`);
+      for (const [index, photo] of Object.entries(migration.photos)) {
+        const review = list[Number(index)];
+        if (!review || review.image) continue;
+        await prisma.review.update({ where: { id: review.id }, data: { image: photo } });
+        console.log(`✅ avis ${migration.slug} #${index} : photo ${photo}`);
       }
     } catch (e) {
       console.log(`[avis] migration photos ignorée (${migration.slug}): ${String(e?.message || e).slice(0, 120)}`);
