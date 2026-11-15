@@ -195,16 +195,18 @@ export default function ProductClient({ product, wilayas, communes}) {
     };
   }, []);
 
+  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === CADRE_SLUG ? CADRE_BASE_PRICE : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
+
+  // ViewContent : valeur en dinars entiers (les prix sont en DZD, pas en centimes)
   useEffect(() => {
     if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
       window.fbq('track', 'ViewContent', {
         content_name: product.name, content_ids: [product.id],
-        content_type: 'product', value: product.price / 100, currency: 'DZD',
+        content_type: 'product', value: basePrice, currency: 'DZD',
       });
     }
   }, []);
 
-  const basePrice = wordBoxPacks ? (wordBoxPacks.find(p => p.label === pack)?.price || product.price) : (product.slug === CADRE_SLUG ? CADRE_BASE_PRICE : (variants ? (variants.find(v => v.label === variant)?.price ?? product.price) : product.price));
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
   // Offre cadre : dès 2 articles (toutes couleurs confondues) → 2000 DA/article au lieu de 2200 DA
   const cadreUnitPrice = cadrePriceForQty(cadreQty);
@@ -343,7 +345,7 @@ export default function ProductClient({ product, wilayas, communes}) {
       const orderData = await res.json();
       if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
         window.fbq('track', 'Purchase', {
-          value: total / 100, currency: 'DZD',
+          value: total, currency: 'DZD',
           content_name: product.name, content_ids: [product.id],
         }, { eventID: orderData.capiEventId });
       }
@@ -396,11 +398,12 @@ export default function ProductClient({ product, wilayas, communes}) {
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
+      const waOrderData = await res.json();
       if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
         window.fbq('track', 'Purchase', {
-          value: waTotal / 100, currency: 'DZD',
+          value: waTotal, currency: 'DZD',
           content_name: product.name, content_ids: [product.id],
-        });
+        }, { eventID: waOrderData.capiEventId });
       }
     } catch (e) {
       setError(e.message || 'حدث خطأ أثناء الطلب');
