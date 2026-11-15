@@ -867,6 +867,27 @@ async function main() {
     console.log(`[avis] restauration photos ignorée: ${String(e?.message || e).slice(0, 120)}`);
   }
 
+  // Nouvelle URL pour forcer le rafraîchissement de la photo avis5 dans les caches CDN.
+  try {
+    const doneAvis5 = await prisma.setting.findUnique({ where: { key: 'seed.cadre.reviewPhoto5.v3' } });
+    if (!doneAvis5) {
+      const product = await prisma.product.findUnique({ where: { slug: 'cadre-dessin-enfant-a4' }, select: { id: true } });
+      if (product) {
+        const review = await prisma.review.findFirst({
+          where: { productId: product.id, name: 'أمينة ح.' },
+          select: { id: true, image: true },
+        });
+        if (review && (!review.image || review.image === '/reviews/cadre-a4-avis5.webp')) {
+          await prisma.review.update({ where: { id: review.id }, data: { image: '/reviews/cadre-a4-avis5-v2.webp' } });
+          console.log('✅ photo avis5 actualisée');
+        }
+      }
+      await prisma.setting.create({ data: { key: 'seed.cadre.reviewPhoto5.v3', value: new Date().toISOString() } });
+    }
+  } catch (e) {
+    console.log(`[avis] mise à jour photo avis5 ignorée: ${String(e?.message || e).slice(0, 120)}`);
+  }
+
   const existing = await prisma.product.count();
   if (existing > 0) {
     console.log('✅ Database already seeded — checking for missing products...');
