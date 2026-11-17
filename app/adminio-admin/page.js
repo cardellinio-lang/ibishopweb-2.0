@@ -468,7 +468,7 @@ export default function Admin() {
                     <td><input type="checkbox" checked={selected.includes(p.id)} onChange={() => toggleSelect(p.id)} style={{ width: 18, height: 18, cursor: 'pointer' }} /></td>
                     <td><img src={imgs[0] || 'https://placehold.co/40x40/eee/999?text=N'} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} /></td>
                     <td style={{ fontWeight: 600 }}>{p.name}</td>
-                    <td>{p.price.toLocaleString()} DA</td>
+                    <td>{p.price.toLocaleString('fr-FR')} DA</td>
                     <td style={{ fontSize: 15, color: '#666' }}>{p.sku || '-'}</td>
                     <td><span style={{ display: 'inline-block', width: 20, height: 20, borderRadius: 6, background: p.color || '#000', verticalAlign: 'middle' }}></span></td>
                     <td>{p.stock}</td>
@@ -656,7 +656,7 @@ export default function Admin() {
                           </div>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Prix unitaire</span>
-                            <div style={{ fontWeight: 700, color: '#1d1d1f' }}>{item(o).price?.toLocaleString()} DA</div>
+                            <div style={{ fontWeight: 700, color: '#1d1d1f' }}>{item(o).price?.toLocaleString('fr-FR')} DA</div>
                           </div>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Quantité</span>
@@ -677,11 +677,11 @@ export default function Admin() {
                           </div>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Frais livraison</span>
-                            <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.delivery?.toLocaleString()} DA</div>
+                            <div style={{ fontWeight: 600, color: '#1d1d1f' }}>{o.delivery?.toLocaleString('fr-FR')} DA</div>
                           </div>
                           <div>
                             <span style={{ color: '#8e8e93', fontSize: 11, fontWeight: 600 }}>Total</span>
-                            <div style={{ fontWeight: 900, fontSize: 16, color: '#f59e0b' }}>{o.total?.toLocaleString()} DA</div>
+                            <div style={{ fontWeight: 900, fontSize: 16, color: '#f59e0b' }}>{o.total?.toLocaleString('fr-FR')} DA</div>
                           </div>
                         </div>
                       </div>
@@ -741,7 +741,7 @@ export default function Admin() {
                               const msg = 'مرحبا ' + o.customer + ' 👋\n'
                                 + 'تم استلام طلبك ' + o.number + '\n'
                                 + 'المنتج: ' + (item(o).name || '') + '\n'
-                                + 'المبلغ: ' + (o.total?.toLocaleString() || '') + ' دج\n\n'
+                                + 'المبلغ: ' + (o.total?.toLocaleString('fr-FR') || '') + ' دج\n\n'
                                 + 'لتأكيد طلبك، اضغط على الرابط أدناه 👇\n'
                                 + link;
                               window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
@@ -1044,7 +1044,7 @@ export default function Admin() {
                       <td style={{ padding: '10px 12px' }}>{o.wilayaName}</td>
                       <td style={{ padding: '10px 12px' }}>{o.communeName}</td>
                       <td style={{ padding: '10px 12px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.items?.[0]?.name || '-'}</td>
-                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>{o.total?.toLocaleString()} DA</td>
+                      <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>{o.total?.toLocaleString('fr-FR')} DA</td>
                       <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                         <span style={{
                           display: 'inline-block', padding: '3px 10px', borderRadius: 100,

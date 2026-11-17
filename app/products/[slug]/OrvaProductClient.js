@@ -233,12 +233,12 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                     <span style={{
                       fontFamily: 'Cairo', fontWeight: 500, fontSize: 18,
                       textDecoration: 'line-through', color: theme.muted,
-                    }}>{product.oldPrice.toLocaleString()} د.ج</span>
+                    }}>{product.oldPrice.toLocaleString('fr-FR')} د.ج</span>
                   )}
                   <span style={{
                     fontFamily: 'Rubik', fontWeight: 700, fontSize: 22,
                     color: theme.bodyText,
-                  }}>{product.price.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span></span>
+                  }}>{product.price.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span></span>
                 </div>
 
                 {discount > 0 && (
@@ -393,7 +393,7 @@ export default function OrvaProductClient({ product, wilayas, communes }) {
                 <img src={imgs[0] || 'https://placehold.co/48x48/f5f5f7/8e8e93?text=N'}
                      alt="" className="no-save-img" draggable={false} onContextMenu={(e) => e.preventDefault()} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover' }} />
                 <div>
-                  <div style={{ fontFamily: 'Rubik', fontWeight: 700, fontSize: 15, color: theme.text }}>{product.price.toLocaleString()} د.ج</div>
+                  <div style={{ fontFamily: 'Rubik', fontWeight: 700, fontSize: 15, color: theme.text }}>{product.price.toLocaleString('fr-FR')} د.ج</div>
                   <div style={{ fontFamily: 'Cairo', fontWeight: 500, fontSize: 12, color: theme.muted }}>{product.name}</div>
                 </div>
               </div>

@@ -91,7 +91,7 @@ export default function ConfirmOrder({ params }) {
                 <h1 style={s.title}>تم تأكيد طلبك بنجاح!</h1>
                 <p style={s.text}>شكراً لك {order?.customer}!</p>
                 <p style={s.detail}>رقم الطلب: {order?.number}</p>
-                <p style={s.detail}>المبلغ: {order?.total?.toLocaleString()} د.ج</p>
+                <p style={s.detail}>المبلغ: {order?.total?.toLocaleString('fr-FR')} د.ج</p>
                 <p style={{ ...s.text, marginTop: 12, fontSize: 15 }}>
                   سنقوم بتجهيز طلبك وتوصيله في أقرب وقت.
                 </p>
@@ -107,7 +107,7 @@ export default function ConfirmOrder({ params }) {
                 <h1 style={{ ...s.title, color: '#B8487D' }}>تأكيد طلبك</h1>
                 <p style={s.text}>مرحباً {order.customer}!</p>
                 <p style={s.detail}>رقم الطلب: {order.number}</p>
-                <p style={s.detail}>المبلغ: {order.total?.toLocaleString()} د.ج</p>
+                <p style={s.detail}>المبلغ: {order.total?.toLocaleString('fr-FR')} د.ج</p>
                 <p style={{ ...s.text, marginTop: 12, fontSize: 15 }}>
                   اضغط على الزر أدناه لتأكيد طلبك
                 </p>

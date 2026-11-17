@@ -427,8 +427,8 @@ export default function ProductClient({ product, wilayas, communes}) {
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : '\n🎉 توصيل مجاني!';
-    const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString()} د.ج` : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPrice.toLocaleString()} د.ج${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString()} د.ج\u202C`;
+    const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPrice.toLocaleString('fr-FR')} د.ج${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -533,21 +533,21 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </a>
               )}
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                {product.oldPrice && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString()} د.ج</span>}
+                {product.oldPrice && <span style={{ fontSize: 16, color: '#8e8e93', textDecoration: 'line-through' }}>{product.oldPrice.toLocaleString('fr-FR')} د.ج</span>}
                 <span style={{
                   fontSize: 28, fontWeight: 800, color: tierActive ? '#697327' : c,
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
-                  {finalPrice.toLocaleString()} <span style={{ fontSize: 16 }}>د.ج</span>
+                  {finalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span>
                 </span>
                 {tierActive && product.price !== effectivePrice && (
-                  <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString()}</span>
+                  <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString('fr-FR')}</span>
                 )}
               </div>
               {discount > 0 && !tierActive && <span style={{ display: 'inline-block', background: 'var(--p-cta)', color: '#fff', fontSize: 11, padding: '3px 10px', borderRadius: 20, fontWeight: 800, marginTop: 8 }}>خصم {discount}%</span>}
               {tierActive && savings > 0 && (
                 <span style={{ display: 'inline-block', background: 'var(--p-cta)', color: '#fff', fontSize: 13, padding: '6px 16px', borderRadius: 20, fontWeight: 900, marginTop: 8 }}>
-                  ✅ توفير {savings.toLocaleString()} د.ج لكل قطعة!
+                  ✅ توفير {savings.toLocaleString('fr-FR')} د.ج لكل قطعة!
                 </span>
               )}
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
@@ -613,7 +613,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </select>
                 {selectedWilaya && (
                   <div style={{ marginTop: 7, fontSize: 12, fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.6 }}>
-                    التوصيل للمنزل: {selectedWilaya.price.toLocaleString()} د.ج · إلى المكتب: {freeOfficeDelivery ? 'مجاني' : `${selectedWilaya.priceOffice.toLocaleString()} د.ج`}
+                    التوصيل للمنزل: {selectedWilaya.price.toLocaleString('fr-FR')} د.ج · إلى المكتب: {freeOfficeDelivery ? 'مجاني' : `${selectedWilaya.priceOffice.toLocaleString('fr-FR')} د.ج`}
                   </div>
                 )}
               </div>
@@ -728,7 +728,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                         }}>{on ? '✓' : ''}</span>
                         <span style={{ flex: 1, minWidth: 0 }}>
                           <span style={{ display: 'block', fontSize: 16, fontWeight: 900, color: '#1d1d1f', lineHeight: 1.35 }}>{v.shortLabel || v.label}</span>
-                          <span style={{ display: 'block', fontSize: 14, fontWeight: 900, color: c, marginTop: 3 }}>{v.price.toLocaleString()} د.ج</span>
+                          <span style={{ display: 'block', fontSize: 14, fontWeight: 900, color: c, marginTop: 3 }}>{v.price.toLocaleString('fr-FR')} د.ج</span>
                         </span>
                       </button>
                         );
@@ -772,7 +772,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                         }}>
                           {v.shortLabel || v.label}
                           {(product.slug === 'ghilaf-lagna-tathbeet' || product.slug === 'cadre-dessin-enfant-a4') && v.price && (
-                            <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{(product.slug === 'cadre-dessin-enfant-a4' ? finalPrice : v.price).toLocaleString()} د.ج</div>
+                            <div style={{ fontSize: 13, fontWeight: 900, marginTop: 3, opacity: 0.75 }}>{(product.slug === 'cadre-dessin-enfant-a4' ? finalPrice : v.price).toLocaleString('fr-FR')} د.ج</div>
                           )}
                         </div>
                       </button>
@@ -837,11 +837,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                                 color: active ? c : '#1d1d1f',
                                 transition: 'color .2s',
                               }}>
-                                {p.price.toLocaleString()} <span style={{ fontSize: 12 }}>د.ج</span>
+                                {p.price.toLocaleString('fr-FR')} <span style={{ fontSize: 12 }}>د.ج</span>
                               </span>
                               {p.saving > 0 && (
                                 <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through' }}>
-                                  {p.originalPrice.toLocaleString()} د.ج
+                                  {p.originalPrice.toLocaleString('fr-FR')} د.ج
                                 </span>
                               )}
                             </div>
@@ -896,7 +896,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                           style={{ width: 44, height: 44, borderRadius: 12, border: '1.5px solid var(--p-border)', background: 'var(--p-soft)', fontSize: 22, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text)' }}>
                     +
                   </button>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString()} د.ج</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString('fr-FR')} د.ج</div>
                 </div>
               </div>
               )}
@@ -906,9 +906,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'center', padding: '8px 0' }}>
                   <div style={{ fontSize: 22, fontWeight: 900, minWidth: 40, textAlign: 'center', color: '#1d1d1f' }}>{realQty}</div>
                   {product.slug === 'cadre-dessin-enfant-a4' ? (
-                    <div style={{ fontSize: 16, fontWeight: 700, color: c }}>{cadreAvgPrice.toLocaleString()} د.ج</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: c }}>{cadreAvgPrice.toLocaleString('fr-FR')} د.ج</div>
                   ) : (
-                    <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString()} د.ج = {(finalPrice * realQty).toLocaleString()} د.ج</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: tierActive ? '#697327' : c }}>× {finalPrice.toLocaleString('fr-FR')} د.ج = {(finalPrice * realQty).toLocaleString('fr-FR')} د.ج</div>
                   )}
                 </div>
               </div>
@@ -919,8 +919,8 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
                     {product.slug === 'cadre-dessin-enfant-a4'
-                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر ${((CADRE_BASE_PRICE - CADRE_OFFER_PRICE) * CADRE_OFFER_QTY).toLocaleString()} د.ج إجمالاً!`
-                      : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString()} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
+                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر ${((CADRE_BASE_PRICE - CADRE_OFFER_PRICE) * CADRE_OFFER_QTY).toLocaleString('fr-FR')} د.ج إجمالاً!`
+                      : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString('fr-FR')} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>
               )}
@@ -946,8 +946,8 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>سعر المنتج</span>
                     <span style={{ fontSize: 14, fontWeight: 700, color: tierActive ? '#697327' : '#6e6e73' }}>
-                      {finalPrice.toLocaleString()} د.ج
-                      {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString()}</span>}
+                      {finalPrice.toLocaleString('fr-FR')} د.ج
+                      {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString('fr-FR')}</span>}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
@@ -959,12 +959,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                     <span style={{ fontSize: 14, fontWeight: 700, color: freeOfficeDelivery && deliveryType === 'office' ? '#697327' : '#6e6e73' }}>
                       {freeOfficeDelivery && deliveryType === 'office'
                         ? 'مجاني'
-                        : (delivery > 0 ? `${delivery.toLocaleString()} د.ج` : 'اختر الولاية')}
+                        : (delivery > 0 ? `${delivery.toLocaleString('fr-FR')} د.ج` : 'اختر الولاية')}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{selectedWilaya ? 'السعر الإجمالي' : 'الإجمالي قبل التوصيل'}</span>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--p-text)' }}>{total.toLocaleString()} د.ج</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--p-text)' }}>{total.toLocaleString('fr-FR')} د.ج</span>
                   </div>
                 </div>
               </div>
@@ -1101,7 +1101,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             <div style={{ flexShrink: 0, lineHeight: 1.15, textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#6e6e73' }}>المجموع</div>
               <div style={{ fontSize: 18, fontWeight: 900, color: c, whiteSpace: 'nowrap' }}>
-                {total.toLocaleString()} <span style={{ fontSize: 11 }}>د.ج</span>
+                {total.toLocaleString('fr-FR')} <span style={{ fontSize: 11 }}>د.ج</span>
               </div>
             </div>
             <button onClick={() => {
@@ -1333,13 +1333,13 @@ function CelebrationOverlay({ data, onClose }) {
         {/* Price info */}
         <div style={{ animation: 'wowFloatUp 0.5s ease-out 0.3s both' }}>
           <div style={{ color: '#ffd700', fontSize: 36, fontWeight: 900, marginBottom: 4 }}>
-            {data.tierPrice.toLocaleString()} <span style={{ fontSize: 18 }}>د.ج</span>
+            {data.tierPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 18 }}>د.ج</span>
             <span style={{ fontSize: 18, color: '#aaa', textDecoration: 'line-through', marginLeft: 10, fontWeight: 600 }}>
-              {data.price.toLocaleString()} د.ج
+              {data.price.toLocaleString('fr-FR')} د.ج
             </span>
           </div>
           <div style={{ color: '#86efac', fontSize: 18, fontWeight: 700 }}>
-            وفر {savingAmt.toLocaleString()} د.ج
+            وفر {savingAmt.toLocaleString('fr-FR')} د.ج
           </div>
           <div style={{ marginTop: 16 }}>
             <span style={{

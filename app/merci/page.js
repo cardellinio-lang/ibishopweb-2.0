@@ -122,7 +122,7 @@ function MerciContent() {
           </p>
           {productName && (
             <p style={{ color: '#D7E06D', fontSize: 14, fontWeight: 500 }}>
-              {productName} x{qty} — {total.toLocaleString()} د.ج
+              {productName} x{qty} — {total.toLocaleString('fr-FR')} د.ج
             </p>
           )}
 

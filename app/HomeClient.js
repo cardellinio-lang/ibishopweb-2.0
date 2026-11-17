@@ -41,11 +41,11 @@ function ProductCard({ p, now }) {
       <div style={{ padding: '12px 12px 16px', display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'right', flex: 1 }}>
         <h3 style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.5, color: 'var(--wb-text)' }}>{p.name}</h3>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 'auto' }}>
-          <span className="wb-price" style={{ fontSize: 22 }}>{displayPrice.toLocaleString()} <span style={{ fontSize: 13 }}>د.ج</span></span>
-          {isCadre ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString()}</span>)}
+          <span className="wb-price" style={{ fontSize: 22 }}>{displayPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 13 }}>د.ج</span></span>
+          {isCadre ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString('fr-FR')}</span>)}
         </div>
         {hasTier && (
-          <span style={{ fontSize: 12, color: 'var(--wb-blue-dark)', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString()} د.ج عند شراء {tierQty}+</span>
+          <span style={{ fontSize: 12, color: 'var(--wb-blue-dark)', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString('fr-FR')} د.ج عند شراء {tierQty}+</span>
         )}
       </div>
     </a>
@@ -67,8 +67,8 @@ function FeaturedProductBanner({ product }) {
         <h2>{product.name}</h2>
         <p>ألعاب ووسائل تعليمية للأطفال · الدفع عند الاستلام</p>
         <div className="wb-home-hero-price">
-          <strong>{displayPrice.toLocaleString()} د.ج</strong>
-          {discount > 0 && <><del>{product.oldPrice.toLocaleString()} د.ج</del><span>-{discount}%</span></>}
+          <strong>{displayPrice.toLocaleString('fr-FR')} د.ج</strong>
+          {discount > 0 && <><del>{product.oldPrice.toLocaleString('fr-FR')} د.ج</del><span>-{discount}%</span></>}
         </div>
         <span className="wb-home-hero-cta">اكتشف المنتج <span aria-hidden="true">←</span></span>
       </div>
