@@ -551,22 +551,6 @@ export default function ProductClient({ product, wilayas, communes}) {
                 </span>
               )}
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
-              {product.slug === CADRE_SLUG && (
-                <div style={{ marginTop: 12, background: '#E6F7F2', border: '1px solid #B4E0D3', borderRadius: 12, padding: '12px 14px' }}>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: '#0F4C46', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> واجهة بلكسيجلاس: أمان أكبر لطفلك
-                  </div>
-                  <div style={{ fontSize: 13, color: '#0F4C46', lineHeight: 1.7, marginBottom: 6 }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> اخترنا البلكسيجلاس بدل الزجاج لأنه أخف وأكثر مقاومة للصدمات.
-                  </div>
-                  <div style={{ fontSize: 13, color: '#0F4C46', lineHeight: 1.7, marginBottom: 6 }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> خفيفة ومتينة: تتحمّل لمس الأطفال اليومي وتغيير الرسومات بسهولة وأمان.
-                  </div>
-                  <div style={{ fontSize: 13, color: '#0F4C46', lineHeight: 1.7, direction: 'ltr', textAlign: 'left' }}>
-                    <span style={{ color: '#1F9D63', fontWeight: 900 }}>✓</span> <strong style={{ color: '#0F4C46' }}>Façade en plexiglas :</strong> légère, résistante aux chocs et facile à manipuler par les enfants.
-                  </div>
-                </div>
-              )}
             </div>
 
             {product.slug !== CADRE_SLUG && (
