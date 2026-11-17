@@ -1,13 +1,14 @@
 import prisma from '@/lib/db';
 import { requireAdmin } from '@/lib/admin-auth';
 import { cleanImages } from '@/lib/images';
+import { displayDescription } from '@/lib/product-copy';
 
 export async function PUT(req, { params }) {
   const auth = requireAdmin(req); if (auth) return auth;
   const data = await req.json();
   const product = await prisma.product.update({
     where: { id: params.id },
-    data: { name: data.name, slug: data.slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', themeColor: data.themeColor || null, category: data.category || '', sku: data.sku || null, stock: data.stock || 1, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
+    data: { name: data.name, slug: data.slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: displayDescription({ slug: data.slug, description: data.description || '' }), color: data.color || '#000000', themeColor: data.themeColor || null, category: data.category || '', sku: data.sku || null, stock: data.stock || 1, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
   });
   return Response.json(product);
 }

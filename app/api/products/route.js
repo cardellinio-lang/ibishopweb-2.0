@@ -2,6 +2,7 @@ import prisma, { withDbRetry } from '@/lib/db';
 import { requireAdmin, checkAdmin } from '@/lib/admin-auth';
 import { cleanImages } from '@/lib/images';
 import { getHiddenSlugs } from '@/lib/hidden-products';
+import { displayDescription } from '@/lib/product-copy';
 
 export async function GET(req) {
   const where = { category: { not: 'orva' } };
@@ -12,7 +13,9 @@ export async function GET(req) {
     if (hidden.length) where.slug = { notIn: hidden };
   }
   const products = await withDbRetry(() => prisma.product.findMany({ where, orderBy: { position: 'asc' } }));
-  return new Response(JSON.stringify(products), {
+  // L'admin voit la même description neutre que les clients.
+  const safe = products.map((p) => ({ ...p, description: displayDescription(p) }));
+  return new Response(JSON.stringify(safe), {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
   });
 }
@@ -74,7 +77,7 @@ export async function POST(req) {
   const maxPos = await prisma.product.aggregate({ _max: { position: true } });
   const position = (maxPos._max.position || 0) + 10;
   const product = await prisma.product.create({
-    data: { name: data.name, slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: data.description || '', color: data.color || '#000000', themeColor: data.themeColor || null, category: data.category || '', sku: data.sku || null, stock: data.stock || 1, position, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
+    data: { name: data.name, slug, price: data.price, oldPrice: data.oldPrice || null, images: cleanImages(data.images), description: displayDescription({ slug, description: data.description || '' }), color: data.color || '#000000', themeColor: data.themeColor || null, category: data.category || '', sku: data.sku || null, stock: data.stock || 1, position, tierEnabled: data.tierEnabled || false, tierQty: data.tierQty || null, tierPrice: data.tierPrice || null, tierMessage: data.tierMessage || null, tierGift: data.tierGift || null },
   });
   return Response.json(product, { status: 201 });
 }
