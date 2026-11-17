@@ -5,6 +5,7 @@ import ProductClient from './ProductClient';
 import OrvaProductClient from './OrvaProductClient';
 import { CADRE_SLUG, CADRE_BASE_PRICE } from '@/lib/pricing';
 import { productSeo } from '@/lib/product-seo';
+import { displayDescription } from '@/lib/product-copy';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -52,7 +53,7 @@ export async function generateMetadata({ params }) {
   const url = `https://${host}/products/${product.slug}`;
   const seo = productSeo(product.slug) || {};
   const title = `${seo.title || product.name} | ${SITE_NAME}`;
-  const plain = plainText(product.description);
+  const plain = plainText(displayDescription(product));
   const excerpt = `${plain.slice(0, 130)}${plain.length > 130 ? '…' : ''}`.trim();
   const description = `${seo.description || excerpt} ✓ الدفع عند الاستلام ✓ التوصيل إلى 58 ولاية`.trim();
   const image = absoluteUrl(parseImages(product.images)[0], host);
@@ -86,7 +87,10 @@ export default async function ProductPage({ params }) {
   let dbFailed = false;
   try {
     product = await withDbRetry(() => prisma.product.findUnique({ where: { slug: params.slug } }), { retries: 5 });
-    if (product) product.images = JSON.parse(product.images || '[]');
+    if (product) {
+      product.images = JSON.parse(product.images || '[]');
+      product.description = displayDescription(product);
+    }
     wilayas = await withDbRetry(() => prisma.wilaya.findMany({ orderBy: { id: 'asc' } }), { retries: 5 });
     communes = await withDbRetry(() => prisma.commune.findMany({ orderBy: [{ wilayaId: 'asc' }, { name: 'asc' }] }), { retries: 5 });
   } catch (e) {
