@@ -73,7 +73,7 @@ function FeaturedProductBanner({ product }) {
         <span className="wb-home-hero-cta">اكتشف المنتج <span aria-hidden="true">←</span></span>
       </div>
       <div className="wb-home-hero-image">
-        <img src={images[0] || 'https://placehold.co/600x600/f6f6f9/868695?text=IBI+Kids'} alt={product.name} />
+        <img src={images[product.slug === 'word-box' ? 1 : 0] || images[0] || 'https://placehold.co/600x600/f6f6f9/868695?text=IBI+Kids'} alt={product.name} />
       </div>
     </a>
   );
