@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -445,6 +445,9 @@ export default function ProductClient({ product, wilayas, communes}) {
     const waPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreAvgPrice / Math.max(1, realQty)) - (isWordBox ? whatsAppDiscount : 0) : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
+    const waPriceLabel = product.slug === CADRE_SLUG && realQty >= CADRE_OFFER_QTY
+      ? `${realQty} قطع بـ${(waPrice * realQty).toLocaleString('fr-FR')} د.ج`
+      : `${waPrice.toLocaleString('fr-FR')} د.ج`;
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -477,7 +480,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : '\n🎉 توصيل مجاني!';
     const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPrice.toLocaleString('fr-FR')} د.ج${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -587,7 +590,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                   fontSize: 28, fontWeight: 800, color: tierActive ? '#697327' : c,
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
-                  {finalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span>
+                  {product.slug === CADRE_SLUG && cadreQty >= CADRE_OFFER_QTY ? (
+                    <>{cadreTotalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span><span style={{ fontSize: 12, fontWeight: 900, color: '#be123c' }}>لـ{cadreQty} قطع</span></>
+                  ) : (
+                    <>{finalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span></>
+                  )}
                 </span>
                 {tierActive && product.price !== effectivePrice && (
                   <span style={{ fontSize: 14, color: '#8e8e93', textDecoration: 'line-through' }}>{product.price.toLocaleString('fr-FR')}</span>
@@ -601,7 +608,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {product.slug === CADRE_SLUG && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
-                  🎁 عرض قطعتين بـ{CADRE_OFFER_PRICE.toLocaleString('fr-FR')} د.ج للقطعة — ينتهي خلال
+                  🎁 2 قطع بـ{CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج فقط — ينتهي خلال
                   <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
                 </div>
               )}
@@ -1006,7 +1013,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
                     {product.slug === 'cadre-dessin-enfant-a4'
-                      ? `➕ أضف ${product.tierQty - realQty} فقط ووفّر ${((CADRE_BASE_PRICE - CADRE_OFFER_PRICE) * CADRE_OFFER_QTY).toLocaleString('fr-FR')} د.ج إجمالاً!`
+                      ? `➕ أضف ${product.tierQty - realQty} فقط وخُذ 2 بـ${CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — وفّر ${CADRE_SAVE_TOTAL.toLocaleString('fr-FR')} د.ج!`
                       : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString('fr-FR')} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>
@@ -1033,7 +1040,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #d2d2d7' }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: '#1d1d1f' }}>سعر المنتج</span>
                     <span style={{ fontSize: 14, fontWeight: 700, color: tierActive ? '#697327' : '#6e6e73' }}>
-                      {finalPrice.toLocaleString('fr-FR')} د.ج
+                      {product.slug === CADRE_SLUG && cadreQty >= CADRE_OFFER_QTY ? <>{cadreTotalPrice.toLocaleString('fr-FR')} د.ج <span style={{ fontSize: 12, color: '#8e8e93' }}>({cadreQty} قطع)</span></> : <>{finalPrice.toLocaleString('fr-FR')} د.ج</>}
                       {tierActive && <span style={{ fontSize: 12, color: '#8e8e93', textDecoration: 'line-through', marginLeft: 6 }}>{product.price.toLocaleString('fr-FR')}</span>}
                     </span>
                   </div>
@@ -1162,7 +1169,7 @@ export default function ProductClient({ product, wilayas, communes}) {
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '10px 16px', paddingBottom: 'calc(10px + env(safe-area-inset-bottom))', background: '#fff', borderTop: `1px solid ${hexToRgba(c, 0.15)}`, zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
           {isFomoProduct && displayStock > 0 && (
             <div style={{ textAlign: 'center', fontSize: 12, fontWeight: 900, color: '#be123c', marginBottom: 6 }}>
-              بقي {displayStock} فقط · {finalPrice.toLocaleString('fr-FR')} د.ج
+              بقي {displayStock} فقط · {product.slug === CADRE_SLUG && cadreQty >= CADRE_OFFER_QTY ? cadreTotalPrice.toLocaleString('fr-FR') : finalPrice.toLocaleString('fr-FR')} د.ج
             </div>
           )}
           {isWhatsAppProduct ? (

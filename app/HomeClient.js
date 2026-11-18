@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL } from '@/lib/pricing';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -45,7 +45,9 @@ function ProductCard({ p, now }) {
           {isCadre ? null : (p.oldPrice && <span className="wb-oldprice" style={{ fontSize: 14 }}>{p.oldPrice.toLocaleString('fr-FR')}</span>)}
         </div>
         {hasTier && (
-          <span style={{ fontSize: 12, color: 'var(--wb-blue-dark)', fontWeight: 700 }}>أقل سعر {tierPrice.toLocaleString('fr-FR')} د.ج عند شراء {tierQty}+</span>
+          <span style={{ fontSize: 12, color: 'var(--wb-blue-dark)', fontWeight: 700 }}>
+            {isCadre ? `2 قطع بـ${CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج` : `أقل سعر ${tierPrice.toLocaleString('fr-FR')} د.ج عند شراء ${tierQty}+`}
+          </span>
         )}
       </div>
     </a>
@@ -68,6 +70,7 @@ function FeaturedProductBanner({ product }) {
         <p>ألعاب ووسائل تعليمية للأطفال · الدفع عند الاستلام</p>
         <div className="wb-home-hero-price">
           <strong>{displayPrice.toLocaleString('fr-FR')} د.ج</strong>
+          {isCadre && <span>2 قطع بـ{CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج</span>}
           {discount > 0 && <><del>{product.oldPrice.toLocaleString('fr-FR')} د.ج</del><span>-{discount}%</span></>}
         </div>
         <span className="wb-home-hero-cta">اكتشف المنتج <span aria-hidden="true">←</span></span>
