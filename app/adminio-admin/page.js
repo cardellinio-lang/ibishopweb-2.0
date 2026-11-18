@@ -27,6 +27,9 @@ export default function Admin() {
   const [deliveryForm, setDeliveryForm] = useState({});
   const [deliverySaving, setDeliverySaving] = useState({});
   const [stats, setStats] = useState(null);
+  const [profit, setProfit] = useState(null);
+  const [profitLoading, setProfitLoading] = useState(false);
+  const [profitMsg, setProfitMsg] = useState('');
   const [reviews, setReviews] = useState([]);
   const [reviewForm, setReviewForm] = useState({ name: '', city: '', rating: 5, text: '', date: '', image: '' });
   const [reviewLoading, setReviewLoading] = useState(false);
@@ -156,6 +159,30 @@ export default function Admin() {
     else if (s.status === 401) autoLogout();
     const setRes = await fetch('/api/settings', { headers: authHeaders() });
     if (setRes.ok) setSettings(await setRes.json());
+  };
+
+  const loadProfit = async () => {
+    setProfitLoading(true); setProfitMsg('');
+    try {
+      const r = await fetch('/api/profit?t=' + Date.now(), { headers: authHeaders() });
+      if (r.status === 401) { autoLogout(); return; }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      setProfit(await r.json());
+    } catch (e) { setProfitMsg('تعذر تحميل الأرقام: ' + e.message); }
+    finally { setProfitLoading(false); }
+  };
+
+  const saveProfitSetting = async (key, value) => {
+    setProfitMsg('⏳ حفظ…');
+    try {
+      const r = await fetch('/api/settings', {
+        method: 'PATCH', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value: String(value) }),
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      setProfitMsg('✅ تم الحفظ');
+      await loadProfit();
+    } catch (e) { setProfitMsg('❌ ' + e.message); }
   };
 
   const loadReviews = async (productId) => {
@@ -421,6 +448,7 @@ export default function Admin() {
           </button>
           <button className={`btn ${tab === 'sync' ? 'btn-primary' : ''}`} onClick={() => setTab('sync')}>📊 Google Sheets</button>
           <button className={`btn ${tab === 'stats' ? 'btn-primary' : ''}`} onClick={() => { setTab('stats'); if (!stats) load(); }}>📊 Stats</button>
+          <button className={`btn ${tab === 'profit' ? 'btn-primary' : ''}`} onClick={() => { setTab('profit'); if (!profit) loadProfit(); }}>💰 الربحية</button>
           <button className={`btn ${tab === 'delivery' ? 'btn-primary' : ''}`} onClick={() => setTab('delivery')}>🚚 Livraison</button>
           <button className={`btn ${tab === 'blog' || tab === 'blog-add' ? 'btn-primary' : ''}`} onClick={() => { setTab('blog'); loadBlog(); }}>📝 Blog ({blogPosts.length})</button>
           <button className={`btn ${tab === 'settings' ? 'btn-primary' : ''}`} onClick={() => setTab('settings')}>⚙️ Paramètres</button>
@@ -1251,6 +1279,110 @@ export default function Admin() {
             </div>
           ) : (
             <p style={{ color: '#8e8e93', fontSize: 14 }}>Chargement...</p>
+          )}
+        </div>
+      )}
+
+      {tab === 'profit' && (
+        <div className="card" style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
+            <div>
+              <h3 style={{ margin: 0 }}>💰 لوحة الربحية <span style={{ fontSize: 12, fontWeight: 600, color: '#8e8e93' }}>(تقديري)</span></h3>
+              <p style={{ fontSize: 12, color: '#6e6e73', margin: '4px 0 0', lineHeight: 1.6 }}>
+                الطلبات والإيراد من قاعدة البيانات. التكلفة ونسبة الرفض ومصاريف الإعلان تدخلها أنت، لذلك الرقم تقديري وليس محاسبة نهائية.
+              </p>
+            </div>
+            <button className="btn btn-ghost" style={{ border: '1px solid #A0C4E8' }} onClick={loadProfit} disabled={profitLoading}>
+              {profitLoading ? '⏳…' : '🔄 Actualiser'}
+            </button>
+          </div>
+          {profitMsg && <p style={{ fontSize: 12, fontWeight: 700, color: profitMsg.startsWith('❌') ? '#b91c1c' : '#166534' }}>{profitMsg}</p>}
+
+          {!profit ? (
+            <p style={{ color: '#8e8e93', fontSize: 14 }}>Chargement...</p>
+          ) : (
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 10, margin: '12px 0 18px' }}>
+                {[
+                  { l: 'طلبات 30 يوم', v: profit.totals.current.orders, c: '#2563eb' },
+                  { l: 'إيراد 30 يوم', v: profit.totals.current.revenue.toLocaleString('fr-FR') + ' د.ج', c: '#17131A' },
+                  { l: 'تكلفة تقديرية', v: profit.totals.current.cost.toLocaleString('fr-FR') + ' د.ج', c: '#b91c1c' },
+                  { l: 'ربح تقديري', v: profit.totals.current.profit.toLocaleString('fr-FR') + ' د.ج', c: profit.totals.current.profit >= 0 ? '#15803d' : '#b91c1c' },
+                  { l: 'هامش', v: profit.totals.current.margin + '%', c: '#7c3aed' },
+                ].map((x, i) => (
+                  <div key={i} style={{ background: '#f8f9fa', borderRadius: 12, padding: 12 }}>
+                    <div style={{ fontSize: 11, color: '#6e6e73', fontWeight: 700 }}>{x.l}</div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: x.c, marginTop: 4 }}>{x.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              <h4 style={{ fontSize: 14, margin: '0 0 8px' }}>⚙️ المعطيات المستخدمة في الحساب</h4>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
+                {[
+                  { key: 'profit.packaging', label: 'تغليف / قطعة', val: profit.params.packaging },
+                  { key: 'profit.delivery', label: 'تكلفة توصيل / طلب', val: profit.params.delivery },
+                  { key: 'profit.adsPerOrder', label: 'إعلان / طلب', val: profit.params.adsPerOrder },
+                  { key: 'profit.refusalRate', label: 'نسبة الرفض %', val: profit.params.refusalRate },
+                ].map(p => (
+                  <label key={p.key} style={{ fontSize: 12, fontWeight: 700, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {p.label}
+                    <span style={{ display: 'flex', gap: 4 }}>
+                      <input type="number" min="0" defaultValue={p.val} id={p.key}
+                             style={{ width: 90, padding: '6px 8px', border: '1px solid #d2d2d7', borderRadius: 8 }} />
+                      <button className="btn btn-primary" style={{ padding: '6px 10px', fontSize: 12 }}
+                              onClick={() => saveProfitSetting(p.key, document.getElementById(p.key).value)}>💾</button>
+                    </span>
+                  </label>
+                ))}
+              </div>
+
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ textAlign: 'right', background: '#f1f8fd' }}>
+                    <th style={{ padding: 8 }}>المنتج</th>
+                    <th style={{ padding: 8 }}>تكلفة القطعة</th>
+                    <th style={{ padding: 8 }}>طلبات</th>
+                    <th style={{ padding: 8 }}>وحدات</th>
+                    <th style={{ padding: 8 }}>الإيراد</th>
+                    <th style={{ padding: 8 }}>الربح</th>
+                    <th style={{ padding: 8 }}>الهامش</th>
+                    <th style={{ padding: 8 }}>قبل 30 يوم</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {profit.products.map(p => {
+                    const key = 'profit.cost.' + p.id;
+                    return (
+                      <tr key={p.id} style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: 8, fontWeight: 700, minWidth: 160 }}>{p.name}</td>
+                        <td style={{ padding: 8 }}>
+                          <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                            <input type="number" min="0" defaultValue={p.cost} id={key}
+                                   style={{ width: 80, padding: '5px 7px', border: '1px solid #d2d2d7', borderRadius: 7 }} />
+                            <button className="btn btn-ghost" style={{ padding: '4px 8px', fontSize: 12, border: '1px solid #A0C4E8' }}
+                                    onClick={() => saveProfitSetting(key, document.getElementById(key).value)}>💾</button>
+                          </span>
+                        </td>
+                        <td style={{ padding: 8 }}>{p.current.orders}</td>
+                        <td style={{ padding: 8 }}>{p.current.units}</td>
+                        <td style={{ padding: 8 }}>{p.current.revenue.toLocaleString('fr-FR')}</td>
+                        <td style={{ padding: 8, fontWeight: 900, color: p.current.profit >= 0 ? '#15803d' : '#b91c1c' }}>
+                          {p.current.profit.toLocaleString('fr-FR')}
+                        </td>
+                        <td style={{ padding: 8 }}>{p.current.margin}%</td>
+                        <td style={{ padding: 8, color: p.previous.profit >= 0 ? '#166534' : '#b91c1c' }}>
+                          {p.previous.profit.toLocaleString('fr-FR')} ({p.previous.orders} طلب)
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p style={{ fontSize: 11, color: '#8e8e93', marginTop: 12, lineHeight: 1.7 }}>
+                المعادلة: ربح القطعة = سعر البيع − التكلفة − التغليف − (التوصيل + الإعلان لكل طلب). الإيراد يُخفَّض بنسبة الرفض، وكل التكاليف تُحتسب على الطلبات حتى المرفوضة منها. لهذا الرقم تحفّظي.
+              </p>
+            </>
           )}
         </div>
       )}
