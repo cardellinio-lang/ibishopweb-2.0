@@ -62,6 +62,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   // en base reste intact (il sert à accepter les commandes), on ne fait que
   // montrer « 3 » au client.
   const displayStock = product.slug === CADRE_SLUG ? 3 : product.slug === 'word-box' ? 5 : product.stock;
+  // Seuil du message « il ne reste que X » : 3 pour le cadre, 5 pour word-box.
+  const lowStockLimit = product.slug === 'word-box' ? 5 : 3;
   const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
   const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
@@ -582,7 +584,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
             <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '10px 16px', margin: '0 20px 16px', textAlign: 'center', border: '1px solid var(--p-border)' }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.6 }}>
-                {displayStock > 0 && displayStock <= 3
+                {displayStock > 0 && displayStock <= lowStockLimit
                   ? `متوفر — بقي ${displayStock} فقط في المخزون`
                   : displayStock > 0 ? 'متوفر للطلب — الدفع عند الاستلام' : 'غير متوفر حالياً'}
               </div>
