@@ -36,6 +36,15 @@ function isValidPhone(value) {
   return /^0[2-7]\d{8}$/.test(phoneDigits(value));
 }
 
+// Compteur d'offre : HH:MM:SS en chiffres latins, lisible dans les deux sens.
+function offerCountdown(seconds) {
+  const s = Math.max(0, Math.floor(seconds));
+  const h = String(Math.floor(s / 3600)).padStart(2, '0');
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+  const sec = String(s % 60).padStart(2, '0');
+  return `${h}:${m}:${sec}`;
+}
+
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(0,0,0,${alpha})`;
   hex = hex.replace('#', '');
@@ -52,7 +61,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   // Affichage seulement : le cadre est fabriqué à la commande. Le stock réel
   // en base reste intact (il sert à accepter les commandes), on ne fait que
   // montrer « 3 » au client.
-  const displayStock = product.slug === CADRE_SLUG ? 3 : product.stock;
+  const displayStock = product.slug === CADRE_SLUG ? 3 : product.slug === 'word-box' ? 5 : product.stock;
   const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
   const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
@@ -193,10 +202,24 @@ export default function ProductClient({ product, wilayas, communes}) {
   const wordBoxLangs = ['عربية', 'فرنسية', 'إنجليزية'];
   const [packLang, setPackLang] = useState(wordBoxLangs[0]);
   const [wowAnim, setWowAnim] = useState(false);
+  // Valeur initiale fixe (24:00:00) pour que le serveur et le navigateur
+  // rendent la même chose : pas d'erreur d'hydratation. La vraie échéance
+  // est posée après le montage et repart de 24 h à chaque expiration.
+  const [timeLeft, setTimeLeft] = useState(24 * 60 * 60);
   const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
   const isWordBox = product.slug === 'word-box';
   const whatsAppFreeDelivery = product.slug === 'scenarios-anglais';
   const whatsAppDiscount = isWordBox ? 200 : 0;
+
+  useEffect(() => {
+    if (!isWordBox) return;
+    let end = Date.now() + 24 * 60 * 60 * 1000;
+    const id = setInterval(() => {
+      if (Date.now() >= end) end = Date.now() + 24 * 60 * 60 * 1000;
+      setTimeLeft(Math.ceil((end - Date.now()) / 1000));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [isWordBox]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -788,6 +811,12 @@ export default function ProductClient({ product, wilayas, communes}) {
               {wordBoxPacks && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر باقتك</label>
+                  {wordBoxPacks.some(p => p.saving > 0) && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginBottom: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
+                      ⏳ ينتهي خصم الباقة الثنائية والثلاثية خلال
+                      <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
+                    </div>
+                  )}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {wordBoxPacks.map(p => {
                       const active = pack === p.label;
@@ -821,6 +850,11 @@ export default function ProductClient({ product, wilayas, communes}) {
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{p.label}</span>
+                              {p.saving > 0 && (
+                                <span style={{ background: '#be123c', color: '#fff', fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 10, fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>
+                                  ⏳ {offerCountdown(timeLeft)}
+                                </span>
+                              )}
                               {showWow && (
                                 <span style={{
                                   background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
