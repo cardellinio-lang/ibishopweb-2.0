@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY } from '@/lib/pricing';
 
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
@@ -84,6 +84,20 @@ export default function HomeClient({ products, featuredProduct }) {
   const [showAll, setShowAll] = useState(false);
   const [q, setQ] = useState('');
 
+  // Bandeau du haut : le cadre A4 d'abord, puis word-box, en alternance
+  // toutes les 5 secondes. Index initial fixede pour eviter toute erreur
+  // d'hydratation (le serveur affiche le cadre, comme avant).
+  const bannerProducts = useMemo(() => {
+    const list = [featuredProduct, products.find(p => p.slug === 'word-box')].filter(Boolean);
+    return list.length ? list : products.slice(0, 1);
+  }, [featuredProduct, products]);
+  const [bannerIdx, setBannerIdx] = useState(0);
+  useEffect(() => {
+    if (bannerProducts.length < 2) return;
+    const id = setInterval(() => setBannerIdx(i => (i + 1) % bannerProducts.length), 5000);
+    return () => clearInterval(id);
+  }, [bannerProducts.length]);
+
   const query = q.trim().toLowerCase();
   const filtered = query
     ? products.filter(p => (p.name || '').toLowerCase().includes(query))
@@ -102,7 +116,7 @@ export default function HomeClient({ products, featuredProduct }) {
         </p>
       </div>
 
-      <FeaturedProductBanner product={featuredProduct || products[0]} />
+      <FeaturedProductBanner product={bannerProducts[bannerIdx] || products[0]} />
 
       {/* Recherche (style Wildberries) */}
       <div className="wb-search" style={{ marginTop: 16 }}>
