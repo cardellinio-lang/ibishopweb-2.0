@@ -151,24 +151,24 @@ export default function HomeClient({ products, featuredProduct }) {
 
         {filtered.length > 8 && !showAll && (
           <div style={{ textAlign: 'center', marginTop: 24 }}>
-            <button onClick={() => setShowAll(true)} className="btn btn-secondary">عرض الكل ({filtered.length})</button>
+            <button onClick={() => setShowAll(true)} className="btn btn-secondary" style={{ background: '#60C1E5', color: '#17131A' }}>عرض الكل ({filtered.length})</button>
           </div>
         )}
       </div>
 
       {/* Stats Strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 36, textAlign: 'center' }}>
-        <div style={{ background: 'var(--wb-navy)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(23,19,26,.20)' }}>
+        <div style={{ background: '#2373F4', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(35,115,244,.30)' }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>{products.length}+</div>
-          <div style={{ fontSize: 13, color: 'rgba(221,235,247,.86)', fontWeight: 600, marginTop: 4 }}>منتج</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.9)', fontWeight: 600, marginTop: 4 }}>منتج</div>
         </div>
-        <div style={{ background: 'var(--wb-green)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(215,224,109,.30)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-navy)' }}>58</div>
-          <div style={{ fontSize: 13, color: 'rgba(23,19,26,.78)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
+        <div style={{ background: '#578EF5', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(87,142,245,.30)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#fff' }}>58</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,.92)', fontWeight: 600, marginTop: 4 }}>ولاية توصيل</div>
         </div>
-        <div style={{ background: 'var(--wb-brown)', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(241,120,173,.28)' }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--wb-navy)' }}>10</div>
-          <div style={{ fontSize: 13, color: 'rgba(23,19,26,.78)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
+        <div style={{ background: '#65D0F4', borderRadius: 20, padding: '20px 12px', boxShadow: '0 8px 26px rgba(101,208,244,.30)' }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: '#17131A' }}>10</div>
+          <div style={{ fontSize: 13, color: 'rgba(23,19,26,.8)', fontWeight: 600, marginTop: 4 }}>مقال تعليمي</div>
         </div>
       </div>
     </div>
