@@ -49,6 +49,10 @@ export default function ProductClient({ product, wilayas, communes}) {
   // Thème de la page produit : couleur choisie dans l'admin, sinon couleur
   // dominante de l'image principale (calculée dans le navigateur).
   const [autoTheme, setAutoTheme] = useState(null);
+  // Affichage seulement : le cadre est fabriqué à la commande. Le stock réel
+  // en base reste intact (il sert à accepter les commandes), on ne fait que
+  // montrer « 3 » au client.
+  const displayStock = product.slug === CADRE_SLUG ? 3 : product.stock;
   const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
   const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
@@ -553,15 +557,13 @@ export default function ProductClient({ product, wilayas, communes}) {
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
             </div>
 
-            {product.slug !== CADRE_SLUG && (
-              <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '10px 16px', margin: '0 20px 16px', textAlign: 'center', border: '1px solid var(--p-border)' }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.6 }}>
-                  {product.stock > 0 && product.stock <= 3
-                    ? `متوفر — بقي ${product.stock} فقط في المخزون`
-                    : product.stock > 0 ? 'متوفر للطلب — الدفع عند الاستلام' : 'غير متوفر حالياً'}
-                </div>
+            <div style={{ background: 'var(--p-soft)', borderRadius: 12, padding: '10px 16px', margin: '0 20px 16px', textAlign: 'center', border: '1px solid var(--p-border)' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.6 }}>
+                {displayStock > 0 && displayStock <= 3
+                  ? `متوفر — بقي ${displayStock} فقط في المخزون`
+                  : displayStock > 0 ? 'متوفر للطلب — الدفع عند الاستلام' : 'غير متوفر حالياً'}
               </div>
-            )}
+            </div>
 
             {blocked ? (
               <div style={{ padding: '40px 20px', textAlign: 'center' }}>
