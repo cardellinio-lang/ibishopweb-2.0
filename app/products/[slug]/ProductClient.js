@@ -591,7 +591,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   transition: 'transform 0.3s, color 0.3s',
                 }}>
                   {product.slug === CADRE_SLUG && cadreQty >= CADRE_OFFER_QTY ? (
-                    <>{cadreTotalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span><span style={{ fontSize: 12, fontWeight: 900, color: '#be123c' }}>لـ{cadreQty} قطع</span></>
+                    <>{cadreTotalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span>{' '}<span style={{ fontSize: 12, fontWeight: 900, color: '#be123c' }}>لـ{cadreQty} قطع</span></>
                   ) : (
                     <>{finalPrice.toLocaleString('fr-FR')} <span style={{ fontSize: 16 }}>د.ج</span></>
                   )}
