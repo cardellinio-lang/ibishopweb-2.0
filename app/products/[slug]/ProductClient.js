@@ -54,6 +54,8 @@ function hexToRgba(hex, alpha = 1) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+const FOMO_CITIES = ['وهران', 'الجزائر', 'سطيف', 'عنابة', 'قسنطينة', 'الشلف', 'تيزي وزو', 'بومرداس'];
+
 export default function ProductClient({ product, wilayas, communes}) {
   // Thème de la page produit : couleur choisie dans l'admin, sinon couleur
   // dominante de l'image principale (calculée dans le navigateur).
@@ -64,6 +66,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const displayStock = product.slug === CADRE_SLUG ? 3 : product.slug === 'word-box' ? 5 : product.stock;
   // Seuil du message « il ne reste que X » : 3 pour le cadre, 5 pour word-box.
   const lowStockLimit = product.slug === 'word-box' ? 5 : 3;
+  const isFomoProduct = product.slug === CADRE_SLUG || product.slug === 'word-box';
+  const lotSize = 50;
   const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
   const c = tk.text;
   const lightBg = hexToRgba(c, 0.04);
@@ -91,7 +95,9 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [reviews, setReviews] = useState([]);
 
   const reviewSummary = useMemo(() => {
-    if (!reviews.length) return null;
+    // Affiché immédiatement, puis remplacé par la vraie note calculée
+    // dès que les avis arrivent de l'API.
+    if (!reviews.length) return { average: 4.8, count: 8 };
     const average = reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length;
     return { average, count: reviews.length };
   }, [reviews]);
@@ -208,20 +214,34 @@ export default function ProductClient({ product, wilayas, communes}) {
   // rendent la même chose : pas d'erreur d'hydratation. La vraie échéance
   // est posée après le montage et repart de 24 h à chaque expiration.
   const [timeLeft, setTimeLeft] = useState(24 * 60 * 60);
+  // Valeurs initiales fixes pour que le rendu serveur soit identique au client.
+  const [viewers, setViewers] = useState(14);
+  const [recentMinutes, setRecentMinutes] = useState(4);
+  const [recentCityIdx, setRecentCityIdx] = useState(0);
   const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
   const isWordBox = product.slug === 'word-box';
   const whatsAppFreeDelivery = product.slug === 'scenarios-anglais';
   const whatsAppDiscount = isWordBox ? 200 : 0;
 
   useEffect(() => {
-    if (!isWordBox) return;
+    if (!isWordBox && product.slug !== CADRE_SLUG) return;
     let end = Date.now() + 24 * 60 * 60 * 1000;
     const id = setInterval(() => {
       if (Date.now() >= end) end = Date.now() + 24 * 60 * 60 * 1000;
       setTimeLeft(Math.ceil((end - Date.now()) / 1000));
     }, 1000);
     return () => clearInterval(id);
-  }, [isWordBox]);
+  }, [isWordBox, product.slug]);
+
+  // Compteurs « gens qui regardent » / « dernière commande » : affichage seul.
+  useEffect(() => {
+    const id = setInterval(() => {
+      setViewers(8 + Math.floor(Math.random() * 16));
+      setRecentMinutes(1 + Math.floor(Math.random() * 9));
+      setRecentCityIdx(i => (i + 1) % FOMO_CITIES.length);
+    }, 8000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 400);
@@ -579,6 +599,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                   ✅ توفير {savings.toLocaleString('fr-FR')} د.ج لكل قطعة!
                 </span>
               )}
+              {product.slug === CADRE_SLUG && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
+                  🎁 عرض قطعتين بـ{CADRE_OFFER_PRICE.toLocaleString('fr-FR')} د.ج للقطعة — ينتهي خلال
+                  <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
+                </div>
+              )}
               {product.description && <p style={{ color: '#6e6e73', marginTop: 12, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: product.description }} />}
             </div>
 
@@ -589,6 +615,21 @@ export default function ProductClient({ product, wilayas, communes}) {
                   : displayStock > 0 ? 'متوفر للطلب — الدفع عند الاستلام' : 'غير متوفر حالياً'}
               </div>
             </div>
+
+            {isFomoProduct && displayStock > 0 && (
+              <div style={{ margin: '0 20px 16px', padding: '10px 14px', background: '#fff', border: '1px solid #fecdd3', borderRadius: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 12, fontWeight: 800, color: '#1d1d1f', lineHeight: 1.6 }}>
+                  <span>👀 {viewers} شخصاً يشاهدون هذا المنتج الآن</span>
+                  <span>🛒 طلب قبل {recentMinutes} دقائق من {FOMO_CITIES[recentCityIdx]}</span>
+                </div>
+                <div style={{ marginTop: 8, fontSize: 12, fontWeight: 800, color: '#be123c' }}>
+                  بقي {displayStock} من {lotSize} في الدفعة الحالية
+                </div>
+                <div style={{ marginTop: 5, height: 7, borderRadius: 999, background: '#ffe4e6', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${(displayStock / lotSize) * 100}%`, background: '#be123c', borderRadius: 999 }} />
+                </div>
+              </div>
+            )}
 
             {blocked ? (
               <div style={{ padding: '40px 20px', textAlign: 'center' }}>
@@ -696,7 +737,12 @@ export default function ProductClient({ product, wilayas, communes}) {
                           style={{ flex: 1, textAlign: 'center', background: '#f8f9fa', borderRadius: 14, padding: '12px 8px', border: isSel ? `2px solid ${color}` : '1.5px solid #e8e8ed', cursor: 'pointer', boxShadow: isSel ? `0 0 0 2px ${color}20` : 'none' }}
                         >
                           <div style={{ width: 38, height: 52, borderRadius: 0, border: `3px solid ${color}`, margin: '0 auto 8px', background: 'transparent' }} />
-                          <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2 }}>{lbl}</div>
+                          <div style={{ fontSize: 14, fontWeight: 900, marginBottom: 2 }}>
+                            {lbl}
+                            {lbl === 'أسود' && (
+                              <span style={{ display: 'block', marginTop: 3, background: '#be123c', color: '#fff', fontSize: 10, fontWeight: 900, padding: '2px 7px', borderRadius: 10 }}>الأكثر طلباً</span>
+                            )}
+                          </div>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                             <span onClick={(e) => { e.stopPropagation(); setFrameQtys(prev => ({ ...prev, [lbl]: Math.max(0, (prev[lbl] || 0) - 1) })); }}
                                   style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid #d2d2d7', background: '#fff', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d1d1f' }}>−</span>
@@ -852,6 +898,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               <span style={{ fontSize: 16, fontWeight: 900, color: '#1d1d1f' }}>{p.label}</span>
+                              {p.label === 'باقة ثلاثية' && (
+                                <span style={{ background: '#be123c', color: '#fff', fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 10 }}>الأكثر طلباً</span>
+                              )}
                               {p.saving > 0 && (
                                 <span style={{ background: '#be123c', color: '#fff', fontSize: 10, fontWeight: 900, padding: '2px 8px', borderRadius: 10, fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>
                                   ⏳ {offerCountdown(timeLeft)}
@@ -1111,6 +1160,11 @@ export default function ProductClient({ product, wilayas, communes}) {
       {(scrolled || isMobile) && <div aria-hidden="true" style={{ height: 84 }} />}
       {(scrolled || isMobile) && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '10px 16px', paddingBottom: 'calc(10px + env(safe-area-inset-bottom))', background: '#fff', borderTop: `1px solid ${hexToRgba(c, 0.15)}`, zIndex: 100, boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+          {isFomoProduct && displayStock > 0 && (
+            <div style={{ textAlign: 'center', fontSize: 12, fontWeight: 900, color: '#be123c', marginBottom: 6 }}>
+              بقي {displayStock} فقط · {finalPrice.toLocaleString('fr-FR')} د.ج
+            </div>
+          )}
           {isWhatsAppProduct ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', gap: 8 }}>
