@@ -1604,7 +1604,7 @@ export default function Admin() {
                 <input value={form.themeColor} onChange={e => setForm(f => ({ ...f, themeColor: e.target.value }))} placeholder="Vide = couleur dominante de l'image" dir="ltr" style={{ flex: 1, fontFamily: 'monospace', fontSize: 13 }} />
               </div>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                {['#A0C4E8', '#B4E0D3', '#D7E06D', '#F178AD', '#CF97C4', '#FFCF63', ...themePalette].map((hex, i) => (
+                {['#60C1E5', '#2373F4', '#578EF5', '#65D0F4', ...themePalette].map((hex, i) => (
                   <button key={hex + i} type="button" onClick={() => setForm(f => ({ ...f, themeColor: hex }))} title={hex}
                           style={{ width: 28, height: 28, borderRadius: 8, border: (form.themeColor || '').toLowerCase() === hex.toLowerCase() ? '3px solid #1d1d1f' : '1px solid #d2d2d7', background: hex, cursor: 'pointer', padding: 0 }} />
                 ))}
