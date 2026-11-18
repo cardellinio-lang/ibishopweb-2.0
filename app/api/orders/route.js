@@ -61,7 +61,7 @@ export async function POST(req) {
     : wilaya.price;
   const itemName = data.variantName || product.name;
   let itemPrice = data.variantPrice || product.price;
-  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 1500 DA/article au lieu de 2200 DA
+  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 1900 DA/article au lieu de 2200 DA
   if (product.slug === CADRE_SLUG) {
     itemPrice = cadrePriceForQty(data.qty);
   }

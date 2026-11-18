@@ -62,10 +62,10 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [autoTheme, setAutoTheme] = useState(null);
   // Affichage seulement : le cadre est fabriqué à la commande. Le stock réel
   // en base reste intact (il sert à accepter les commandes), on ne fait que
-  // montrer « 3 » au client.
-  const displayStock = product.slug === CADRE_SLUG ? 3 : product.slug === 'word-box' ? 5 : product.stock;
-  // Seuil du message « il ne reste que X » : 3 pour le cadre, 5 pour word-box.
-  const lowStockLimit = product.slug === 'word-box' ? 5 : 3;
+  // montrer « 7 » au client.
+  const displayStock = product.slug === CADRE_SLUG ? 7 : product.slug === 'word-box' ? 5 : product.stock;
+  // Seuil du message « il ne reste que X » : 7 pour le cadre, 5 pour word-box.
+  const lowStockLimit = product.slug === 'word-box' ? 5 : 7;
   const isFomoProduct = product.slug === CADRE_SLUG || product.slug === 'word-box';
   const lotSize = 50;
   const tk = themeTokens(normalizeHex(product.themeColor) || autoTheme || '#A0C4E8');
@@ -269,7 +269,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   }, []);
 
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
-  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 1500 DA/article au lieu de 2200 DA
+  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 1900 DA/article au lieu de 2200 DA
   const cadreUnitPrice = cadrePriceForQty(cadreQty);
   const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
