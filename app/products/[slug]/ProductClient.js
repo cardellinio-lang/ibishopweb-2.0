@@ -480,10 +480,13 @@ export default function ProductClient({ product, wilayas, communes}) {
     const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
+    const waColorLine = isCadreWhatsApp
+      ? `📦 الألوان: أسود ${frameQtys['أسود'] || 0} · بني ${frameQtys['بني'] || 0}`
+      : `📦 ${packLabel}`;
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : (isCadreWhatsApp ? '\n⚡ توصيل أسرع!' : '\n🎉 توصيل مجاني!');
     const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
     const waConfirmLine = isCadreWhatsApp ? '\n\n✅ ردّ بـ « تأكيد » من فضلك لتأكيد طلبك.' : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج${waConfirmLine}\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n${waColorLine}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج${waConfirmLine}\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
