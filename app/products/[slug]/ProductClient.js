@@ -218,8 +218,10 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [viewers, setViewers] = useState(14);
   const [recentMinutes, setRecentMinutes] = useState(4);
   const [recentCityIdx, setRecentCityIdx] = useState(0);
-  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais';
+  const isWhatsAppProduct = product.slug === 'word-box' || product.slug === 'scenarios-anglais' || product.slug === CADRE_SLUG;
   const isWordBox = product.slug === 'word-box';
+  // Le cadre : confirmation WhatsApp sans remise supplémentaire, juste une expédition plus rapide.
+  const isCadreWhatsApp = product.slug === CADRE_SLUG;
   const whatsAppFreeDelivery = product.slug === 'scenarios-anglais';
   const whatsAppDiscount = isWordBox ? 200 : 0;
 
@@ -478,9 +480,10 @@ export default function ProductClient({ product, wilayas, communes}) {
     const communeName = filteredCommunes.find(c => c.id === Number(communeId))?.name || '';
     const packLabel = wordBoxPacks ? `${pack}${packLang ? ` (${packLang})` : ''}` : '';
     const deliveryTypeLabel = deliveryType === 'home' ? 'المنزل' : 'المكتب';
-    const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : '\n🎉 توصيل مجاني!';
-    const waMsgDeliveryLine = isWordBox ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج\u202C`;
+    const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : (isCadreWhatsApp ? '\n⚡ توصيل أسرع!' : '\n🎉 توصيل مجاني!');
+    const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
+    const waConfirmLine = isCadreWhatsApp ? '\n\n✅ ردّ بـ « تأكيد » من فضلك لتأكيد طلبك.' : '';
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n📦 ${packLabel}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج${waConfirmLine}\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -1074,13 +1077,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, justifyContent: 'center' }}>
                     <span style={{ fontSize: 13, fontWeight: 800, color: '#697327', background: '#EDF6EF', padding: '6px 14px', borderRadius: 20 }}>
-                      {isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب'}
+                      {isCadreWhatsApp ? '🎉 توصيل أسرع عند التأكيد عبر واتساب' : (isWordBox ? '🎉 خصم 200 د.ج عند التأكيد عبر واتساب' : '🎉 توصيل مجاني عند التأكيد عبر واتساب')}
                     </span>
                   </div>
                   <button type="button" onClick={submitWhatsAppOrder}
                           style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                           className="order-btn">
-                    {isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني'}
+                    {isCadreWhatsApp ? '📱 تأكيد الطلبية عبر واتساب - توصيل أسرع' : (isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني')}
                   </button>
                 </div>
               )}
@@ -1191,7 +1194,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  {isWordBox ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني'}
+                  {isCadreWhatsApp ? '📱 واتساب - توصيل أسرع' : (isWordBox ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني')}
                 </button>
               </div>
             </div>
