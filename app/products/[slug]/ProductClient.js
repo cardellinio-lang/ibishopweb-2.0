@@ -447,9 +447,12 @@ export default function ProductClient({ product, wilayas, communes}) {
     const waPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreAvgPrice / Math.max(1, realQty)) - (isWordBox ? whatsAppDiscount : 0) : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
+    //En RTL, le separateur de milliers de toLocaleString peut faire lire « 3 800 » comme « 8003 » dans WhatsApp.
+    //On ecrit donc les montants du message sans espace : 3800, 4200, etc.
+    const waNum = (n) => String(Math.round(Number(n) || 0));
     const waPriceLabel = product.slug === CADRE_SLUG && realQty >= CADRE_OFFER_QTY
-      ? `${realQty} قطع بـ${(waPrice * realQty).toLocaleString('fr-FR')} د.ج`
-      : `${waPrice.toLocaleString('fr-FR')} د.ج`;
+      ? `${realQty} قطع بـ${waNum(waPrice * realQty)} د.ج`
+      : `${waNum(waPrice)} د.ج`;
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -484,9 +487,9 @@ export default function ProductClient({ product, wilayas, communes}) {
       ? `📦 الألوان: أسود ${frameQtys['أسود'] || 0} · بني ${frameQtys['بني'] || 0}`
       : `📦 ${packLabel}`;
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : (isCadreWhatsApp ? '\n⚡ توصيل أسرع!' : '\n🎉 توصيل مجاني!');
-    const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waDelivery.toLocaleString('fr-FR')} د.ج` : '';
+    const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waNum(waDelivery)} د.ج` : '';
     const waConfirmLine = isCadreWhatsApp ? '\n\n✅ ردّ بـ « تأكيد » من فضلك لتأكيد طلبك.' : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n${waColorLine}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waTotal.toLocaleString('fr-FR')} د.ج${waConfirmLine}\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n${waColorLine}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waNum(waTotal)} د.ج${waConfirmLine}\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
