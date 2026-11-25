@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -73,6 +73,13 @@ export default function ProductClient({ product, wilayas, communes}) {
   const lightBg = hexToRgba(c, 0.04);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
+  // Façade du cadre : verre par défaut (prix d'appel), plexi en option premium.
+  const [facade, setFacade] = useState(CADRE_FACADE_VERRE);
+  const isCadre = product.slug === CADRE_SLUG;
+  const isPlexi = isCadre && facade === CADRE_FACADE_PLEXI;
+  const facadeLabel = isPlexi ? 'بلكسي' : 'زجاج';
+  const facadeOfferTotal = isPlexi ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
+  const facadeSaveTotal = isPlexi ? CADRE_PLEXI_SAVE_TOTAL : CADRE_SAVE_TOTAL;
   const wordColors = ['أحمر', 'وردي'];
   const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
   const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'بني': 0 });
@@ -271,8 +278,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   }, []);
 
   const cadreQty = product.slug === 'cadre-dessin-enfant-a4' ? Object.values(frameQtys).reduce((a,b) => a + (Number(b)||0), 0) : 0;
-  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 1900 DA/article au lieu de 2200 DA
-  const cadreUnitPrice = cadrePriceForQty(cadreQty);
+  // Offre cadre : dès 2 articles (toutes couleurs confondues) → 1900 DA/article en verre, 2250 DA en plexi.
+  const cadreUnitPrice = cadrePriceForQty(cadreQty, facade);
   const cadreTotalPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreQty * cadreUnitPrice : 0;
   const cadreAvgPrice = product.slug === 'cadre-dessin-enfant-a4' ? cadreTotalPrice : 0;
   const tierActive = product.slug === 'cadre-dessin-enfant-a4' ? false : (product.tierEnabled && product.tierQty && product.tierPrice && realQty >= product.tierQty);
@@ -392,7 +399,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
     try {
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0})` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeLabel}` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -402,6 +409,7 @@ export default function ProductClient({ product, wilayas, communes}) {
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
           variantPrice: (variants || wordBoxPacks) ? finalPrice : undefined,
+          facade: isCadre ? facade : undefined,
         }),
       });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'خطأ'); }
@@ -443,14 +451,14 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'cadre-dessin-enfant-a4' ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0})` : '');
-    const waPrice = product.slug === 'cadre-dessin-enfant-a4' ? (cadreAvgPrice / Math.max(1, realQty)) - (isWordBox ? whatsAppDiscount : 0) : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
+    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeLabel}` : '');
+    const waPrice = isCadre ? cadreUnitPrice : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
     //En RTL, le separateur de milliers de toLocaleString peut faire lire « 3 800 » comme « 8003 » dans WhatsApp.
     //On ecrit donc les montants du message sans espace : 3800, 4200, etc.
     const waNum = (n) => String(Math.round(Number(n) || 0));
-    const waPriceLabel = product.slug === CADRE_SLUG && realQty >= CADRE_OFFER_QTY
+    const waPriceLabel = isCadre && realQty >= CADRE_OFFER_QTY
       ? `${realQty} قطع بـ${waNum(waPrice * realQty)} د.ج`
       : `${waNum(waPrice)} د.ج`;
     try {
@@ -462,7 +470,8 @@ export default function ProductClient({ product, wilayas, communes}) {
           wilayaId: Number(wilayaId), communeId: Number(communeId),
           address, deliveryType, pageUrl: window.location.href,
           variantName: variantLabel ? `${product.name} ${variantLabel}`.trim() : undefined,
-          variantPrice: (variants || wordBoxPacks || (whatsAppFreeDelivery && !isWordBox) || product.slug === 'cadre-dessin-enfant-a4') ? waPrice : undefined,
+          variantPrice: (variants || wordBoxPacks || (whatsAppFreeDelivery && !isWordBox) || isCadre) ? waPrice : undefined,
+          facade: isCadre ? facade : undefined,
           source: 'whatsapp',
         }),
       });
@@ -486,10 +495,11 @@ export default function ProductClient({ product, wilayas, communes}) {
     const waColorLine = isCadreWhatsApp
       ? `📦 الألوان: أسود ${frameQtys['أسود'] || 0} · بني ${frameQtys['بني'] || 0}`
       : `📦 ${packLabel}`;
+    const waFacadeLine = isCadreWhatsApp ? `\n${isPlexi ? '🛡️' : '🪟'} الواجهة: ${facadeLabel}` : '';
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : (isCadreWhatsApp ? '\n⚡ توصيل أسرع!' : '\n🎉 توصيل مجاني!');
     const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waNum(waDelivery)} د.ج` : '';
     const waConfirmLine = isCadreWhatsApp ? '\n\n✅ ردّ بـ « تأكيد » من فضلك لتأكيد طلبك.' : '';
-    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n${waColorLine}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waNum(waTotal)} د.ج${waConfirmLine}\u202C`;
+    const rawMsg = `\u202B🛒 تأكيد الطلبية - ${product.name}\n\n👤 الاسم: ${customer}\n📞 الهاتف: ${phone}\n📍 الولاية: ${wilayaName}\n📍 البلدية: ${communeName}\n${waColorLine}${waFacadeLine}\n🔢 الكمية: ${realQty}\n💰 السعر: ${waPriceLabel}${waMsgDiscountLine}${waMsgDeliveryLine}\n🏠 التوصيل إلى: ${deliveryTypeLabel}\n💵 المجموع: ${waNum(waTotal)} د.ج${waConfirmLine}\u202C`;
     const msg = encodeURIComponent(rawMsg);
     window.location.href = `https://wa.me/213552435702?text=${msg}`;
     submittedRef.current = false;
@@ -615,9 +625,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   ✅ توفير {savings.toLocaleString('fr-FR')} د.ج لكل قطعة!
                 </span>
               )}
-              {product.slug === CADRE_SLUG && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
-                  🎁 2 قطع بـ{CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج فقط — ينتهي خلال
+              {isCadre && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap', background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
+                  🎁 زجاج: 2 مقابل {CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج · بلكسي: 2 مقابل {CADRE_PLEXI_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — ينتهي خلال
                   <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
                 </div>
               )}
@@ -736,7 +746,64 @@ export default function ProductClient({ product, wilayas, communes}) {
                   </div>
                 </div>
               )}
-              {product.slug === 'cadre-dessin-enfant-a4' && (
+              {isCadre && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 4, color: '#17131A' }}>اختر نوع الواجهة</label>
+                  <div style={{ fontSize: 12, color: '#6e6e73', marginBottom: 10, lineHeight: 1.6 }}>
+                    الواجهة الزجاجية: أجمل مظهر وأنقى وضوح. البلكسي: أكثر أماناً.
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {[
+                      {
+                        key: CADRE_FACADE_VERRE,
+                        title: 'واجهة زجاجية',
+                        badge: 'أجمل مظهر',
+                        badgeBg: '#EDF3FA',
+                        badgeColor: '#184391',
+                        desc: 'أجمل مظهر وأكثر وضوحاً. أثقل وزناً، وتتطلب بعض الحذر عند الفتح والتعامل.',
+                      },
+                      {
+                        key: CADRE_FACADE_PLEXI,
+                        title: 'واجهة بلكسي',
+                        badge: 'الأكثر أماناً',
+                        badgeBg: '#EDF6EF',
+                        badgeColor: '#15803d',
+                        desc: 'الأكثر أماناً لرسومات الأطفال. مقاومة للصدمات وبدون شظايا حادة — مثالية إذا كان الطفل يفتح الإطار كثيراً.',
+                      },
+                    ].map(opt => {
+                      const active = facade === opt.key;
+                      const optTotal = opt.key === CADRE_FACADE_PLEXI ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
+                      return (
+                        <button key={opt.key} type="button" onClick={() => setFacade(opt.key)}
+                                style={{
+                                  width: '100%', padding: '12px 14px', borderRadius: 14, textAlign: 'right',
+                                  border: active ? '2px solid #17131A' : '1.5px solid #d2d2d7',
+                                  background: active ? '#f8f9fa' : '#fff', cursor: 'pointer', transition: 'all .2s',
+                                  boxShadow: active ? '0 4px 18px rgba(23,19,26,0.08)' : 'none',
+                                }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{
+                                width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                                border: active ? 'none' : '2px solid #c7c7cc', background: active ? '#17131A' : '#fff',
+                                color: '#fff', fontSize: 12, fontWeight: 900, lineHeight: 1,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              }}>{active ? '✓' : ''}</span>
+                              <span style={{ fontSize: 16, fontWeight: 900, color: '#17131A' }}>{opt.title}</span>
+                            </span>
+                            <span style={{ background: opt.badgeBg, color: opt.badgeColor, fontSize: 10, fontWeight: 900, padding: '3px 9px', borderRadius: 10 }}>{opt.badge}</span>
+                          </div>
+                          <div style={{ fontSize: 12, color: '#6e6e73', lineHeight: 1.6, marginTop: 6 }}>{opt.desc}</div>
+                          <div style={{ fontSize: 14, fontWeight: 900, color: '#17131A', marginTop: 6 }}>
+                            2 مقابل {optTotal.toLocaleString('fr-FR')} د.ج
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {isCadre && (
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 10, color: '#1d1d1f' }}>اختر كمية كل لون إطار</label>
                   <div style={{ display: 'flex', gap: 12 }}>
@@ -1022,7 +1089,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ background: '#fefce8', borderRadius: 12, padding: '12px 16px', marginBottom: 16, textAlign: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>
                     {product.slug === 'cadre-dessin-enfant-a4'
-                      ? `➕ أضف ${product.tierQty - realQty} فقط وخُذ 2 بـ${CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — وفّر ${CADRE_SAVE_TOTAL.toLocaleString('fr-FR')} د.ج!`
+                      ? `➕ أضف ${product.tierQty - realQty} فقط وخُذ 2 بـ${facadeOfferTotal.toLocaleString('fr-FR')} د.ج — وفّر ${facadeSaveTotal.toLocaleString('fr-FR')} د.ج!`
                       : (product.tierMessage || `➕ أضف {remaining} فقط ووفر ${savings.toLocaleString('fr-FR')} د.ج لكل قطعة!`).replace(/\{remaining\}/g, product.tierQty - realQty)}
                   </span>
                 </div>

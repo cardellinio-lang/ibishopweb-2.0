@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
-import { CADRE_SLUG, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_FACADE_PLEXI, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
 
 // Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
 // toutes les commandes (noms, téléphones, adresses, token de confirmation).
@@ -59,11 +59,18 @@ export async function POST(req) {
   const deliveryPrice = data.deliveryType === 'office'
     ? (product.slug === 'silsilat-hadaf' ? 0 : wilaya.priceOffice)
     : wilaya.price;
-  const itemName = data.variantName || product.name;
+  let itemName = data.variantName || product.name;
   let itemPrice = data.variantPrice || product.price;
-  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 1900 DA/article au lieu de 2200 DA
+  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 1900 DA/article en verre, 2250 DA en plexi.
+  // Le prix est recalculé côté serveur : le front ne peut pas imposer son montant.
   if (product.slug === CADRE_SLUG) {
-    itemPrice = cadrePriceForQty(data.qty);
+    const facade = cadreFacade(data.facade);
+    itemPrice = cadrePriceForQty(data.qty, facade);
+    // Les anciens pages caches n'envoyent pas encore la façade : on l'ajoute
+    // quand même pour que l'atelier sache quoi fabriquer.
+    if (!/زجاج|بلكسي/.test(itemName)) {
+      itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? 'بلكسي' : 'زجاج'}`;
+    }
   }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
 
@@ -130,7 +137,7 @@ export async function POST(req) {
         body: JSON.stringify({
           number: order.number, customer: data.customer, phone: data.phone,
           wilaya: wilaya.name, commune: commune?.name || '', address: data.address,
-          product: product.name, quantity: data.qty, price: itemPrice,
+          product: itemName, quantity: data.qty, price: itemPrice,
           delivery: deliveryPrice, total: orderTotal, status: 'pending',
           date: new Date().toISOString(),
         }),
