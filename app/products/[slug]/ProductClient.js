@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -77,7 +77,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [facade, setFacade] = useState(CADRE_FACADE_VERRE);
   const isCadre = product.slug === CADRE_SLUG;
   const isPlexi = isCadre && facade === CADRE_FACADE_PLEXI;
-  const facadeLabel = isPlexi ? 'بلكسي' : 'زجاج';
+  const facadeLabel = isPlexi ? CADRE_PLEXI_LABEL : 'زجاج';
   const facadeOfferTotal = isPlexi ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
   const facadeSaveTotal = isPlexi ? CADRE_PLEXI_SAVE_TOTAL : CADRE_SAVE_TOTAL;
   const wordColors = ['أحمر', 'وردي'];
@@ -627,7 +627,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {isCadre && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap', background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
-                  🎁 زجاج: 2 مقابل {CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج · بلكسي: 2 مقابل {CADRE_PLEXI_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — ينتهي خلال
+                  🎁 زجاج: 2 مقابل {CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج · {CADRE_PLEXI_LABEL}: 2 مقابل {CADRE_PLEXI_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — ينتهي خلال
                   <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
                 </div>
               )}
@@ -750,7 +750,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 4, color: '#17131A' }}>اختر نوع الواجهة</label>
                   <div style={{ fontSize: 12, color: '#6e6e73', marginBottom: 10, lineHeight: 1.6 }}>
-                    الواجهة الزجاجية: أجمل مظهر وأنقى وضوح. البلكسي: أكثر أماناً.
+                    الواجهة الزجاجية: أجمل مظهر وأنقى وضوح. واجهة {CADRE_PLEXI_LABEL}: أكثر أماناً.
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {[
@@ -766,7 +766,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                       },
                       {
                         key: CADRE_FACADE_PLEXI,
-                        title: 'واجهة بلكسي',
+                        title: `واجهة ${CADRE_PLEXI_LABEL}`,
                         badge: 'الأكثر أماناً',
                         badgeBg: '#EDF6EF',
                         badgeColor: '#15803d',

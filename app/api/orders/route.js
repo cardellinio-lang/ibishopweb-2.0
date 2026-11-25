@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
-import { CADRE_SLUG, CADRE_FACADE_PLEXI, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
 
 // Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
 // toutes les commandes (noms, téléphones, adresses, token de confirmation).
@@ -69,7 +69,7 @@ export async function POST(req) {
     // Les anciens pages caches n'envoyent pas encore la façade : on l'ajoute
     // quand même pour que l'atelier sache quoi fabriquer.
     if (!/زجاج|بلكسي/.test(itemName)) {
-      itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? 'بلكسي' : 'زجاج'}`;
+      itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? CADRE_PLEXI_LABEL : 'زجاج'}`;
     }
   }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
