@@ -56,6 +56,10 @@ function hexToRgba(hex, alpha = 1) {
 
 const FOMO_CITIES = ['وهران', 'الجزائر', 'سطيف', 'عنابة', 'قسنطينة', 'الشلف', 'تيزي وزو', 'بومرداس'];
 
+// Message affiché dès le clic sur le bouton WhatsApp quand le formulaire ou
+// le choix du produit n'est pas encore complet (sinon le clic semble « ne rien faire »).
+const WHATSAPP_HINT = 'املأ المعلومات و اختر نوع المنتج قبل التأكيد عبر واتساب';
+
 export default function ProductClient({ product, wilayas, communes}) {
   // Thème de la page produit : couleur choisie dans l'admin, sinon couleur
   // dominante de l'image principale (calculée dans le navigateur).
@@ -441,7 +445,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const submitWhatsAppOrder = async () => {
     if (submittedRef.current) return;
     if (!customer || !phone || !wilayaId || !communeId || realQty < 1) {
-      setError('يرجى ملء جميع الحقول المطلوبة');
+      setError(WHATSAPP_HINT);
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
     if (!isValidPhone(phone)) {
@@ -1262,6 +1267,11 @@ export default function ProductClient({ product, wilayas, communes}) {
           )}
           {isWhatsAppProduct ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {error && (
+                <div role="alert" style={{ background: '#fff1f2', color: '#b91c1c', border: '1px solid #fecdd3', borderRadius: 10, padding: '9px 12px', fontSize: 13, fontWeight: 800, lineHeight: 1.5, textAlign: 'center' }}>
+                  {error}
+                </div>
+              )}
               <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={() => {
                   const allFilled = customer && phone && wilayaId && communeId;
@@ -1275,7 +1285,10 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <button onClick={() => {
                   const allFilled = customer && phone && wilayaId && communeId;
                   if (allFilled) { submitWhatsAppOrder(); }
-                  else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                  else {
+                    setError(WHATSAPP_HINT);
+                    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
