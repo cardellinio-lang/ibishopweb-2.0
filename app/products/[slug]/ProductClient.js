@@ -80,6 +80,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const facadeLabel = isPlexi ? CADRE_PLEXI_LABEL : 'زجاج';
   const facadeOfferTotal = isPlexi ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
   const facadeSaveTotal = isPlexi ? CADRE_PLEXI_SAVE_TOTAL : CADRE_SAVE_TOTAL;
+  // Sur le cadre, le bouton classique s'adresse à ceux qui n'ont pas WhatsApp.
+  const orderNowLabel = isCadre ? 'ليس لدي واتساب — اطلب الآن' : 'اطلب الآن';
   const wordColors = ['أحمر', 'وردي'];
   const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
   const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'بني': 0 });
@@ -1151,8 +1153,8 @@ export default function ProductClient({ product, wilayas, communes}) {
               {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: 12, fontSize: 14, marginTop: 16 }}>{error}</div>}
 
               <button type="submit" className="order-btn"
-                      style={{ width: '100%', padding: '16px 24px', marginTop: 16, background: '#55C6C0', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
-                اطلب الآن
+                      style={{ width: '100%', padding: '16px 20px', marginTop: 16, background: '#55C6C0', color: '#fff', fontSize: isCadre ? 17 : 20, fontWeight: 900, lineHeight: 1.3, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}>
+                {orderNowLabel}
               </button>
 
               {isWhatsAppProduct && (
@@ -1265,9 +1267,9 @@ export default function ProductClient({ product, wilayas, communes}) {
                   if (allFilled) { submitOrder(); }
                   else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 }}
-                        style={{ flex: 1, padding: '14px 16px', background: '#55C6C0', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
+                        style={{ flex: 1, padding: '14px 10px', background: '#55C6C0', color: '#fff', fontSize: isCadre ? 13 : 16, fontWeight: 900, lineHeight: 1.3, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  اطلب الآن
+                  {orderNowLabel}
                 </button>
                 <button onClick={() => {
                   const allFilled = customer && phone && wilayaId && communeId;
@@ -1295,7 +1297,7 @@ export default function ProductClient({ product, wilayas, communes}) {
             }}
                     style={{ flex: 1, padding: '15px 20px', background: '#55C6C0', color: '#fff', fontSize: 18, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                     className="order-btn">
-              اطلب الآن
+              {orderNowLabel}
             </button>
           </div>
           )}
