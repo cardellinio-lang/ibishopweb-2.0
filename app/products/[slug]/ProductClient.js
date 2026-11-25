@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -761,6 +761,8 @@ export default function ProductClient({ product, wilayas, communes}) {
                         badgeBg: '#EDF3FA',
                         badgeColor: '#184391',
                         desc: 'أجمل مظهر وأكثر وضوحاً. أثقل وزناً، وتتطلب بعض الحذر عند الفتح والتعامل.',
+                        unitSingle: CADRE_BASE_PRICE,
+                        unitOffer: CADRE_OFFER_PRICE,
                       },
                       {
                         key: CADRE_FACADE_PLEXI,
@@ -769,6 +771,8 @@ export default function ProductClient({ product, wilayas, communes}) {
                         badgeBg: '#EDF6EF',
                         badgeColor: '#15803d',
                         desc: 'الأكثر أماناً لرسومات الأطفال. مقاومة للصدمات وبدون شظايا حادة — مثالية إذا كان الطفل يفتح الإطار كثيراً.',
+                        unitSingle: CADRE_PLEXI_BASE_PRICE,
+                        unitOffer: CADRE_PLEXI_OFFER_PRICE,
                       },
                     ].map(opt => {
                       const active = facade === opt.key;
@@ -794,7 +798,10 @@ export default function ProductClient({ product, wilayas, communes}) {
                             <span style={{ background: opt.badgeBg, color: opt.badgeColor, fontSize: 10, fontWeight: 900, padding: '3px 9px', borderRadius: 10 }}>{opt.badge}</span>
                           </div>
                           <div style={{ fontSize: 12, color: '#6e6e73', lineHeight: 1.6, marginTop: 6 }}>{opt.desc}</div>
-                          <div style={{ fontSize: 14, fontWeight: 900, color: '#17131A', marginTop: 6 }}>
+                          <div style={{ fontSize: 13, fontWeight: 800, color: '#17131A', marginTop: 6 }}>
+                            1 قطعة بـ{opt.unitSingle.toLocaleString('fr-FR')} د.ج · 2+ بـ{opt.unitOffer.toLocaleString('fr-FR')} د.ج/قطعة
+                          </div>
+                          <div style={{ fontSize: 14, fontWeight: 900, color: '#17131A', marginTop: 4 }}>
                             2 مقابل {optTotal.toLocaleString('fr-FR')} د.ج
                           </div>
                         </button>
