@@ -81,7 +81,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const facadeOfferTotal = isPlexi ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
   const facadeSaveTotal = isPlexi ? CADRE_PLEXI_SAVE_TOTAL : CADRE_SAVE_TOTAL;
   // Sur le cadre, le bouton classique s'adresse à ceux qui n'ont pas WhatsApp.
-  const orderNowLabel = isCadre ? 'ليس لدي واتساب — اطلب الآن' : 'اطلب الآن';
+  const orderNowLabel = isCadre ? 'ليس لدي واتساب = اطلب الآن' : 'اطلب الآن';
+  const whatsAppLabel = '📱 واتساب = توصيل أسرع';
   const wordColors = ['أحمر', 'وردي'];
   const [colorQtys, setColorQtys] = useState({ 'أحمر': 1, 'وردي': 0 });
   const [frameQtys, setFrameQtys] = useState({ 'أسود': 1, 'بني': 0 });
@@ -1167,7 +1168,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                   <button type="button" onClick={submitWhatsAppOrder}
                           style={{ width: '100%', padding: '16px 24px', background: '#25D366', color: '#fff', fontSize: 20, fontWeight: 900, borderRadius: 14, border: 'none', cursor: 'pointer', transition: 'transform .15s, opacity .15s' }}
                           className="order-btn">
-                    {isCadreWhatsApp ? '📱 تأكيد الطلبية عبر واتساب - توصيل أسرع' : (isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني')}
+                    {isCadreWhatsApp ? whatsAppLabel : (isWordBox ? '📱 تأكيد عبر واتساب - خصم 200 د.ج' : '📱 تأكيد عبر واتساب - توصيل مجاني')}
                   </button>
                 </div>
               )}
@@ -1278,7 +1279,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                 }}
                         style={{ flex: 1, padding: '14px 16px', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
-                  {isCadreWhatsApp ? '📱 واتساب - توصيل أسرع' : (isWordBox ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني')}
+                  {isCadreWhatsApp ? whatsAppLabel : (isWordBox ? '📱 واتساب - خصم 200 د.ج' : '📱 واتساب - توصيل مجاني')}
                 </button>
               </div>
             </div>
