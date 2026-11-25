@@ -795,7 +795,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                               }}>{active ? '✓' : ''}</span>
                               <span style={{ fontSize: 16, fontWeight: 900, color: '#17131A' }}>{opt.title}</span>
                             </span>
-                            <span style={{ background: opt.badgeBg, color: opt.badgeColor, fontSize: 10, fontWeight: 900, padding: '3px 9px', borderRadius: 10 }}>{opt.badge}</span>
+                            <span style={{ background: opt.badgeBg, color: opt.badgeColor, fontSize: 14, fontWeight: 900, padding: '5px 13px', borderRadius: 12, whiteSpace: 'nowrap' }}>{opt.badge}</span>
                           </div>
                           <div style={{ fontSize: 12, color: '#6e6e73', lineHeight: 1.6, marginTop: 6 }}>{opt.desc}</div>
                           <div style={{ fontSize: 13, fontWeight: 800, color: '#17131A', marginTop: 6 }}>
