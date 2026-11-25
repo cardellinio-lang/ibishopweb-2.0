@@ -393,7 +393,8 @@ export default function ProductClient({ product, wilayas, communes}) {
   const submitOrder = async () => {
     if (submittedRef.current) return;
     if (!customer || !phone || !wilayaId || !communeId || realQty < 1) {
-      setError('يرجى ملء جميع الحقول المطلوبة');
+      setError(isCadre ? WHATSAPP_HINT : 'يرجى ملء جميع الحقول المطلوبة');
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
     if (!isValidPhone(phone)) {
@@ -1278,7 +1279,10 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <button onClick={() => {
                   const allFilled = customer && phone && wilayaId && communeId;
                   if (allFilled) { submitOrder(); }
-                  else { formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                  else {
+                    setError(isCadre ? WHATSAPP_HINT : 'يرجى ملء جميع الحقول المطلوبة');
+                    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
                 }}
                         style={{ flex: 1, padding: isCadre ? '10px 8px' : '14px 10px', background: '#55C6C0', color: '#fff', fontSize: 16, fontWeight: 900, lineHeight: isCadre ? 1.25 : 1.3, borderRadius: 12, border: 'none', cursor: 'pointer' }}
                         className="order-btn">
