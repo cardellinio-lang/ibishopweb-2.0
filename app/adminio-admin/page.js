@@ -1753,7 +1753,7 @@ export default function Admin() {
                       Aperçu {form.themeColor ? '(couleur choisie)' : '(automatique depuis l\'image)'}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontWeight: 900, color: t.text }}>2 200 د.ج</span>
+                      <span style={{ fontWeight: 900, color: t.text }}>2 600 د.ج</span>
                       <span style={{ padding: '6px 12px', borderRadius: 8, background: t.cta, color: '#fff', fontSize: 12, fontWeight: 800 }}>أضف إلى السلة</span>
                     </div>
                   </div>

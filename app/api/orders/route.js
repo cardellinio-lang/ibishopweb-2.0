@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
-import { CADRE_SLUG, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_PLEXI_LABEL, cadrePriceForQty } from '@/lib/pricing';
 
 // Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
 // toutes les commandes (noms, téléphones, adresses, token de confirmation).
@@ -61,16 +61,13 @@ export async function POST(req) {
     : wilaya.price;
   let itemName = data.variantName || product.name;
   let itemPrice = data.variantPrice || product.price;
-  // Offre cadre enfant A4 : dès 2 articles (toutes couleurs) → 1900 DA/article en verre, 2250 DA en plexi.
+  // Offre cadre enfant A4 : une seule façade (plexi) → 2600 DA pièce, 2250 DA/article dès 2.
   // Le prix est recalculé côté serveur : le front ne peut pas imposer son montant.
   if (product.slug === CADRE_SLUG) {
-    const facade = cadreFacade(data.facade);
-    itemPrice = cadrePriceForQty(data.qty, facade);
-    // Les anciens pages caches n'envoyent pas encore la façade : on l'ajoute
-    // quand même pour que l'atelier sache quoi fabriquer.
-    if (!/زجاج|بلكسي/.test(itemName)) {
-      itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? CADRE_PLEXI_LABEL : 'زجاج'}`;
-    }
+    itemPrice = cadrePriceForQty(data.qty);
+    // Anciens caches : on normalise le nom vers la seule façade vendue (plexi).
+    itemName = itemName.replace(/\s*-\s*بلكسي[^\n]*$/, '').trim();
+    if (!/بلكسي/.test(itemName)) itemName = `${itemName} - ${CADRE_PLEXI_LABEL}`;
   }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
 

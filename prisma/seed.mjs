@@ -721,27 +721,9 @@ const PRODUCTS = [
   ];
 
 async function main() {
-  // Migration prioritaire : description du cadre dessin A4.
-  // Aucune mention de matériau : la façade va passer au verre, on ne
-  // revendique donc ni plexiglas ni verre, ni argument « sécurité ».
-  const cadreSlug = 'cadre-dessin-enfant-a4';
-  const cadreDescription = "Joli encadrement pour dessins d'enfants format A4. Ouverture avant magnétique, rangement jusqu'à 200 dessins. Couleurs disponibles : Noir et effet Bois.";
-  for (let attempt = 1; attempt <= 8; attempt++) {
-    try {
-      const cadre = await prisma.product.findUnique({ where: { slug: cadreSlug }, select: { description: true } });
-      const desc = cadre?.description || '';
-      // Retire les mentions de matériau (plexiglas / verre) et de sécurité.
-      if (cadre && /plexiglas|plexi|verre|bris|résistant|أمان|بلكسي/i.test(desc)) {
-        await prisma.product.update({ where: { slug: cadreSlug }, data: { description: cadreDescription } });
-        console.log('✅ cadre-dessin-enfant-a4 : description sans mention de matériau');
-      }
-      break;
-    } catch (e) {
-      console.log(`[cadre] tentative ${attempt}/8 échouée: ${String(e?.message || e).slice(0, 140)}`);
-      await new Promise((r) => setTimeout(r, 400 * attempt));
-    }
-  }
-
+  // La fiche cadre est désormais vendue uniquement en plexi. Sa description
+  // de repli vit dans lib/product-copy.js ; une description modifiée dans
+  // l'admin est prioritaire et n'est jamais écrasée par ce seed.
   // Contenus des avis du cadre : textes en darija algérienne, plus crédibles
   // qu'un arabe littéraire identique d'un avis à l'autre. Les avis déjà en base
   // sont mis à jour, les manquants sont créés (ordre d'affichage via createdAt).
