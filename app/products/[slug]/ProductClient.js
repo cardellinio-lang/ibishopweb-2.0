@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, CADRE_VERRE_FACADE_TITLE, CADRE_PLEXI_FACADE_TITLE, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -81,7 +81,7 @@ export default function ProductClient({ product, wilayas, communes}) {
   const [facade, setFacade] = useState(CADRE_FACADE_VERRE);
   const isCadre = product.slug === CADRE_SLUG;
   const isPlexi = isCadre && facade === CADRE_FACADE_PLEXI;
-  const facadeLabel = isPlexi ? CADRE_PLEXI_LABEL : 'زجاج';
+  const facadeTitle = isPlexi ? CADRE_PLEXI_FACADE_TITLE : CADRE_VERRE_FACADE_TITLE;
   const facadeOfferTotal = isPlexi ? CADRE_PLEXI_OFFER_TOTAL : CADRE_OFFER_TOTAL;
   const facadeSaveTotal = isPlexi ? CADRE_PLEXI_SAVE_TOTAL : CADRE_SAVE_TOTAL;
   // Sur le cadre, le bouton classique s'adresse à ceux qui n'ont pas WhatsApp.
@@ -409,7 +409,7 @@ export default function ProductClient({ product, wilayas, communes}) {
 
     try {
       const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeLabel}` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
+      const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (product.slug === 'wordrope' ? ` (${colorQtys['أحمر']} أحمر + ${colorQtys['وردي']} وردي)` : isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeTitle}` : (variant && (alwaysRecordVariant || variant !== (variants?.[0]?.label || '')) ? ` (${variant})` : ''));
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -462,7 +462,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
     setError('');
     const packLangLabel = wordBoxPacks ? (pack === 'باقة اكتشاف' ? ` - ${packLang}` : (pack === 'باقة ثنائية' ? ' - عربية + فرنسية' : ' - عربية + فرنسية + إنجليزية')) : '';
-    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeLabel}` : '');
+    const variantLabel = wordBoxPacks ? ` (${pack}${packLangLabel})` : (isCadre ? ` (أسود: ${frameQtys['أسود']||0}, بني: ${frameQtys['بني']||0}) - ${facadeTitle}` : '');
     const waPrice = isCadre ? cadreUnitPrice : (finalPrice - (isWordBox ? whatsAppDiscount : 0));
     const waDelivery = whatsAppFreeDelivery ? 0 : delivery;
     const waTotal = waPrice * realQty + waDelivery;
@@ -506,7 +506,7 @@ export default function ProductClient({ product, wilayas, communes}) {
     const waColorLine = isCadreWhatsApp
       ? `📦 الألوان: أسود ${frameQtys['أسود'] || 0} · بني ${frameQtys['بني'] || 0}`
       : `📦 ${packLabel}`;
-    const waFacadeLine = isCadreWhatsApp ? `\n${isPlexi ? '🛡️' : '🪟'} الواجهة: ${facadeLabel}` : '';
+    const waFacadeLine = isCadreWhatsApp ? `\n${isPlexi ? '🛡️' : '🪟'} ${facadeTitle}` : '';
     const waMsgDiscountLine = isWordBox ? '\n🎉 خصم 200 د.ج!' : (isCadreWhatsApp ? '\n⚡ توصيل أسرع!' : '\n🎉 توصيل مجاني!');
     const waMsgDeliveryLine = (isWordBox || isCadreWhatsApp) ? `\n🚚 التوصيل: ${waNum(waDelivery)} د.ج` : '';
     const waConfirmLine = isCadreWhatsApp ? '\n\n✅ ردّ بـ « تأكيد » من فضلك لتأكيد طلبك.' : '';
@@ -763,13 +763,13 @@ export default function ProductClient({ product, wilayas, communes}) {
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: 14, fontWeight: 800, display: 'block', marginBottom: 4, color: '#17131A' }}>اختر نوع الواجهة</label>
                   <div style={{ fontSize: 12, color: '#6e6e73', marginBottom: 10, lineHeight: 1.6 }}>
-                    الواجهة الزجاجية: أجمل مظهر وأنقى وضوح. واجهة {CADRE_PLEXI_LABEL}: أكثر أماناً.
+                    {CADRE_VERRE_FACADE_TITLE}: أجمل مظهر وأنقى وضوح. {CADRE_PLEXI_FACADE_TITLE}: أكثر أماناً.
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {[
                       {
                         key: CADRE_FACADE_VERRE,
-                        title: 'واجهة زجاجية',
+                        title: CADRE_VERRE_FACADE_TITLE,
                         badge: 'أجمل مظهر',
                         badgeBg: '#EDF3FA',
                         badgeColor: '#184391',
@@ -779,7 +779,7 @@ export default function ProductClient({ product, wilayas, communes}) {
                       },
                       {
                         key: CADRE_FACADE_PLEXI,
-                        title: `واجهة ${CADRE_PLEXI_LABEL}`,
+                        title: CADRE_PLEXI_FACADE_TITLE,
                         badge: 'الأكثر أماناً',
                         badgeBg: '#EDF6EF',
                         badgeColor: '#15803d',

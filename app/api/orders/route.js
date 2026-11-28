@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { sendAdminNotification } from '@/lib/telegram';
 import { sendCapiEvents } from '@/lib/facebook-capi';
 import { waitUntil } from '@vercel/functions';
-import { CADRE_SLUG, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_FACADE_PLEXI, CADRE_VERRE_FACADE_TITLE, CADRE_PLEXI_FACADE_TITLE, cadreFacade, cadrePriceForQty } from '@/lib/pricing';
 
 // Réservé à l'admin : sans cette authentification, n'importe qui pouvait lire
 // toutes les commandes (noms, téléphones, adresses, token de confirmation).
@@ -66,11 +66,10 @@ export async function POST(req) {
   if (product.slug === CADRE_SLUG) {
     const facade = cadreFacade(data.facade);
     itemPrice = cadrePriceForQty(data.qty, facade);
-    // Les anciens pages caches n'envoyent pas encore la façade : on l'ajoute
-    // quand même pour que l'atelier sache quoi fabriquer.
-    if (!/زجاج|بلكسي/.test(itemName)) {
-      itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? CADRE_PLEXI_LABEL : 'زجاج'}`;
-    }
+    // On normalise le libellé de façade (y compris les anciens pages caches)
+    // pour que l'atelier voie toujours « إطار بواجهة زجاجية / بليكسي ».
+    itemName = itemName.replace(/\s*-\s*(إطار بواجهة\s*)?(زجاج|بلكسي|بليكسي)[^\n]*$/, '').trim();
+    itemName = `${itemName} - ${facade === CADRE_FACADE_PLEXI ? CADRE_PLEXI_FACADE_TITLE : CADRE_VERRE_FACADE_TITLE}`;
   }
   const orderTotal = itemPrice * data.qty + deliveryPrice;
 
