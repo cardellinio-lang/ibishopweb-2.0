@@ -721,9 +721,9 @@ const PRODUCTS = [
   ];
 
 async function main() {
-  // La fiche cadre est désormais vendue uniquement en plexi. Sa description
-  // de repli vit dans lib/product-copy.js ; une description modifiée dans
-  // l'admin est prioritaire et n'est jamais écrasée par ce seed.
+  // La fiche cadre propose à nouveau les deux façades (verre et plexi).
+  // Sa description de repli vit dans lib/product-copy.js ; une description
+  // modifiée dans l'admin est prioritaire et n'est jamais écrasée par ce seed.
   // Contenus des avis du cadre : textes en darija algérienne, plus crédibles
   // qu'un arabe littéraire identique d'un avis à l'autre. Les avis déjà en base
   // sont mis à jour, les manquants sont créés (ordre d'affichage via createdAt).
