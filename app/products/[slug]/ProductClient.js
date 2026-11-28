@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, CADRE_PLEXI_LABEL, CADRE_VERRE_FACADE_TITLE, CADRE_PLEXI_FACADE_TITLE, cadrePriceForQty } from '@/lib/pricing';
+import { CADRE_SLUG, CADRE_BASE_PRICE, CADRE_OFFER_PRICE, CADRE_OFFER_QTY, CADRE_OFFER_TOTAL, CADRE_SAVE_TOTAL, CADRE_PLEXI_BASE_PRICE, CADRE_PLEXI_OFFER_PRICE, CADRE_PLEXI_OFFER_TOTAL, CADRE_PLEXI_SAVE_TOTAL, CADRE_FACADE_VERRE, CADRE_FACADE_PLEXI, CADRE_VERRE_FACADE_TITLE, CADRE_PLEXI_FACADE_TITLE, cadrePriceForQty } from '@/lib/pricing';
 import { themeTokens, normalizeHex, autoThemeFromImages } from '@/lib/theme';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
@@ -640,7 +640,7 @@ export default function ProductClient({ product, wilayas, communes}) {
               )}
               {isCadre && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap', background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '8px 12px', marginTop: 10, fontSize: 13, fontWeight: 800, color: '#be123c', lineHeight: 1.5 }}>
-                  🎁 زجاج: 2 مقابل {CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج · {CADRE_PLEXI_LABEL}: 2 مقابل {CADRE_PLEXI_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — ينتهي خلال
+                  🎁 {CADRE_VERRE_FACADE_TITLE}: 2 مقابل {CADRE_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج · {CADRE_PLEXI_FACADE_TITLE}: 2 مقابل {CADRE_PLEXI_OFFER_TOTAL.toLocaleString('fr-FR')} د.ج — ينتهي خلال
                   <span dir="ltr" style={{ fontVariantNumeric: 'tabular-nums', fontFamily: 'monospace' }}>{offerCountdown(timeLeft)}</span>
                 </div>
               )}
